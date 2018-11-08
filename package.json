@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI for build front end project.",
   "main": "bin/index.js",
   "bin": {
@@ -29,6 +29,7 @@
     "@types/glob": "^5.0.35",
     "@types/inquirer": "^0.0.43",
     "@types/node": "^10.10.1",
+    "@types/semver": "^5.5.0",
     "@types/webpack-dev-server": "^3.1.1",
     "@types/yargs": "^12.0.1",
     "ts-node": "^7.0.1"
@@ -50,6 +51,7 @@
     "postcss-loader": "^2.1.4",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
+    "semver": "^5.6.0",
     "style-loader": "^0.23.0",
     "svg-sprite-loader": "^3.7.3",
     "svgo": "1.0.0",

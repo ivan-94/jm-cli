@@ -12,9 +12,15 @@ const argv = yargs
     'Create React project',
     {
       name: { description: 'project name' },
+      at: { description: 'sepcify jm-cli version', alias: 'a' },
+      template: { description: 'template name in npm, file:// or url', alias: 't' },
     },
     argv => {
-      create(cwd, argv.name, cmdDir)
+      create(cwd, cmdDir, {
+        name: argv.name,
+        version: argv.at,
+        template: argv.template,
+      })
     },
   )
   .command('start', 'Start development server', {}, argv => {
@@ -25,4 +31,5 @@ const argv = yargs
     build()
   })
   .command('analyze', 'Analyze webpack bundle', {}, argv => {})
-  .command('deploy', 'TODO', {}, argv => {}).argv
+  .command('deploy', 'TODO', {}, argv => {})
+  .help().argv

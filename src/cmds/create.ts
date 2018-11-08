@@ -7,14 +7,14 @@ import os from 'os'
 import fs from 'fs-extra'
 import validateNpmName from 'validate-npm-package-name'
 import { shouldUseYarn } from '../utils'
-import { execSync, spawnSync } from 'child_process';
+import semver from 'semver'
+import { execSync } from 'child_process'
 
 const useYarn = shouldUseYarn()
 
 process.on('uncaughtException', err => {
   throw err
 })
-
 
 /**
  * 检查是否是合法的npm包名
@@ -47,16 +47,26 @@ function ensureAppPath(appPath: string) {
   fs.ensureDirSync(appPath)
 }
 
-function initialPackageJson(appName: string, appPath: string, templatePath: string, scriptName: string) {
+function initialPackageJson(
+  appPath: string,
+  templatePath: string,
+  argv: {
+    name: string
+    cliName: string
+    cliVersion?: string
+    binName: string
+  },
+) {
+  const { name, binName, cliName, cliVersion } = argv
   let pacakgeJson = {
-    name: appName,
+    name,
     version: '0.1.0',
     private: true,
     dependencies: {},
     devDependencies: {},
     scripts: {
-      start: `${scriptName} start`,
-      build: `${scriptName} build`,
+      start: `${binName} start`,
+      build: `${binName} build`,
     },
   }
 
@@ -87,27 +97,41 @@ function initialPackageJson(appName: string, appPath: string, templatePath: stri
   let args: string[]
   if (useYarn) {
     command = 'yarnpkg'
-    args = ['install']
   } else {
     command = 'npm'
-    args = ['install', '--save']
   }
 
   console.log(`Installing pacakges. This might take a couple of minutes.`)
-  execSync(`${command} ${args.join(' ')}`, {stdio: 'inherit'})
+  execSync(`${command}`, { stdio: 'inherit' })
+
+  // install cli commands
+  let packageToInstall = cliName
+  if (cliVersion) {
+    const validSemver = semver.valid(cliVersion)
+    if (validSemver) {
+      packageToInstall += `@${validSemver}`
+    }
+  }
+
+  if (useYarn) {
+    args = ['add', packageToInstall, '--dev']
+  } else {
+    args = ['install', '--save-dev', packageToInstall]
+  }
+  execSync(`${command} ${args.join(' ')}`, { stdio: 'inherit' })
 }
 
 function tryInitialGit(appPath: string) {
-  let didInit = false;
+  let didInit = false
   try {
-    execSync('git init', { stdio: 'ignore' });
-    didInit = true;
+    execSync('git init', { stdio: 'ignore' })
+    didInit = true
 
-    execSync('git add -A', { stdio: 'ignore' });
+    execSync('git add -A', { stdio: 'ignore' })
     execSync('git commit -m "Initial commit from jm-cli"', {
       stdio: 'ignore',
-    });
-    return true;
+    })
+    return true
   } catch (e) {
     if (didInit) {
       // If we successfully initialized but couldn't commit,
@@ -117,29 +141,37 @@ function tryInitialGit(appPath: string) {
       // remove the Git files to avoid a half-done state.
       try {
         // unlinkSync() doesn't work on directories.
-        fs.removeSync(path.join(appPath, '.git'));
+        fs.removeSync(path.join(appPath, '.git'))
       } catch (removeErr) {
         // Ignore.
       }
     }
-    return false;
+    return false
   }
 }
 
 /**
  * @param cwd 当前工作目录
- * @param appName 项目名称
  * @param originalDirname cli项目根目录
+ * @param argv 命令参数
  */
-export default (cwd: string, appName: string, originalDirname: string) => {
-  validateNpmName(appName)
-  const appPath = path.join(cwd, appName)
+export default (
+  cwd: string,
+  originalDirname: string,
+  argv: {
+    name: string
+    version?: string
+    template?: string
+  },
+) => {
+  const { name, version, template } = argv
+  validatePackageName(name)
+  const appPath = path.join(cwd, name)
   ensureAppPath(appPath)
   console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
   process.chdir(appPath)
   // create package.json
 
-  // TODO: 添加jm-cli 到依赖
   // TODO: 支持自定义template
   const templatePath = path.join(originalDirname, 'template')
   if (!fs.existsSync(templatePath)) {
@@ -148,14 +180,16 @@ export default (cwd: string, appName: string, originalDirname: string) => {
   }
 
   const ownPackageJson = require(path.join(originalDirname, 'package.json'))
-  initialPackageJson(appName, appPath, templatePath, ownPackageJson.name)
+  initialPackageJson(appPath, templatePath, {
+    name,
+    cliName: ownPackageJson.name,
+    cliVersion: version,
+    binName: Object.keys(ownPackageJson.bin as object)[0],
+  })
 
-  if (tryInitialGit(appPath)){
+  if (tryInitialGit(appPath)) {
     console.log('Initialized a git repository.')
   }
-  
-  // TODO: development
-  execSync(`yarn link @gdjiami/jm`, {stdio: 'inherit'})
 
   // TODO: 显示欢迎信息
 }

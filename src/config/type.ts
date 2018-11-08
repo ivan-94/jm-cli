@@ -6,5 +6,8 @@ export type WebpackConfigurer = (
   env: WebpackEnviroment,
   pkg: object,
   paths: WebpackPaths,
-  argv: object,
+  argv: {
+    name?: string
+    entry?: string[]
+  },
 ) => Configuration

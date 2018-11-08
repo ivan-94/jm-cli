@@ -9,20 +9,27 @@ import chalk from 'chalk'
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
+import diff from 'lodash/difference'
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
+  const { name, entry } = argv
   const isProduction = process.env.NODE_ENV === 'production'
   const $ = <D, P>(development: D, production: P) => (isProduction ? production : development)
 
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
   const context = paths.appSrc
   const pageExt = enviroments.raw.PAGE_EXT || '.html'
-  const entries = getEntries(context, pageExt, enviroments.raw.IGNORE)
+  const pageEntries = getEntries(context, pageExt, entry)
 
-  if (Object.keys(entries).length === 0) {
+  if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
     process.exit()
+  }
+
+  const entries = {
+    // TODO: ...other entries
+    ...pageEntries,
   }
 
   const webpackConfig: Configuration = {
@@ -154,7 +161,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
-      ...genTemplatePlugin(context, isProduction, enviroments.raw, pageExt),
+      ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
       ...(envConfig.plugins || []),
     ],
     performance: envConfig.performance,
@@ -163,33 +170,39 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   return webpackConfig
 }
 
-function getEntries(context: string, pageExt: string, ignores?: string | string[]) {
-  const pages = scanPages(context, pageExt, ignores)
-  const entries: { [name: string]: string } = {
-    // TODO: polyfill
-    // polyfill: require.resolve('./polyfill.js'),
+function getEntries(context: string, pageExt: string, entry?: string[]) {
+  const entries: { [name: string]: string } = {}
+
+  let pages = scanPages(context, pageExt).map(p => path.basename(p, pageExt))
+  if (entry && entry.length) {
+    pages = pages.filter(p => entry.indexOf(p) !== -1)
+
+    if (pages.length !== entry.length) {
+      const notfoundedPages = diff(entry, pages).map(i => `${i}${pageExt}`)
+      console.error(`${chalk.blue(notfoundedPages.join(', '))} not found in ${chalk.cyan(context)}`)
+      process.exit(1)
+    }
   }
 
-  pages.forEach(pagePath => {
-    const fileName = path.basename(pagePath, pageExt)
+  pages.forEach(page => {
     let entryFileExt = '.tsx'
 
-    if (fs.existsSync(path.join(context, `${fileName}.tsx`))) {
+    if (fs.existsSync(path.join(context, `${page}.tsx`))) {
       entryFileExt = '.tsx'
-    } else if (fs.existsSync(path.join(context, `${fileName}.ts`))) {
+    } else if (fs.existsSync(path.join(context, `${page}.ts`))) {
       entryFileExt = '.ts'
     } else {
       console.error(
         `${chalk.green(
-          `${fileName}${pageExt}`,
-        )} founded, but not any entry file(${fileName}.tsx or ${fileName}.ts) found in ${context}.`,
+          `${page}${pageExt}`,
+        )} founded, but not any entry file(${page}.tsx or ${page}.ts) found in ${context}.`,
       )
       process.exit(1)
     }
 
     // 检查入口文件是否存在
-    const entry = `./${fileName}${entryFileExt}`
-    entries[fileName] = entry
+    const entry = `./${page}${entryFileExt}`
+    entries[page] = entry
   })
 
   return entries
@@ -198,30 +211,27 @@ function getEntries(context: string, pageExt: string, ignores?: string | string[
 /**
  * scan enty pages
  */
-function scanPages(context: string, ext: string, ignores?: string | string[]) {
-  ignores = ignores || []
-  return glob.sync(path.join(context, `*${ext}`), {
-    ignore: ignores,
-  })
+function scanPages(context: string, ext: string) {
+  return glob.sync(path.join(context, `*${ext}`), {})
 }
 
 // 生成*.html 文件
 function genTemplatePlugin(
   context: string,
+  pageEntries: { [key: string]: string },
   isProduction: boolean,
   templateParameters: { [key: string]: string },
   ext: string = '.html',
 ) {
-  const ignores = getIgnore(templateParameters.IGNORE_ENTRIES)
-  const pages = scanPages(context, ext, ignores)
-  return pages.map(pagePath => {
-    const name = path.basename(pagePath, ext)
-    const filename = path.basename(pagePath, ext)
+  const pages = Object.keys(pageEntries)
+  return pages.map(page => {
+    const pagePath = path.join(context, `${page}${ext}`)
+
     return new HtmlWebpackPlugin({
       templateParameters,
-      filename: filename + '.html',
+      filename: page + '.html',
       inject: true,
-      chunks: ['polyfill', 'vendor', 'commons', name],
+      chunks: ['polyfill', 'vendor', 'commons', page],
       template: pagePath,
       minify: isProduction
         ? {
@@ -234,13 +244,6 @@ function genTemplatePlugin(
         : undefined,
     })
   })
-}
-
-function getIgnore(ignores: string) {
-  if (ignores == null || ignores === '') {
-    return []
-  }
-  return ignores.split(',')
 }
 
 export default configure

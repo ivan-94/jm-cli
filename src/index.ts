@@ -23,10 +23,21 @@ const argv = yargs
       })
     },
   )
-  .command('start', 'Start development server', {}, argv => {
-    // TODO: --entry=a,b --name
-    start(cwd, cmdDir)
-  })
+  .command(
+    'start',
+    'Start development server',
+    {
+      entry: {
+        description: 'sepcify entry names to build. example: a,b',
+        alias: 'e',
+      },
+    },
+    argv => {
+      start(cwd, cmdDir, {
+        entry: argv.entry ? (argv.entry as string).split(',') : undefined,
+      })
+    },
+  )
   .command('build', 'Build project for development', {}, argv => {
     build()
   })

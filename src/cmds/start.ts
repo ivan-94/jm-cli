@@ -41,7 +41,8 @@ function getDevServerConfig(proxy: Configuration['proxy'], webpackConfig: Webpac
   }
 }
 
-export default async function(cwd: string, originalDirname: string) {
+export default async function(cwd: string, originalDirname: string, argv: { entry?: string[] }) {
+  // TODO: 检查是否是react项目
   // TODO: 依赖检查
   // TODO: 选择端口
   // TODO: 打开浏览器
@@ -50,7 +51,7 @@ export default async function(cwd: string, originalDirname: string) {
   const host = '0.0.0.0'
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const config = require('../config').default(environment, pkg, paths, {})
+  const config = require('../config').default(environment, pkg, paths, { entry: argv.entry })
   const compiler = webpack(config)
   const devServerConfig = getDevServerConfig(pkg.proxy || {}, config)
   const devServer = new webpackDevServer(compiler, devServerConfig)

@@ -8,3 +8,11 @@ export function shouldUseYarn() {
     return false
   }
 }
+
+/**
+ * transform ',' separated string to string[]
+ * @param str
+ */
+export function transformString2Array(str: string): string[] {
+  return str.split(',')
+}

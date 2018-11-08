@@ -9,3 +9,5 @@ declare module 'webpack-format-messages' {
   const value: (stat: webpack.Stats) => { errors: string[]; warnings: string[] }
   export default value
 }
+
+type StringArrayObject = { [key: string]: string[] }

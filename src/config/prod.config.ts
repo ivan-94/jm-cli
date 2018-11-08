@@ -8,8 +8,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
+  const {name} = argv
+  const filePrefix = name ? `${name}_` : ''
   const shouldUseRelativeAssetPaths = enviroments.raw.PUBLIC_URL === './'
-  const cssFilename = 'static/css/[name].css?[contenthash]'
+  const cssFilename = `static/css/${filePrefix}[name].css?[hash]`
 
   return {
     module: {

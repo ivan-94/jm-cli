@@ -21,6 +21,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const context = paths.appSrc
   const pageExt = enviroments.raw.PAGE_EXT || '.html'
   const pageEntries = getEntries(context, pageExt, entry)
+  const filePrefix = name ? `${name}_` : ''
 
   if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
@@ -33,13 +34,14 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   const webpackConfig: Configuration = {
+    name,
     context,
     mode: $('development', 'production'),
     devtool: enviroments.raw.SOURCE_MAP === 'false' ? false : $('cheap-source-map', 'source-map'),
     entry: entries,
     output: {
-      filename: `static/js/[name].js${$('', '?[hash:8]')}`,
-      chunkFilename: `static/js/[name].js${$('', '?[hash:8]')}`,
+      filename: `static/js/${filePrefix}[name].js${$('', '?[hash:8]')}`,
+      chunkFilename: `static/js/${filePrefix}[name].js${$('', '?[hash:8]')}`,
       path: paths.appDist,
       pathinfo: true,
       publicPath: enviroments.raw.PUBLIC_URL,
@@ -110,7 +112,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               loader: require.resolve('url-loader'),
               options: {
                 limit: 10000,
-                name: `static/media/[name].[ext]${$('', '?[hash:8]')}`,
+                name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
               },
             },
             ...((envConfig.module && envConfig.module.rules) || []),
@@ -122,7 +124,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
               loader: require.resolve('file-loader'),
               options: {
-                name: `static/media/[name].[ext]${$('', '?[hash:8]')}`,
+                name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
               },
             },
           ],

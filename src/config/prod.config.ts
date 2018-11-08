@@ -6,7 +6,6 @@ import { WebpackConfigurer } from './type'
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const shouldUseRelativeAssetPaths = enviroments.raw.PUBLIC_URL === './'
@@ -47,14 +46,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ],
     },
     plugins: [
-      // 拷贝静态资源
-      new CopyWebpackPlugin([
-        {
-          from: path.join(paths.appPublic, '**/*'),
-          to: paths.appDist,
-          context: paths.appPublic,
-        },
-      ]),
       // 抽取CSS文件
       new MiniCssExtractPlugin({
         filename: cssFilename,

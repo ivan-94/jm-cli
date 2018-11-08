@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI for build front end project.",
   "main": "bin/index.js",
   "bin": {
@@ -16,6 +16,9 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   },
   "author": "ivan",
   "license": "MIT",
@@ -34,7 +37,6 @@
     "autoprefixer": "^8.3.0",
     "cache-loader": "^1.2.5",
     "chalk": "^2.4.1",
-    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^0.28.11",
     "dotenv": "^6.1.0",
     "dotenv-expand": "^4.2.0",
@@ -62,6 +64,7 @@
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.10",
+    "webpack-format-messages": "^2.0.3",
     "yargs": "^12.0.2"
   },
   "keywords": [

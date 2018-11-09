@@ -1,4 +1,6 @@
 import url from 'url'
+import os from 'os'
+import fs from 'fs-extra'
 import address from 'address'
 import chalk from 'chalk'
 import { execSync } from 'child_process'
@@ -20,6 +22,10 @@ export function shouldUseYarn() {
  */
 export function transformString2Array(str: string): string[] {
   return str.split(',')
+}
+
+export function writeJSON(path: string, data: object) {
+  fs.writeFileSync(path, JSON.stringify(data, null, 2) + os.EOL)
 }
 
 /**

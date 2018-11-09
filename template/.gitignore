@@ -58,14 +58,10 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 .env.local
 .env.development.local
 .env.production.local
 proxy.json
-
-# analyzer file
-stats.json
 
 # cache loader
 .cache-loader

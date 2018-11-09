@@ -2,13 +2,14 @@
  * create project
  */
 import path from 'path'
-import chalk from 'chalk'
 import os from 'os'
+import chalk from 'chalk'
+import ts from 'typescript'
 import fs from 'fs-extra'
 import validateNpmName from 'validate-npm-package-name'
-import { shouldUseYarn } from '../utils'
 import semver from 'semver'
 import { execSync } from 'child_process'
+import { shouldUseYarn, writeJSON } from '../utils'
 
 export interface CreateOption {
   name: string
@@ -115,7 +116,7 @@ function initialPackageJson(
 
   fs.copySync(templatePath, appPath, { overwrite: false, errorOnExist: false })
   copyPrettierConfig(appPath, ownPath, pacakgeJson)
-  fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(pacakgeJson, null, 2) + os.EOL)
+  writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
 
   console.log(`Installing pacakges. This might take a couple of minutes.`)
 
@@ -194,6 +195,36 @@ function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: strin
   }
 }
 
+function initialTsConfig(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
+  const tsConfigPath = path.join(appPath, 'tsconfig.json')
+  const tsConfigPathInNodeModule = `./node_modules/${ownPkg.name}/lib/tsconfig.json`
+  let config = {
+    extends: tsConfigPathInNodeModule,
+    compilerOptions: {
+      baseUrl: '.',
+    },
+  }
+
+  if (fs.existsSync(tsConfigPath)) {
+    const { config: orgConfig, error } = ts.readConfigFile(tsConfigPath, ts.sys.readFile)
+    if (error) {
+      const formatDiagnosticHost = {
+        getCanonicalFileName: (fileName: string) => fileName,
+        getCurrentDirectory: ts.sys.getCurrentDirectory,
+        getNewLine: () => os.EOL,
+      }
+      console.log(ts.formatDiagnostic(error, formatDiagnosticHost))
+    }
+    if ('extends' in orgConfig) {
+      return
+    }
+    config = { ...config, ...orgConfig }
+    config.compilerOptions.baseUrl = '.'
+  }
+
+  writeJSON(tsConfigPath, config)
+}
+
 /**
  * @param cwd 当前工作目录
  * @param originalDirname cli项目根目录
@@ -228,6 +259,7 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
     cliVersion: version,
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
+  initialTsConfig(appPath, originalDirname, ownPackageJson)
 
   if (gitInitialed) {
     firstCommit()

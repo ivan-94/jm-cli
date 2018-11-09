@@ -2,7 +2,6 @@
  * 初始化环境变量
  */
 import fs from 'fs-extra'
-import path from 'path'
 import paths from './paths'
 import chalk from 'chalk'
 import dotenv from 'dotenv'
@@ -34,7 +33,7 @@ dotenvsFiles.forEach(dotenvFile => {
 })
 
 const ENV_FILTER = /^JM_/i
-const BUILIN_ENVS = ['VERSION', 'SOURCE_MAP', 'PORT', 'HTTPS', 'NODE_ENV', 'NAME', 'PUBLIC_URL', 'PAGE_EXT']
+const BUILIN_ENVS = ['VERSION', 'SOURCE_MAP', 'PORT', 'HTTPS', 'NAME', 'PUBLIC_URL', 'PAGE_EXT']
 
 export default function getClientEnvironment(publicUrl?: string): WebpackEnviroment {
   const pkg = require(paths.appPackageJson)
@@ -50,6 +49,8 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         NAME: pkg.name,
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || '/' : '/',
         PAGE_EXT: '.html',
+        // NODE_ENV 可能会被篡改，所以固定住
+        NODE_ENV,
       },
     )
 

@@ -2,12 +2,13 @@
  * Start development server
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
-import { Configuration as WebpackConfiguration } from 'webpack'
-import paths from '../paths'
+import { Configuration as WebpackConfiguration, Compiler } from 'webpack'
+import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
 import chalk from 'chalk'
 import opener from 'opener'
 import { prepareUrls } from '../utils'
+import paths from '../paths'
 
 process.on('unhandledRejection', err => {
   throw err
@@ -20,7 +21,7 @@ process.env.NODE_ENV = mode
 require('../env')
 
 /**
- * get webpack-dev-options
+ * get webpack-dev-server options
  * @param proxy
  */
 function getDevServerConfig(proxy: Configuration['proxy'], webpackConfig: WebpackConfiguration): Configuration {
@@ -32,7 +33,7 @@ function getDevServerConfig(proxy: Configuration['proxy'], webpackConfig: Webpac
     watchContentBase: true,
     hot: true,
     publicPath: webpackConfig.output!.publicPath,
-    // quiet: true,
+    quiet: true,
     watchOptions: {
       ignored: /node_modules/,
     },
@@ -41,18 +42,57 @@ function getDevServerConfig(proxy: Configuration['proxy'], webpackConfig: Webpac
   }
 }
 
+/**
+ * create webpack compiler and listen build events
+ * @param config
+ */
+function createCompiler(config: WebpackConfiguration): Compiler {
+  let compiler: Compiler
+  try {
+    compiler = webpack(config)
+  } catch (err) {
+    // config error
+    console.error(chalk.red('❌  Failed to compile.\n'))
+    console.log(err.message || err)
+    console.log()
+    process.exit(1)
+  }
+
+  compiler!.hooks.invalid.tap('invalid', () => {
+    console.log(chalk.cyan('Compiling...'))
+  })
+
+  compiler!.hooks.done.tap('done', stats => {
+    const messages = formatMessages(stats)
+    if (messages.errors.length) {
+      console.error(chalk.red('❌  Failed to compile.\n\n'))
+      messages.errors.forEach(e => console.log(e))
+      return
+    }
+
+    if (messages.warnings.length) {
+      console.warn(chalk.yellow('⚠️  Compiled with warnings.\n\n'))
+      messages.warnings.forEach(e => console.log(e))
+      return
+    }
+
+    console.log(chalk.green('Compiled successfully.'))
+  })
+
+  return compiler!
+}
+
 export default async function(cwd: string, originalDirname: string, argv: { entry?: string[] }) {
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   // TODO: 选择端口
-  // TODO: 打开浏览器
   const port = parseInt(process.env.PORT as string, 10) || 8080
   const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
   const host = '0.0.0.0'
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
   const config = require('../config').default(environment, pkg, paths, { entry: argv.entry })
-  const compiler = webpack(config)
+  const compiler = createCompiler(config)
   const devServerConfig = getDevServerConfig(pkg.proxy || {}, config)
   const devServer = new webpackDevServer(compiler, devServerConfig)
 

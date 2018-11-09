@@ -5,6 +5,10 @@ import webpack from 'webpack'
 import { WebpackConfigurer } from './type'
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => ({
+  entry: {
+    main: [require.resolve('webpack-dev-server/client') + '?/', require.resolve('webpack/hot/dev-server')],
+  },
+  devtool: enviroments.raw.SOURCE_MAP === 'false' ? false : 'cheap-module-source-map',
   module: {
     rules: [
       {
@@ -33,6 +37,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => ({
     ],
   },
   plugins: [new webpack.NamedModulesPlugin(), new webpack.HotModuleReplacementPlugin()],
+  optimization: {},
 })
 
 export default configure

@@ -14,7 +14,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
-  const isProduction = process.env.NODE_ENV === 'production'
+  const isProduction = enviroments.raw.NODE_ENV === 'production'
   const $ = <D, P>(development: D, production: P) => (isProduction ? production : development)
 
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
@@ -29,7 +29,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   const entries = {
-    // TODO: ...other entries
+    // inject entries
+    ...(envConfig.entry as object),
     ...pageEntries,
   }
 
@@ -37,7 +38,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     name,
     context,
     mode: $('development', 'production'),
-    devtool: enviroments.raw.SOURCE_MAP === 'false' ? false : $('cheap-source-map', 'source-map'),
+    devtool: envConfig.devtool,
     entry: entries,
     output: {
       filename: `static/js/${filePrefix}[name].js${$('', '?[hash:8]')}`,
@@ -149,13 +150,16 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           commons: {
             test: /src/,
             name: 'commons',
-            chunks: 'all',
+            chunks: 'initial',
             reuseExistingChunk: false,
             minChunks: 2,
             priority: 10,
           },
-          default: false,
         },
+      },
+      // Keep the runtime chunk seperated to enable long term caching
+      runtimeChunk: {
+        name: 'runtime',
       },
       ...(envConfig.optimization || {}),
     },
@@ -233,7 +237,11 @@ function genTemplatePlugin(
       templateParameters,
       filename: page + '.html',
       inject: true,
-      chunks: ['polyfill', 'vendor', 'commons', page],
+      /**
+       * HtmlWebpackPlugin 目前不支持多页应用parent chunks识别，所有这里只能限定
+       * parent chunk的名称
+       */
+      chunks: ['main', 'runtime', 'polyfill', 'vendor', 'commons', page],
       template: pagePath,
       minify: isProduction
         ? {

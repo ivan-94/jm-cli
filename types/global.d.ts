@@ -18,3 +18,10 @@ declare module 'webpack-bundle-analyzer' {
   }
   export default value
 }
+
+declare module 'address' {
+  const value: {
+    ip: (interfaceName?: string) => string
+  }
+  export default value
+}

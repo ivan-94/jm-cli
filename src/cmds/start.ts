@@ -1,13 +1,13 @@
 /**
  * Start development server
  */
-import { execSync } from 'child_process'
-import path from 'path'
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import { Configuration as WebpackConfiguration } from 'webpack'
 import paths from '../paths'
 import webpack = require('webpack')
 import chalk from 'chalk'
+import opener from 'opener'
+import { prepareUrls } from '../utils'
 
 process.on('unhandledRejection', err => {
   throw err
@@ -62,6 +62,9 @@ export default async function(cwd: string, originalDirname: string, argv: { entr
     }
 
     console.log(chalk.cyan('Starting the development server...\n'))
+    const urls = prepareUrls(protocol, host, port)
+    console.log(`Development server deployed at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    opener(urls.localUrlForBrowser)
   })
   ;['SIGINT', 'SIGTERM'].forEach(sig => {
     process.on(sig as NodeJS.Signals, () => {

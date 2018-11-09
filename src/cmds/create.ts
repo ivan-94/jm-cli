@@ -195,34 +195,19 @@ function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: strin
   }
 }
 
+/**
+ * 初始化tsconfig.json
+ * TODO: 目前tsconfig.json 不支持extends node_modules 中的配置. 而且baseurl和rootDir都是相对tsconfi.json所在的位置
+ */
 function initialTsConfig(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
   const tsConfigPath = path.join(appPath, 'tsconfig.json')
-  const tsConfigPathInNodeModule = `./node_modules/${ownPkg.name}/lib/tsconfig.json`
-  let config = {
-    extends: tsConfigPathInNodeModule,
-    compilerOptions: {
-      baseUrl: '.',
-    },
-  }
+  const builinTsConfigPath = path.join(ownPath, 'lib/tsconfig.json')
 
   if (fs.existsSync(tsConfigPath)) {
-    const { config: orgConfig, error } = ts.readConfigFile(tsConfigPath, ts.sys.readFile)
-    if (error) {
-      const formatDiagnosticHost = {
-        getCanonicalFileName: (fileName: string) => fileName,
-        getCurrentDirectory: ts.sys.getCurrentDirectory,
-        getNewLine: () => os.EOL,
-      }
-      console.log(ts.formatDiagnostic(error, formatDiagnosticHost))
-    }
-    if ('extends' in orgConfig) {
-      return
-    }
-    config = { ...config, ...orgConfig }
-    config.compilerOptions.baseUrl = '.'
+    return
   }
 
-  writeJSON(tsConfigPath, config)
+  fs.copyFileSync(builinTsConfigPath, tsConfigPath)
 }
 
 /**

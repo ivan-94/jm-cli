@@ -7,8 +7,9 @@ import fs from 'fs-extra'
 import paths from '../paths'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
+import { CommonOption } from './type'
 
-export interface BuildOption {
+export interface BuildOption extends CommonOption {
   entry?: string[]
   group?: StringArrayObject
 }
@@ -53,6 +54,11 @@ function build(argv: BuildOption) {
     config = configure(environment, pkg, paths, { entry: argv.entry })
   } else {
     config = configure(environment, pkg, paths, {})
+  }
+
+  if (argv.inspect) {
+    console.log(config)
+    return
   }
 
   const compiler = webpack(config as Configuration)

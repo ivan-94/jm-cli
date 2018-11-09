@@ -9,6 +9,11 @@ import chalk from 'chalk'
 import opener from 'opener'
 import { prepareUrls } from '../utils'
 import paths from '../paths'
+import { CommonOption } from './type'
+
+export interface StartOption extends CommonOption {
+  entry?: string[]
+}
 
 process.on('unhandledRejection', err => {
   throw err
@@ -82,7 +87,7 @@ function createCompiler(config: WebpackConfiguration): Compiler {
   return compiler!
 }
 
-export default async function(cwd: string, originalDirname: string, argv: { entry?: string[] }) {
+export default async function(argv: StartOption) {
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   // TODO: 选择端口
@@ -92,6 +97,12 @@ export default async function(cwd: string, originalDirname: string, argv: { entr
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
   const config = require('../config').default(environment, pkg, paths, { entry: argv.entry })
+
+  if (argv.inspect) {
+    console.log(config)
+    return
+  }
+
   const compiler = createCompiler(config)
   const devServerConfig = getDevServerConfig(pkg.proxy || {}, config)
   const devServer = new webpackDevServer(compiler, devServerConfig)

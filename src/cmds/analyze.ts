@@ -8,8 +8,9 @@ import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
 import { noopFileSystem } from '../utils'
 import paths from '../paths'
+import { CommonOption } from './type'
 
-export interface AnalyzeOption {
+export interface AnalyzeOption extends CommonOption {
   entry?: string[]
 }
 
@@ -29,7 +30,14 @@ function analyze(argv: AnalyzeOption) {
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
   const configure = require('../config').default
-  const compiler = webpack(configure(environment, pkg, paths, { entry: argv.entry }))
+  const config = configure(environment, pkg, paths, { entry: argv.entry })
+
+  if (argv.inspect) {
+    console.log(config)
+    return
+  }
+
+  const compiler = webpack(config)
   compiler.outputFileSystem = noopFileSystem
 
   compiler.run((err, stats) => {

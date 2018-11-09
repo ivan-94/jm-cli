@@ -2,9 +2,9 @@ import yargs from 'yargs'
 import path from 'path'
 import { transformString2Array } from './utils'
 import create from './cmds/create'
-import start from './cmds/start'
-import build from './cmds/build'
-import analyze from './cmds/analyze'
+import start, { StartOption } from './cmds/start'
+import build, { BuildOption } from './cmds/build'
+import analyze, { AnalyzeOption } from './cmds/analyze'
 
 const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
@@ -39,7 +39,7 @@ const argv = yargs
       },
     },
     argv => {
-      start(cwd, cmdDir, { entry: argv.entry })
+      start(argv as StartOption)
     },
   )
   .command(
@@ -77,13 +77,13 @@ const argv = yargs
       },
     },
     argv => {
-      let entry: string[] | undefined = argv.entry
-      if (argv.group && argv.group.default) {
-        entry = [...(entry || []), ...argv.group.default]
-        argv.group = undefined
+      let { entry, group, ...other } = argv
+      if (group && group.default) {
+        entry = [...(entry || []), ...group.default]
+        group = undefined
       }
 
-      build({ entry, group: argv.group })
+      build({ entry, group, ...other } as BuildOption)
     },
   )
   .command(
@@ -99,10 +99,12 @@ const argv = yargs
       },
     },
     argv => {
-      analyze({
-        entry: argv.entry,
-      })
+      analyze(argv as AnalyzeOption)
     },
   )
   .command('deploy', 'TODO', {}, argv => {})
+  .option('inspect', {
+    description: 'inspect webpack configuration',
+    type: 'boolean',
+  })
   .help().argv

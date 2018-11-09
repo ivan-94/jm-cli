@@ -10,7 +10,19 @@ import { shouldUseYarn } from '../utils'
 import semver from 'semver'
 import { execSync } from 'child_process'
 
+export interface CreateOption {
+  name: string
+  version?: string
+  template?: string
+}
+
 const useYarn = shouldUseYarn()
+const builinDevDependencies = [
+  // format
+  'prettier',
+  'pretty-quick',
+  'husky',
+]
 
 process.on('uncaughtException', err => {
   throw err
@@ -47,9 +59,14 @@ function ensureAppPath(appPath: string) {
   fs.ensureDirSync(appPath)
 }
 
+function transformDependencies(org: { [key: string]: string }): string[] {
+  return Object.keys(org).map(key => `${key}@${org[key]}`)
+}
+
 function initialPackageJson(
   appPath: string,
   templatePath: string,
+  ownPath: string,
   argv: {
     name: string
     cliName: string
@@ -67,6 +84,12 @@ function initialPackageJson(
     scripts: {
       start: `${binName} start`,
       build: `${binName} build`,
+    },
+    // prettier format
+    husky: {
+      hooks: {
+        'pre-commit': 'pretty-quick --staged',
+      },
     },
   }
 
@@ -90,19 +113,18 @@ function initialPackageJson(
     }
   }
 
-  fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(pacakgeJson, null, 2) + os.EOL)
   fs.copySync(templatePath, appPath, { overwrite: false, errorOnExist: false })
-
-  let command: string
-  let args: string[]
-  if (useYarn) {
-    command = 'yarnpkg'
-  } else {
-    command = 'npm'
-  }
+  copyPrettierConfig(appPath, ownPath, pacakgeJson)
+  fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(pacakgeJson, null, 2) + os.EOL)
 
   console.log(`Installing pacakges. This might take a couple of minutes.`)
-  execSync(`${command}`, { stdio: 'inherit' })
+
+  const devdependencies = builinDevDependencies
+    .filter(dep => {
+      return !(dep in pacakgeJson.dependencies) && !(dep in pacakgeJson.devDependencies)
+    })
+    .concat(transformDependencies(pacakgeJson.devDependencies))
+  const dependencies = transformDependencies(pacakgeJson.dependencies)
 
   // install cli commands
   let packageToInstall = cliName
@@ -113,40 +135,62 @@ function initialPackageJson(
     }
   }
 
+  devdependencies.push(packageToInstall)
+
+  let dependenciesInstallCommand: string
+  let devDependenciesInstallCommand: string
   if (useYarn) {
-    args = ['add', packageToInstall, '--dev']
+    const command = 'yarnpkg'
+    dependenciesInstallCommand = `${command} add ${dependencies.join(' ')}`
+    devDependenciesInstallCommand = `${command} add ${devdependencies.join(' ')} --dev`
   } else {
-    args = ['install', '--save-dev', packageToInstall]
+    const command = 'npm'
+    dependenciesInstallCommand = `${command} install ${dependencies.join(' ')} --save`
+    devDependenciesInstallCommand = `${command} install ${devdependencies.join(' ')} --save-dev`
   }
-  execSync(`${command} ${args.join(' ')}`, { stdio: 'inherit' })
+
+  console.log(chalk.cyan(`Installing dependencies...`))
+  execSync(dependenciesInstallCommand, { stdio: 'inherit' })
+  console.log(chalk.cyan(`Installing devdependencies...`))
+  execSync(devDependenciesInstallCommand, { stdio: 'inherit' })
 }
 
 function tryInitialGit(appPath: string) {
-  let didInit = false
   try {
     execSync('git init', { stdio: 'ignore' })
-    didInit = true
+    return true
+  } catch (e) {
+    return false
+  }
+}
 
+function firstCommit() {
+  try {
     execSync('git add -A', { stdio: 'ignore' })
     execSync('git commit -m "Initial commit from jm-cli"', {
       stdio: 'ignore',
     })
-    return true
-  } catch (e) {
-    if (didInit) {
-      // If we successfully initialized but couldn't commit,
-      // maybe the commit author config is not set.
-      // In the future, we might supply our own committer
-      // like Ember CLI does, but for now, let's just
-      // remove the Git files to avoid a half-done state.
-      try {
-        // unlinkSync() doesn't work on directories.
-        fs.removeSync(path.join(appPath, '.git'))
-      } catch (removeErr) {
-        // Ignore.
-      }
+  } catch {
+    // ignore
+  }
+}
+
+function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: string]: any }) {
+  const legalPrettierConfigName = [
+    '.prettierrc',
+    '.prettierrc.json',
+    'prettier.config.js',
+    '.prettierrc.yaml',
+    '.prettierrc.toml',
+    '.prettierrc.yml',
+  ]
+  for (let file of legalPrettierConfigName) {
+    if (fs.existsSync(path.join(appPath, file))) {
+      return
     }
-    return false
+  }
+  if (pkg.prettier == null) {
+    pkg.prettier = fs.readJSONSync(path.join(ownPath, '.prettierrc'))
   }
 }
 
@@ -155,22 +199,19 @@ function tryInitialGit(appPath: string) {
  * @param originalDirname cli项目根目录
  * @param argv 命令参数
  */
-export default (
-  cwd: string,
-  originalDirname: string,
-  argv: {
-    name: string
-    version?: string
-    template?: string
-  },
-) => {
+export default (cwd: string, originalDirname: string, argv: CreateOption) => {
   const { name, version, template } = argv
   validatePackageName(name)
   const appPath = path.join(cwd, name)
   ensureAppPath(appPath)
   console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
   process.chdir(appPath)
-  // create package.json
+
+  // initialized git before install packages, because some package like `husky` depend on Git enviroment
+  let gitInitialed = tryInitialGit(appPath)
+  if (gitInitialed) {
+    console.log('Initialized a git repository.')
+  }
 
   // TODO: 支持自定义template
   const templatePath = path.join(originalDirname, 'template')
@@ -179,16 +220,17 @@ export default (
     process.exit(1)
   }
 
+  // create package.json
   const ownPackageJson = require(path.join(originalDirname, 'package.json'))
-  initialPackageJson(appPath, templatePath, {
+  initialPackageJson(appPath, templatePath, originalDirname, {
     name,
     cliName: ownPackageJson.name,
     cliVersion: version,
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
 
-  if (tryInitialGit(appPath)) {
-    console.log('Initialized a git repository.')
+  if (gitInitialed) {
+    firstCommit()
   }
 
   // TODO: 显示欢迎信息

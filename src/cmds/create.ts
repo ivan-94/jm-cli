@@ -2,10 +2,9 @@
  * create project
  */
 import path from 'path'
-import os from 'os'
 import chalk from 'chalk'
-import ts from 'typescript'
 import fs from 'fs-extra'
+import json5 from 'json5'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
 import { execSync } from 'child_process'
@@ -210,6 +209,41 @@ function initialTsConfig(appPath: string, ownPath: string, ownPkg: { [key: strin
   fs.copyFileSync(builinTsConfigPath, tsConfigPath)
 }
 
+function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
+  const tsLintConfigPath = path.join(appPath, 'tslint.json')
+  const builinTsLintConfigPath = path.posix.join(ownPkg.name, 'lib/tslint.json')
+
+  if (fs.existsSync(tsLintConfigPath)) {
+    const config = json5.parse(fs.readFileSync(tsLintConfigPath).toString()) as {
+      extends?: string | string[]
+      defaultSeverity?: string
+    }
+    let dirty: boolean = false
+    if (config.extends) {
+      if (typeof config.extends === 'string' && config.extends !== builinTsLintConfigPath) {
+        config.extends = [builinTsLintConfigPath, config.extends]
+        dirty = true
+      } else if (config.extends.indexOf(builinTsLintConfigPath) === -1) {
+        ;(config.extends as string[]).unshift(builinTsLintConfigPath)
+        dirty = true
+      }
+    }
+
+    if (config.defaultSeverity && config.defaultSeverity !== 'warning') {
+      config.defaultSeverity = 'warning'
+      dirty = true
+    }
+
+    if (dirty) {
+      writeJSON(tsLintConfigPath, config)
+    }
+  } else {
+    writeJSON(tsLintConfigPath, {
+      extends: [builinTsLintConfigPath],
+    })
+  }
+}
+
 /**
  * @param cwd 当前工作目录
  * @param originalDirname cli项目根目录
@@ -244,7 +278,9 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
     cliVersion: version,
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
+
   initialTsConfig(appPath, originalDirname, ownPackageJson)
+  initialTsLintConfig(appPath, originalDirname, ownPackageJson)
 
   if (gitInitialed) {
     firstCommit()

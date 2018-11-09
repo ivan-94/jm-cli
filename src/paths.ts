@@ -22,13 +22,14 @@ const paths = {
   appPublic: resolveInApp('public'),
   appSrc: resolveInApp('src'),
   appTsConfig: resolveInApp('tsconfig.json'),
+  appTsLintConfig: resolveInApp('tslint.json'),
   appNodeModules: resolveInApp('node_modules'),
   appPackageJson: resolveInApp('package.json'),
 
   // own
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'),
-  ownPackageJson: resolveOwn('package.json')
+  ownPackageJson: resolveOwn('package.json'),
 }
 
 export type WebpackPaths = typeof paths

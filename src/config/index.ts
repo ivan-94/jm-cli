@@ -1,5 +1,6 @@
 /**
  * 基础配置
+ * TODO: ts-import 支持
  */
 import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
@@ -11,6 +12,7 @@ import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import diff from 'lodash/difference'
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
@@ -22,6 +24,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const pageExt = enviroments.raw.PAGE_EXT || '.html'
   const pageEntries = getEntries(context, pageExt, entry)
   const filePrefix = name ? `${name}_` : ''
+  const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
 
   if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
@@ -36,16 +39,21 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 
   const webpackConfig: Configuration = {
     name,
+    bail: envConfig.bail,
     context,
     mode: $('development', 'production'),
     devtool: envConfig.devtool,
     entry: entries,
     output: {
-      filename: `static/js/${filePrefix}[name].js${$('', '?[hash:8]')}`,
-      chunkFilename: `static/js/${filePrefix}[name].js${$('', '?[hash:8]')}`,
+      filename: `static/js/${filePrefix}[name].js${$('', '?[chunkhash:8]')}`,
+      chunkFilename: `static/js/${filePrefix}[name].js${$('', '?[chunkhash:8]')}`,
       path: paths.appDist,
-      pathinfo: true,
+      pathinfo: !isProduction,
       publicPath: enviroments.raw.PUBLIC_URL,
+      // Point sourcemap entries to original disk location (format as URL on Windows)
+      devtoolModuleFilenameTemplate: isProduction
+        ? info => path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
+        : info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
     },
     resolve: {
       modules: ['node_modules'],
@@ -57,7 +65,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       },
     },
     module: {
+      strictExportPresence: true,
       rules: [
+        { parser: { requireEnsure: false } },
         {
           oneOf: [
             // typescript
@@ -67,15 +77,23 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 require.resolve('cache-loader'),
                 {
                   loader: require.resolve('ts-loader'),
-                  options: $(
-                    {
-                      experimentalWatchApi: true,
+                  options: {
+                    // common options
+                    experimentalWatchApi: true,
+                    transpileOnly: true,
+                    happyPackMode: true,
+                    compilerOptions: {
+                      sourceMap: shouldUseSourceMap,
                     },
-                    {
-                      transpileOnly: true,
-                      experimentalWatchApi: true,
-                    },
-                  ),
+                    ...$(
+                      {
+                        // development options
+                      },
+                      {
+                        // production options
+                      },
+                    ),
+                  },
                 },
               ],
               exclude: /node_modules/,
@@ -122,7 +140,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
-              exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
+              exclude: [/\.(ts|tsx|js|jsx|mjs)$/, /\.html$/, /\.json$/],
               loader: require.resolve('file-loader'),
               options: {
                 name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
@@ -164,12 +182,31 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ...(envConfig.optimization || {}),
     },
     plugins: [
+      // typescript type checker
+      new ForkTsCheckerWebpackPlugin({
+        tsconfig: paths.appTsConfig,
+        tslint: paths.appTsLintConfig,
+        watch: paths.appSrc,
+        // 配合webpack-dev-server使用
+        async: false,
+        silent: true,
+        // 配合ts-loader的happyPackMode使用, 即由当前组件全权处理Typescript文件的检查(语法和语义(默认))
+        checkSyntacticErrors: true,
+        formatter: 'codeframe',
+      }),
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
       ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
       ...(envConfig.plugins || []),
     ],
+    node: {
+      dgram: 'empty',
+      fs: 'empty',
+      net: 'empty',
+      tls: 'empty',
+      child_process: 'empty',
+    },
     performance: envConfig.performance,
   }
 
@@ -245,11 +282,16 @@ function genTemplatePlugin(
       template: pagePath,
       minify: isProduction
         ? {
-            removeAttributeQuotes: true,
             removeComments: true,
             collapseWhitespace: true,
-            removeScriptTypeAttributes: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
             removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
           }
         : undefined,
     })

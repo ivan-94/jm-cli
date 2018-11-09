@@ -49,7 +49,7 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         VERSION: pkg.version,
         NAME: pkg.name,
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || '/' : '/',
-        PAGE_EXT: 'html',
+        PAGE_EXT: '.html',
       },
     )
 

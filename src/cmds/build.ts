@@ -1,7 +1,6 @@
 /**
  * build project
  */
-import path from 'path'
 import Table from 'cli-table2'
 import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'

@@ -4,10 +4,10 @@ import { transformString2Array } from './utils'
 import create from './cmds/create'
 import start from './cmds/start'
 import build from './cmds/build'
+import analyze from './cmds/analyze'
 
 const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
-const cmdName = process.argv
 
 const argv = yargs
   .command(
@@ -86,6 +86,23 @@ const argv = yargs
       build({ entry, group: argv.group })
     },
   )
-  .command('analyze', 'Analyze webpack bundle', {}, argv => {})
+  .command(
+    'analyze',
+    'Analyze webpack bundle',
+    {
+      entry: {
+        description: 'sepcify entry names to build. example: a,b',
+        alias: 'e',
+        type: 'string',
+        requiresArg: true,
+        coerce: transformString2Array,
+      },
+    },
+    argv => {
+      analyze({
+        entry: argv.entry,
+      })
+    },
+  )
   .command('deploy', 'TODO', {}, argv => {})
   .help().argv

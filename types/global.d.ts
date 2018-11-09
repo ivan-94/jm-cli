@@ -11,3 +11,10 @@ declare module 'webpack-format-messages' {
 }
 
 type StringArrayObject = { [key: string]: string[] }
+
+declare module 'webpack-bundle-analyzer' {
+  const value: {
+    start: (stat: any) => void
+  }
+  export default value
+}

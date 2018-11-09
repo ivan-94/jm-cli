@@ -1,4 +1,6 @@
 import { execSync } from 'child_process'
+import path from 'path'
+import { OutputFileSystem } from 'webpack'
 
 export function shouldUseYarn() {
   try {
@@ -15,4 +17,17 @@ export function shouldUseYarn() {
  */
 export function transformString2Array(str: string): string[] {
   return str.split(',')
+}
+
+/**
+ * null device
+ */
+const noop = (path: string, callback: (err: Error | undefined | null) => void) => callback(null)
+export const noopFileSystem: OutputFileSystem = {
+  join: (...paths: string[]) => path.join(...paths),
+  mkdir: noop,
+  mkdirp: noop,
+  rmdir: noop,
+  unlink: noop,
+  writeFile: (path: string, data: any, callback: (err: any) => void) => callback(null),
 }

@@ -103,8 +103,8 @@
     "no-for-in-array": true,
     // promise 必须被处理
     "no-floating-promises": true,
-    // 禁止导入不再dependencies中的模块
-    "no-implicit-dependencies": true,
+    // 禁止导入不在dependencies中的模块
+    "no-implicit-dependencies": [true, ["~"]],
     "no-invalid-template-strings": true,
     // 禁止在类之外使用this
     "no-invalid-this": true,
@@ -141,7 +141,6 @@
     "no-unsafe-any": true,
     "no-unsafe-finally": true,
     "no-unused-expression": [true, "allow-fast-null-checks", "allow-tagged-template"],
-    "no-unused-variable": true,
     "no-use-before-declare": true,
     // 禁止使用var
     "no-var-keyword": true,

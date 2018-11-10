@@ -59,9 +59,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       modules: ['node_modules'],
       extensions: ['.tsx', '.ts', '.js'],
       alias: {
-        // 可以直接使用@src访问相对于源代码目录的模块，优化查找效率
-        // 如 @src/components/Button
-        '@src': context,
+        // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
+        // 如 ~/components/Button
+        '~': context,
       },
     },
     module: {

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { log } from '@src/utils/common'
-import 'css/a.css'
+import { log } from '~/utils/common'
+import '~/css/a.css'
 
 export default class H extends React.Component<{}, {}> {
   public componentDidMount() {

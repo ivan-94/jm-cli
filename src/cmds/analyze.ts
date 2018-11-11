@@ -1,12 +1,11 @@
 /**
  * analyze webpack bundle
  */
-import path from 'path'
 import webpack from 'webpack'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
-import { noopFileSystem } from '../utils'
+import { noopFileSystem, inspect } from '../utils'
 import paths from '../paths'
 import { CommonOption } from './type'
 
@@ -33,7 +32,8 @@ function analyze(argv: AnalyzeOption) {
   const config = configure(environment, pkg, paths, { entry: argv.entry })
 
   if (argv.inspect) {
-    console.log(config)
+    inspect(environment.raw, 'Environment:')
+    inspect(config, 'Webpack Configuration:')
     return
   }
 

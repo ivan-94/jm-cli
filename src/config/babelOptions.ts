@@ -3,6 +3,10 @@
  */
 import { ImportPlugin } from './type'
 
+// see more options in https://babeljs.io/docs/en/options
+// Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
+// babel 的Typescript插件仅仅是移除了Typescript的语法.
+// babel 有强大的生态
 export default (isProduction: boolean, importPlugin?: ImportPlugin | ImportPlugin[]) => {
   return {
     babelrc: false,

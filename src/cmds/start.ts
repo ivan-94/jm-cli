@@ -8,7 +8,7 @@ import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
 import chalk from 'chalk'
 import opener from 'opener'
-import { prepareUrls } from '../utils'
+import { prepareUrls, inspect } from '../utils'
 import paths from '../paths'
 import { CommonOption } from './type'
 
@@ -111,7 +111,8 @@ export default async function(argv: StartOption) {
   const config = require('../config').default(environment, pkg, paths, { entry: argv.entry })
 
   if (argv.inspect) {
-    console.log(config)
+    inspect(environment.raw, 'Environment:')
+    inspect(config, 'Webpack Configuration:')
     return
   }
 

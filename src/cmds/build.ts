@@ -4,9 +4,10 @@
 import Table from 'cli-table2'
 import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
-import paths from '../paths'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
+import { inspect } from '../utils'
+import paths from '../paths'
 import { CommonOption } from './type'
 
 export interface BuildOption extends CommonOption {
@@ -57,7 +58,8 @@ function build(argv: BuildOption) {
   }
 
   if (argv.inspect) {
-    console.log(config)
+    inspect(environment.raw, 'Environment:')
+    inspect(config, 'Webpack Configuration:')
     return
   }
 

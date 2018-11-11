@@ -25,3 +25,7 @@ declare module 'address' {
   }
   export default value
 }
+
+declare module 'dumper.js' {
+  export function dump(value: any): void
+}

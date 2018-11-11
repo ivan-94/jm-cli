@@ -89,6 +89,7 @@
     "detect-port": "^1.2.3",
     "dotenv": "^6.1.0",
     "dotenv-expand": "^4.2.0",
+    "dumper.js": "^1.2.0",
     "file-loader": "^1.1.11",
     "fork-ts-checker-webpack-plugin": "^0.4.15",
     "fs-extra": "^7.0.0",

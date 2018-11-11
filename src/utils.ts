@@ -1,4 +1,5 @@
 import url from 'url'
+import { dump } from 'dumper.js'
 import os from 'os'
 import fs from 'fs-extra'
 import address from 'address'
@@ -90,4 +91,11 @@ export function prepareUrls(protocol: string, host: string, port: number) {
     localUrlForTerminal,
     localUrlForBrowser,
   }
+}
+
+export function inspect(variable: any, title?: string) {
+  if (title) {
+    console.log(chalk.bgBlue(title))
+  }
+  dump(variable)
 }

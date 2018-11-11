@@ -94,9 +94,9 @@ function ensureTemplatePath(ownPath: string, cwd: string, templateName?: string)
       writeJSON('package.json', { name: 'temp', version: '0.1.0' })
     }
 
-    console.log(`Downloading template from ${chalk.cyan(templateName)}... to ${tempDir}`)
+    console.log(`Downloading template from ${chalk.cyan(templateName)}...`)
     const argv = ['install', templateName, '--save-bundle']
-    execSync(`npm ${argv.join(' ')}`, { stdio: 'ignore' })
+    execSync(`npm ${argv.join(' ')}`, { stdio: ['ignore', 'ignore', 'inherit'] })
 
     const pkg = fs.readJSONSync('package.json')
     let pkgName = pkg.bundleDependencies && pkg.bundleDependencies[0]
@@ -222,9 +222,9 @@ function initialPackageJson(
   }
 
   console.log(chalk.cyan(`Installing dependencies...`))
-  execSync(dependenciesInstallCommand, { stdio: 'inherit' })
+  execSync(dependenciesInstallCommand, { stdio: ['ignore', 'ignore', 'inherit'] })
   console.log(chalk.cyan(`Installing devdependencies...`))
-  execSync(devDependenciesInstallCommand, { stdio: 'inherit' })
+  execSync(devDependenciesInstallCommand, { stdio: ['ignore', 'ignore', 'inherit'] })
 }
 
 function tryInitialGit(appPath: string) {
@@ -317,6 +317,21 @@ function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: s
 }
 
 /**
+ * welcome infomation
+ */
+function welcome(args: { name: string; appPath: string }) {
+  const cmd = useYarn ? 'yarn' : 'npm'
+  console.log(`
+✨ Success! Created ${chalk.blue(args.name)} at ${chalk.cyan(args.appPath)}
+Inside that directory, you can run several commands:\n
+  ${chalk.green(`${cmd} start`)}  ${chalk.gray(`# Starts the development server.`)}
+  ${chalk.green(`${cmd} build`)}  ${chalk.gray(`# Bundles the app into static files for production.`)}
+
+Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
+  `)
+}
+
+/**
  * @param cwd 当前工作目录
  * @param originalDirname cli项目根目录
  * @param argv 命令参数
@@ -324,8 +339,7 @@ function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: s
 export default (cwd: string, originalDirname: string, argv: CreateOption) => {
   const { name, version, template } = argv
   validatePackageName(name)
-  const templatePath = ensureTemplatePath(originalDirname, cwd, argv.template)
-  console.log(templatePath)
+  const templatePath = ensureTemplatePath(originalDirname, cwd, template)
   if (!fs.existsSync(templatePath)) {
     console.error(`Template path ${templatePath} not existed.`)
     process.exit(1)
@@ -358,5 +372,8 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
     firstCommit()
   }
 
-  // TODO: 显示欢迎信息
+  welcome({
+    name,
+    appPath,
+  })
 }

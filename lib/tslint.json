@@ -155,7 +155,6 @@
     "switch-default": true,
     // 优先使用===进行比较
     "triple-equals": [true, "allow-null-check", "allow-undefined-check"],
-    "typeof-compare": true,
     "use-isnan": true,
     /*-----------------------
      *  可维护性 相关

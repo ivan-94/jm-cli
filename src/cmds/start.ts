@@ -2,6 +2,7 @@
  * Start development server
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
+import detectPort from 'detect-port'
 import { Configuration as WebpackConfiguration, Compiler } from 'webpack'
 import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
@@ -87,11 +88,22 @@ function createCompiler(config: WebpackConfiguration): Compiler {
   return compiler!
 }
 
+async function choosePort(defaultPort: number) {
+  const port = await detectPort(defaultPort)
+  if (port !== defaultPort) {
+    console.log(
+      chalk.yellow(`⚠️  Default Port(${chalk.red(':' + defaultPort)}) was occupied, trying ${chalk.green(':' + port)}`),
+    )
+  }
+  return port
+}
+
 export default async function(argv: StartOption) {
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   // TODO: 选择端口
-  const port = parseInt(process.env.PORT as string, 10) || 8080
+  console.log(chalk.cyan('Starting the development server...\n'))
+  const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
   const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
   const host = '0.0.0.0'
   const environment = require('../env').default()
@@ -112,7 +124,6 @@ export default async function(argv: StartOption) {
       return console.log(err)
     }
 
-    console.log(chalk.cyan('Starting the development server...\n'))
     const urls = prepareUrls(protocol, host, port)
     console.log(`Development server deployed at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
     opener(urls.localUrlForBrowser)

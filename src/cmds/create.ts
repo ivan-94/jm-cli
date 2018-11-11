@@ -5,9 +5,10 @@ import path from 'path'
 import chalk from 'chalk'
 import fs from 'fs-extra'
 import json5 from 'json5'
+import os from 'os'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
-import { execSync } from 'child_process'
+import { execSync, exec } from 'child_process'
 import { shouldUseYarn, writeJSON } from '../utils'
 
 export interface CreateOption {
@@ -57,6 +58,68 @@ function ensureAppPath(appPath: string) {
     process.exit(1)
   }
   fs.ensureDirSync(appPath)
+}
+
+function getInstallPackage(templateName: string, cwd: string) {
+  if (templateName && templateName.match(/^file:/)) {
+    return `file:${path.resolve(cwd, templateName.match(/^file:(.*)?$/)![1])}`
+  }
+  return templateName
+}
+
+function ensureTemplatePath(ownPath: string, cwd: string, templateName?: string): string {
+  if (templateName == null) {
+    // default template
+    return path.join(ownPath, 'template')
+  }
+
+  // install template from npm
+  templateName = getInstallPackage(templateName, cwd)
+  const tempDir = path.join(os.tmpdir(), '.jm')
+  const tempPackageJson = path.join(tempDir, 'package.json')
+  const tempPackageJsonExisted = fs.existsSync(tempPackageJson)
+
+  // 已存在, 不需要重复下载
+  if (tempPackageJsonExisted) {
+    const pkg = fs.readJsonSync(tempPackageJson)
+    if (pkg.templates && templateName in pkg.templates) {
+      return pkg.templates[templateName]
+    }
+  }
+
+  process.chdir(tempDir)
+
+  try {
+    if (!tempPackageJsonExisted) {
+      writeJSON('package.json', { name: 'temp', version: '0.1.0' })
+    }
+
+    console.log(`Downloading template from ${chalk.cyan(templateName)}... to ${tempDir}`)
+    const argv = ['install', templateName, '--save-bundle']
+    execSync(`npm ${argv.join(' ')}`, { stdio: 'ignore' })
+
+    const pkg = fs.readJSONSync('package.json')
+    let pkgName = pkg.bundleDependencies && pkg.bundleDependencies[0]
+    if (pkgName == null) {
+      throw new Error(`cannot read package name from ${chalk.cyan(templateName)}.`)
+    }
+    const modulePath = path.join(tempDir, 'node_modules', pkgName)
+    // save download records
+    pkg.templates = {
+      ...(pkg.templates || {}),
+      [templateName]: modulePath,
+    }
+    delete pkg.bundleDependencies
+    writeJSON('package.json', pkg)
+
+    return modulePath
+  } catch (err) {
+    console.log(chalk.red(`❌  Failed to download template from ${chalk.cyan(templateName)}:`))
+    console.log(err.message)
+    process.exit(1)
+    // suppress Typescript type check
+    return ''
+  }
 }
 
 function transformDependencies(org: { [key: string]: string }): string[] {
@@ -113,7 +176,16 @@ function initialPackageJson(
     }
   }
 
-  fs.copySync(templatePath, appPath, { overwrite: false, errorOnExist: false })
+  const exclude = [/^node_modules/, /^dist/]
+  fs.copySync(templatePath, appPath, {
+    overwrite: false,
+    errorOnExist: false,
+    dereference: true,
+    filter: src => {
+      const relativePath = path.relative(templatePath, src)
+      return !exclude.some(reg => relativePath.search(reg) !== -1)
+    },
+  })
   copyPrettierConfig(appPath, ownPath, pacakgeJson)
   writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
 
@@ -252,22 +324,22 @@ function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: s
 export default (cwd: string, originalDirname: string, argv: CreateOption) => {
   const { name, version, template } = argv
   validatePackageName(name)
+  const templatePath = ensureTemplatePath(originalDirname, cwd, argv.template)
+  console.log(templatePath)
+  if (!fs.existsSync(templatePath)) {
+    console.error(`Template path ${templatePath} not existed.`)
+    process.exit(1)
+  }
   const appPath = path.join(cwd, name)
   ensureAppPath(appPath)
-  console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
   process.chdir(appPath)
+
+  console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
 
   // initialized git before install packages, because some package like `husky` depend on Git enviroment
   let gitInitialed = tryInitialGit(appPath)
   if (gitInitialed) {
     console.log('Initialized a git repository.')
-  }
-
-  // TODO: 支持自定义template
-  const templatePath = path.join(originalDirname, 'template')
-  if (!fs.existsSync(templatePath)) {
-    console.error(`Template path ${templatePath} not existed.`)
-    process.exit(1)
   }
 
   // create package.json

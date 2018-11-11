@@ -24,6 +24,7 @@ const dotenvsFiles = [`${paths.appDotenv}`, `${paths.appDotenv}.${NODE_ENV}`, `$
 
 dotenvsFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {
+    // 支持使用${}引用已定义的变量
     require('dotenv-expand')(
       dotenv.config({
         path: dotenvFile,

@@ -77,7 +77,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               include: paths.appSrc,
               use: {
                 loader: require.resolve('babel-loader'),
-                options: { ...babelOptions(isProduction, pkg.importPlugin), forceEnv: enviroments.raw.NODE_ENV },
+                options: { ...babelOptions(isProduction, pkg.importPlugin), envName: enviroments.raw.NODE_ENV },
               },
             },
             // pug loader

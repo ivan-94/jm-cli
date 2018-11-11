@@ -33,7 +33,18 @@ dotenvsFiles.forEach(dotenvFile => {
 })
 
 const ENV_FILTER = /^JM_/i
-const BUILIN_ENVS = ['VERSION', 'SOURCE_MAP', 'PORT', 'HTTPS', 'NAME', 'PUBLIC_URL', 'PAGE_EXT']
+const BUILIN_ENVS = [
+  // common
+  'VERSION',
+  'SOURCE_MAP',
+  'NAME',
+  'PUBLIC_URL',
+  'PAGE_EXT',
+  // development
+  'PORT',
+  'HTTPS',
+  'EVAL', // devtool eval
+]
 
 export default function getClientEnvironment(publicUrl?: string): WebpackEnviroment {
   const pkg = require(paths.appPackageJson)

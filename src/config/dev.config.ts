@@ -8,7 +8,12 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => ({
   entry: {
     main: [require.resolve('webpack-dev-server/client') + '?/', require.resolve('webpack/hot/dev-server')],
   },
-  devtool: enviroments.raw.SOURCE_MAP === 'false' ? false : 'cheap-module-source-map',
+  devtool:
+    enviroments.raw.SOURCE_MAP === 'false'
+      ? false
+      : enviroments.raw.EVAL === 'true'
+      ? 'cheap-module-eval-source-map'
+      : 'cheap-module-source-map',
   module: {
     rules: [
       {

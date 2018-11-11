@@ -4,10 +4,14 @@ import { WebpackPaths } from '../paths'
 
 export type WebpackConfigurer = (
   env: WebpackEnviroment,
-  pkg: object,
+  pkg: { [key: string]: any },
   paths: WebpackPaths,
   argv: {
     name?: string
     entry?: string[]
   },
 ) => Configuration
+
+export interface ImportPlugin {
+  libraryName: string
+}

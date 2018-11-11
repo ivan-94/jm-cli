@@ -9,6 +9,7 @@ import os from 'os'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
 import { execSync, exec } from 'child_process'
+import omit from 'lodash/omit'
 import { shouldUseYarn, writeJSON } from '../utils'
 
 export interface CreateOption {
@@ -138,7 +139,7 @@ function initialPackageJson(
   },
 ) {
   const { name, binName, cliName, cliVersion } = argv
-  let pacakgeJson = {
+  const reservedProperties = {
     name,
     version: '0.1.0',
     private: true,
@@ -155,6 +156,16 @@ function initialPackageJson(
       },
     },
   }
+  const optionalProperties = {
+    // proxy config, can use template variable in .env.*
+    proxy: {},
+    // for antd, antd-mobile
+    importPlugin: [],
+  }
+  let pacakgeJson = {
+    ...reservedProperties,
+    ...optionalProperties,
+  }
 
   const templatePackageJson = path.join(templatePath, 'package.json')
 
@@ -170,13 +181,15 @@ function initialPackageJson(
       pacakgeJson.devDependencies = { ...pacakgeJson.devDependencies, ...pkg.devDependencies }
     }
 
-    // TODO: 其他配置
     if (pkg.scripts) {
       pacakgeJson.scripts = { ...pacakgeJson.scripts, ...pkg.scripts }
     }
+
+    // 其他配置
+    pacakgeJson = { ...pacakgeJson, ...omit(pkg, Object.keys(reservedProperties)) }
   }
 
-  const exclude = [/^node_modules/, /^dist/]
+  const exclude = [/^node_modules/, /^dist/, /yarn\.lock/]
   fs.copySync(templatePath, appPath, {
     overwrite: false,
     errorOnExist: false,

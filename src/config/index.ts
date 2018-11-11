@@ -1,6 +1,5 @@
 /**
  * 基础配置
- * TODO: ts-import 支持
  */
 import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
@@ -11,6 +10,8 @@ import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import diff from 'lodash/difference'
+import babelOptions from './babelOptions'
+
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
@@ -72,31 +73,12 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           oneOf: [
             // typescript
             {
-              test: /\.tsx?$/,
-              use: [
-                require.resolve('cache-loader'),
-                {
-                  loader: require.resolve('ts-loader'),
-                  options: {
-                    // common options
-                    experimentalWatchApi: true,
-                    transpileOnly: true,
-                    happyPackMode: true,
-                    compilerOptions: {
-                      sourceMap: shouldUseSourceMap,
-                    },
-                    ...$(
-                      {
-                        // development options
-                      },
-                      {
-                        // production options
-                      },
-                    ),
-                  },
-                },
-              ],
-              exclude: /node_modules/,
+              test: /\.(ts|tsx)$/,
+              include: paths.appSrc,
+              use: {
+                loader: require.resolve('babel-loader'),
+                options: { ...babelOptions(isProduction, pkg.importPlugin), forceEnv: enviroments.raw.NODE_ENV },
+              },
             },
             // pug loader
             {

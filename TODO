@@ -3,8 +3,8 @@
 [*] 动态加载template
 [ ] 动态加载template, 避免下载依赖
 [*] 清屏
-[ ] webpack 进一步优化
 [*] react-hot-loader
+[ ] webpack 进一步优化, css
 [*] create 欢迎信息
 [ ] 默认template优化
 [ ] User Guide
@@ -22,3 +22,5 @@
 [ ] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https
 [ ] package.json vscode schema
 [*] tslint 可配，禁用时警告
+[ ] 如何迁移现有项目
+[ ] 生产环境devkit。如摇动打开控制台

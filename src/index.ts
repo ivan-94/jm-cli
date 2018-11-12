@@ -1,10 +1,13 @@
 import yargs from 'yargs'
 import path from 'path'
 import { transformString2Array } from './utils'
-import create from './cmds/create'
-import start, { StartOption } from './cmds/start'
-import build, { BuildOption } from './cmds/build'
-import analyze, { AnalyzeOption } from './cmds/analyze'
+import { StartOption } from './cmds/start'
+import { BuildOption } from './cmds/build'
+import { AnalyzeOption } from './cmds/analyze'
+
+process.on('uncaughtException', err => {
+  throw err
+})
 
 const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
@@ -19,7 +22,7 @@ yargs
       template: { description: 'template name in npm, file:// or url', alias: 't', type: 'string', requiresArg: true },
     },
     argv => {
-      create(cwd, cmdDir, {
+      require('./cmds/create').default(cwd, cmdDir, {
         name: argv.name,
         version: argv.at,
         template: argv.template,
@@ -39,7 +42,7 @@ yargs
       },
     },
     argv => {
-      start(argv as StartOption)
+      require('./cmds/start').default(argv as StartOption)
     },
   )
   .command(
@@ -83,7 +86,7 @@ yargs
         group = undefined
       }
 
-      build({ entry, group, ...other } as BuildOption)
+      require('./cmds/build').default({ entry, group, ...other } as BuildOption)
     },
   )
   .command(
@@ -99,8 +102,29 @@ yargs
       },
     },
     argv => {
-      analyze(argv as AnalyzeOption)
+      require('./cmds/analyze').default(argv as AnalyzeOption)
     },
+  )
+  .command(
+    'serve',
+    'serve builded content',
+    {
+      gzip: {
+        description: 'enable gzip',
+        alias: 'e',
+        type: 'boolean',
+      },
+      cors: {
+        description: 'enable CORS via the `Access-Control-Allow-Origin` header',
+        type: 'boolean',
+      },
+      open: {
+        description: 'open browser window after starting the server',
+        alias: 'o',
+        type: 'boolean',
+      },
+    },
+    argv => {},
   )
   .command('deploy', 'TODO', {}, argv => {})
   .option('inspect', {

@@ -2,13 +2,12 @@
  * Start development server
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
-import detectPort from 'detect-port'
 import { Configuration as WebpackConfiguration, Compiler } from 'webpack'
 import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
 import chalk from 'chalk'
 import opener from 'opener'
-import { prepareUrls, inspect, clearConsole } from '../utils'
+import { prepareUrls, inspect, clearConsole, choosePort } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import paths from '../paths'
 import { CommonOption } from './type'
@@ -16,10 +15,6 @@ import { CommonOption } from './type'
 export interface StartOption extends CommonOption {
   entry?: string[]
 }
-
-process.on('unhandledRejection', err => {
-  throw err
-})
 
 const mode = 'development'
 process.env.NODE_ENV = mode
@@ -100,16 +95,6 @@ function createCompiler(config: WebpackConfiguration): Compiler {
   })
 
   return compiler!
-}
-
-async function choosePort(defaultPort: number) {
-  const port = await detectPort(defaultPort)
-  if (port !== defaultPort) {
-    console.log(
-      chalk.yellow(`⚠️  Default Port(${chalk.red(':' + defaultPort)}) was occupied, trying ${chalk.green(':' + port)}`),
-    )
-  }
-  return port
 }
 
 export default async function(argv: StartOption) {

@@ -28,10 +28,6 @@ const builinDevDependencies = [
   '@types/react-hot-loader',
 ]
 
-process.on('uncaughtException', err => {
-  throw err
-})
-
 /**
  * 检查是否是合法的npm包名
  * @param name

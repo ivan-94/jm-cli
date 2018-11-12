@@ -4,6 +4,7 @@ import os from 'os'
 import fs from 'fs-extra'
 import address from 'address'
 import chalk from 'chalk'
+import detectPort from 'detect-port'
 import { execSync } from 'child_process'
 import path from 'path'
 import { OutputFileSystem } from 'webpack'
@@ -15,6 +16,16 @@ export function shouldUseYarn() {
   } catch {
     return false
   }
+}
+
+export async function choosePort(defaultPort: number) {
+  const port = await detectPort(defaultPort)
+  if (port !== defaultPort) {
+    console.log(
+      chalk.yellow(`⚠️  Default Port(${chalk.red(':' + defaultPort)}) was occupied, trying ${chalk.green(':' + port)}`),
+    )
+  }
+  return port
 }
 
 /**
@@ -114,6 +125,10 @@ export function inspect(variable: any, title?: string) {
  * interpolate ${variable} in string
  */
 export function interpolate(str: string, local: { [key: string]: string }) {
+  if (str == null) {
+    return ''
+  }
+
   const matches = str.match(/\$([a-zA-Z0-9_]+)|\${([a-zA-Z0-9_]+)}/g) || []
 
   matches.forEach(function(match) {

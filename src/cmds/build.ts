@@ -21,10 +21,6 @@ process.env.NODE_ENV = mode
 // initial env
 require('../env')
 
-process.on('uncaughtException', err => {
-  throw err
-})
-
 function build(argv: BuildOption) {
   clearConsole()
   console.log(chalk.cyan('Creating an optimized production build...'))

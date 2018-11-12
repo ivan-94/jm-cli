@@ -19,10 +19,6 @@ process.env.NODE_ENV = mode
 // initial env
 require('../env')
 
-process.on('uncaughtException', err => {
-  throw err
-})
-
 function analyze(argv: AnalyzeOption) {
   clearConsole()
   console.log(chalk.cyan('Extracting webpack stats...'))

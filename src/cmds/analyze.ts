@@ -5,7 +5,7 @@ import webpack from 'webpack'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
-import { noopFileSystem, inspect } from '../utils'
+import { noopFileSystem, inspect, clearConsole } from '../utils'
 import paths from '../paths'
 import { CommonOption } from './type'
 
@@ -24,6 +24,7 @@ process.on('uncaughtException', err => {
 })
 
 function analyze(argv: AnalyzeOption) {
+  clearConsole()
   console.log(chalk.cyan('Extracting webpack stats...'))
 
   const environment = require('../env').default()

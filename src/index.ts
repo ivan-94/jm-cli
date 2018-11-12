@@ -9,7 +9,7 @@ import analyze, { AnalyzeOption } from './cmds/analyze'
 const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
 
-const argv = yargs
+yargs
   .command(
     'create [name]',
     'Create React project',

@@ -1,7 +1,6 @@
 /**
  * 生产环境配置
  */
-import path from 'path'
 import { WebpackConfigurer } from './type'
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')

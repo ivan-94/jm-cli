@@ -8,9 +8,10 @@ import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
 import chalk from 'chalk'
 import opener from 'opener'
-import { prepareUrls, inspect, interpolate } from '../utils'
+import { prepareUrls, inspect, clearConsole } from '../utils'
+import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import paths from '../paths'
-import { CommonOption, ProxyContext, ProxyConfig, ProxyOriginConfig, ProxyMap } from './type'
+import { CommonOption } from './type'
 
 export interface StartOption extends CommonOption {
   entry?: string[]
@@ -25,47 +26,6 @@ process.env.NODE_ENV = mode
 
 // initial enviroments variables
 require('../env')
-
-/**
- * shorthand like proxy: 'http://www.example.org:8000/api'); => proxy('/api', {target: 'http://www.example.org:8000'});
- * object like proxy: {"/context": {target: 'http://www.example.com'}} or {"/context": {target: 'http://www.example.com'}
- * array like: [{context: string, target: string}]
- * @param proxy
- */
-function interpolateProxy(proxy: ProxyConfig, local: { [key: string]: string }): ProxyConfig {
-  if (typeof proxy === 'string') {
-    return interpolate(proxy, local)
-  } else if (Array.isArray(proxy)) {
-    return proxy.map(i => interpolateProxy(i, local)) as ProxyConfig
-  } else if (typeof proxy === 'object' && 'context' in proxy) {
-    proxy = proxy as ProxyOriginConfig
-    const context = proxy.context
-    return {
-      ...proxy,
-      context: Array.isArray(context)
-        ? context.map(i => interpolate(i, local))
-        : typeof context === 'string'
-        ? interpolate(context, local)
-        : context,
-      target: interpolate(proxy.target as string, local),
-    }
-  } else if (typeof proxy === 'object') {
-    const res: ProxyConfig = {}
-    Object.keys(proxy).forEach(context => {
-      const value = (proxy as ProxyMap)[context]
-      res[interpolate(context, local)] =
-        typeof value === 'string'
-          ? interpolate(value, local)
-          : {
-              ...value,
-              target: interpolate(value.target, local),
-            }
-    })
-    return res
-  }
-
-  return proxy
-}
 
 /**
  * get webpack-dev-server options
@@ -118,6 +78,7 @@ function createCompiler(config: WebpackConfiguration): Compiler {
   }
 
   compiler!.hooks.invalid.tap('invalid', () => {
+    clearConsole()
     console.log(chalk.cyan('Compiling...'))
   })
 
@@ -152,6 +113,8 @@ async function choosePort(defaultPort: number) {
 }
 
 export default async function(argv: StartOption) {
+  clearConsole()
+  console.log(chalk.cyan('Starting the development server...\n'))
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   const environment = require('../env').default()
@@ -169,7 +132,6 @@ export default async function(argv: StartOption) {
   const compiler = createCompiler(config)
   const devServer = new webpackDevServer(compiler, devServerConfig)
 
-  console.log(chalk.cyan('Starting the development server...\n'))
   const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
   const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
   const host = '0.0.0.0'
@@ -180,7 +142,22 @@ export default async function(argv: StartOption) {
     }
 
     const urls = prepareUrls(protocol, host, port)
-    console.log(`Development server deployed at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    console.log(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    console.log(`Webpack output is served from ${chalk.cyan('/')}`)
+    const contentBase = devServerConfig.contentBase
+    const folders =
+      typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
+    if (folders) {
+      console.log(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)
+    }
+
+    if (devServerConfig.proxy) {
+      const proxyInfo = proxyInfomation(devServerConfig.proxy as ProxyConfig)
+      if (proxyInfo) {
+        console.log(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
+      }
+    }
+
     opener(urls.localUrlForBrowser)
   })
   ;['SIGINT', 'SIGTERM'].forEach(sig => {

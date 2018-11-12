@@ -8,9 +8,9 @@ import json5 from 'json5'
 import os from 'os'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
-import { execSync, exec } from 'child_process'
+import { execSync } from 'child_process'
 import omit from 'lodash/omit'
-import { shouldUseYarn, writeJSON } from '../utils'
+import { shouldUseYarn, writeJSON, clearConsole } from '../utils'
 
 export interface CreateOption {
   name: string
@@ -334,6 +334,7 @@ function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: s
  */
 function welcome(args: { name: string; appPath: string }) {
   const cmd = useYarn ? 'yarn' : 'npm'
+  clearConsole()
   console.log(`
 ✨ Success! Created ${chalk.blue(args.name)} at ${chalk.cyan(args.appPath)}
 Inside that directory, you can run several commands:\n
@@ -350,6 +351,9 @@ Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
  * @param argv 命令参数
  */
 export default (cwd: string, originalDirname: string, argv: CreateOption) => {
+  clearConsole()
+  console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
+
   const { name, version, template } = argv
   validatePackageName(name)
   const templatePath = ensureTemplatePath(originalDirname, cwd, template)
@@ -360,8 +364,6 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
   const appPath = path.join(cwd, name)
   ensureAppPath(appPath)
   process.chdir(appPath)
-
-  console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
 
   // initialized git before install packages, because some package like `husky` depend on Git enviroment
   let gitInitialed = tryInitialGit(appPath)

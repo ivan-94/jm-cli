@@ -6,7 +6,7 @@ import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
-import { inspect } from '../utils'
+import { inspect, clearConsole } from '../utils'
 import paths from '../paths'
 import { CommonOption } from './type'
 
@@ -26,6 +26,7 @@ process.on('uncaughtException', err => {
 })
 
 function build(argv: BuildOption) {
+  clearConsole()
   console.log(chalk.cyan('Creating an optimized production build...'))
 
   const environment = require('../env').default()

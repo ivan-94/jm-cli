@@ -7,7 +7,10 @@ import { ImportPlugin } from './type'
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
 // babel 的Typescript插件仅仅是移除了Typescript的语法.
 // babel 有强大的生态
-export default (isProduction: boolean, importPlugin?: ImportPlugin | ImportPlugin[]) => {
+export default (env: string, importPlugin?: ImportPlugin | ImportPlugin[]) => {
+  const isDevelopment = env === 'development'
+  const isProduction = env === 'production'
+
   return {
     babelrc: false,
     configFile: false,
@@ -60,6 +63,7 @@ export default (isProduction: boolean, importPlugin?: ImportPlugin | ImportPlugi
         },
       ],
       require.resolve('@babel/plugin-syntax-dynamic-import'),
+      isDevelopment && require.resolve('react-hot-loader/babel'),
       isProduction && [
         // Remove PropTypes from production build
         require.resolve('babel-plugin-transform-react-remove-prop-types'),

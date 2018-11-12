@@ -4,7 +4,7 @@
 [ ] 动态加载template, 避免下载依赖
 [*] 清屏
 [ ] webpack 进一步优化
-[ ] react-hot-loader
+[*] react-hot-loader
 [*] create 欢迎信息
 [ ] 默认template优化
 [ ] User Guide

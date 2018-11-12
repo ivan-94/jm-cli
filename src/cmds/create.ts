@@ -24,6 +24,8 @@ const builinDevDependencies = [
   'prettier',
   'pretty-quick',
   'husky',
+  '@types/webpack-env',
+  '@types/react-hot-loader',
 ]
 
 process.on('uncaughtException', err => {

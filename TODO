@@ -25,4 +25,4 @@
 [ ] 如何迁移现有项目
 [ ] 生产环境devkit。如摇动打开控制台
 [ ] 加载动画 ora.
-[ ] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
+[*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型

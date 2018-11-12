@@ -11,6 +11,7 @@ declare module 'webpack-format-messages' {
 }
 
 type StringArrayObject = { [key: string]: string[] }
+type StringObject = { [key: string]: string }
 
 declare module 'webpack-bundle-analyzer' {
   const value: {
@@ -32,4 +33,8 @@ declare module 'dumper.js' {
 
 declare module 'webpack-dev-server/lib/utils/createCertificate' {
   export default function(attr: Array<{ name: string; value: string }>): { private: string; cert: string }
+}
+
+declare module 'html-webpack-plugin' {
+  export default any
 }

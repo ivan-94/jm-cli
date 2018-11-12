@@ -11,6 +11,7 @@ import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import diff from 'lodash/difference'
 import babelOptions from './babelOptions'
+import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
@@ -183,6 +184,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
       ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
+      new InjectEnvPlugin(enviroments.userDefine, 'JM_ENV'),
       ...(envConfig.plugins || []),
     ],
     node: {

@@ -7,7 +7,8 @@ import chalk from 'chalk'
 import dotenv from 'dotenv'
 
 export interface WebpackEnviroment {
-  raw: { [key: string]: string }
+  raw: StringObject
+  userDefine: StringObject
   stringified: { [key: string]: object }
 }
 
@@ -52,7 +53,7 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
   const pkg = require(paths.appPackageJson)
   const raw = Object.keys(process.env)
     .filter(key => ENV_FILTER.test(key) || BUILIN_ENVS.indexOf(key) !== -1)
-    .reduce<{ [key: string]: string }>(
+    .reduce<StringObject>(
       (env, key) => {
         env[key] = process.env[key] as string
         return env
@@ -69,13 +70,21 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
 
   // for DefinePlugin
   const stringified = {
-    'process.env': Object.keys(raw).reduce<{ [key: string]: string }>((env, key) => {
+    'process.env': Object.keys(raw).reduce<StringObject>((env, key) => {
       env[key] = JSON.stringify(raw[key])
       return env
     }, {}),
   }
 
+  const userDefine = Object.keys(raw)
+    .filter(key => ENV_FILTER.test(key))
+    .reduce<StringObject>((prev, cur) => {
+      prev[cur] = raw[cur]
+      return prev
+    }, {})
+
   return {
+    userDefine,
     raw,
     stringified,
   }

@@ -3,3 +3,4 @@ dist
 jm-deploy.json
 yarn-error.log
 .DS_Store
+ssl/server.pem

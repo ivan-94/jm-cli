@@ -29,3 +29,7 @@ declare module 'address' {
 declare module 'dumper.js' {
   export function dump(value: any): void
 }
+
+declare module 'webpack-dev-server/lib/utils/createCertificate' {
+  export default function(attr: Array<{ name: string; value: string }>): { private: string; cert: string }
+}

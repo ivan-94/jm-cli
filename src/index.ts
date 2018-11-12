@@ -4,6 +4,7 @@ import { transformString2Array } from './utils'
 import { StartOption } from './cmds/start'
 import { BuildOption } from './cmds/build'
 import { AnalyzeOption } from './cmds/analyze'
+import { ServeOption } from './cmds/serve'
 
 process.on('uncaughtException', err => {
   throw err
@@ -111,8 +112,9 @@ yargs
     {
       gzip: {
         description: 'enable gzip',
-        alias: 'e',
+        alias: 'g',
         type: 'boolean',
+        default: true,
       },
       cors: {
         description: 'enable CORS via the `Access-Control-Allow-Origin` header',
@@ -123,8 +125,16 @@ yargs
         alias: 'o',
         type: 'boolean',
       },
+      f: {
+        description: 'fall back to /index.html if nothing else matches',
+        alias: 'history-api-fallback',
+        type: 'boolean',
+        default: true,
+      },
     },
-    argv => {},
+    argv => {
+      require('./cmds/serve').default(argv as ServeOption)
+    },
   )
   .command('deploy', 'TODO', {}, argv => {})
   .option('inspect', {

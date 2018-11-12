@@ -146,6 +146,8 @@ function initialPackageJson(
     scripts: {
       start: `${binName} start`,
       build: `${binName} build`,
+      serve: `${binName} serve`,
+      analyze: `${binName} analyze`,
     },
     // prettier format
     husky: {
@@ -338,6 +340,8 @@ function welcome(args: { name: string; appPath: string }) {
 Inside that directory, you can run several commands:\n
   ${chalk.green(`${cmd} start`)}  ${chalk.gray(`# Starts the development server.`)}
   ${chalk.green(`${cmd} build`)}  ${chalk.gray(`# Bundles the app into static files for production.`)}
+  ${chalk.green(`${cmd} serve`)}  ${chalk.gray(`# Serve production bundle in 'dist'`)}
+  ${chalk.green(`${cmd} analyze`)}  ${chalk.gray(`# Analyze webpack bundle for production`)}
 
 Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
   `)

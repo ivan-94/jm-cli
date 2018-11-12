@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -30,7 +30,8 @@
     "dist",
     "template",
     "types",
-    "lib"
+    "lib",
+    "ssl"
   ],
   "scripts": {
     "build": "tsc",
@@ -86,6 +87,7 @@
     "cache-loader": "^1.2.5",
     "chalk": "^2.4.1",
     "cli-table2": "^0.2.0",
+    "cors": "^2.8.5",
     "css-loader": "^0.28.11",
     "detect-port": "^1.2.3",
     "dotenv": "^6.1.0",

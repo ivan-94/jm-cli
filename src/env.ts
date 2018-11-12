@@ -41,6 +41,7 @@ const BUILIN_ENVS = [
   'NAME',
   'PUBLIC_URL',
   'PAGE_EXT',
+  'UNSAFE_DISABLE_TSLINT',
   // development
   'PORT',
   'HTTPS',

@@ -25,7 +25,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const pageExt = enviroments.raw.PAGE_EXT || '.html'
   const pageEntries = getEntries(context, pageExt, entry)
   const filePrefix = name ? `${name}_` : ''
-  const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
+  // const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
 
   if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
@@ -167,7 +167,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // typescript type checker
       new ForkTsCheckerWebpackPlugin({
         tsconfig: paths.appTsConfig,
-        tslint: paths.appTsLintConfig,
+        tslint: getTslintConfig(paths.appTsLintConfig, enviroments.raw),
         watch: paths.appSrc,
         // 配合webpack-dev-server使用
         async: false,
@@ -278,6 +278,29 @@ function genTemplatePlugin(
         : undefined,
     })
   })
+}
+
+function getTslintConfig(configPath: string, enviroments: { [key: string]: string }) {
+  if (enviroments.UNSAFE_DISABLE_TSLINT === 'true') {
+    console.log(
+      chalk.yellow(
+        `⚠️ Warning: ${chalk.cyan('UNSAFE_DISABLE_TSLINT')} was turn on. Please follow the team development guidelines`,
+      ),
+    )
+    return false
+  }
+
+  if (!fs.existsSync(configPath)) {
+    // TODO:
+    chalk.yellow(
+      `⚠️ Warning: tslint not found in ${chalk.cyan(configPath)}. type ${chalk.blueBright(
+        'jm create-tslint',
+      )} to create one.`,
+    )
+    return false
+  }
+
+  return configPath
 }
 
 export default configure

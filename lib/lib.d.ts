@@ -9,6 +9,10 @@ declare namespace NodeJS {
   }
 }
 
+declare interface Window {
+  JM_ENV: { [key: string]: string | undefined }
+}
+
 declare module '*.bmp' {
   const src: string
   export default src

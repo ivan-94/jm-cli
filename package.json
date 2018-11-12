@@ -24,12 +24,11 @@
   "bin": {
     "jm": "bin/index.js"
   },
-  "types": "./types/lib.d.ts",
+  "types": "./lib/lib.d.ts",
   "files": [
     "bin",
     "dist",
     "template",
-    "types",
     "lib",
     "ssl"
   ],

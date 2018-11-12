@@ -61,7 +61,6 @@ typings/
 .env.local
 .env.development.local
 .env.production.local
-proxy.json
 
 # cache loader
 .cache-loader

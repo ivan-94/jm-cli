@@ -1,0 +1,22 @@
+[*] 细化Tslint规则
+[*] choosePort
+[*] 动态加载template
+[ ] 动态加载template, 避免下载依赖
+[ ] 清屏
+[ ] webpack 进一步优化
+[ ] react-hot-loader
+[*] create 欢迎信息
+[ ] 默认template优化
+[ ] User Guide
+[ ] CLI 用户体验优化
+[*] env支持模板变量
+[*] proxy 支持env模板变量
+[ ] jm-deploy集成
+[*] typescript import
+[ ] 自更新
+[ ] polyfill tslib 和 bable-runtime
+[ ] gitignore
+[ ] webpack-dev-server client
+[ ] inline runtime
+[*] 美化inspect
+[ ] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https

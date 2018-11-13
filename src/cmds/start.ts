@@ -53,6 +53,12 @@ function getDevServerConfig(
     },
     https: process.env.HTTPS === 'true',
     proxy,
+    // 使用原生的overlap
+    // TODO: 使用更先进的react-error-overlay
+    overlay: {
+      errors: true,
+      warnings: false,
+    },
   }
 }
 

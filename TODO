@@ -22,7 +22,7 @@
 [*] 美化inspect
 [*] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https
 [*] package.json 配置检查
-[ ] package.json vscode schema
+[*] package.json vscode schema
 [*] tslint 可配，禁用时警告
 [ ] 如何迁移现有项目
 [ ] 生产环境devkit。如摇动打开控制台

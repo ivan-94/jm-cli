@@ -331,6 +331,27 @@ function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: s
   }
 }
 
+function initialVscodeSettings(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
+  const vscodeSettingsDir = path.join(appPath, '.vscode')
+  const vscodeSettingsPath = path.join(vscodeSettingsDir, 'settings.json')
+  if (fs.existsSync(vscodeSettingsPath)) {
+    return
+  }
+
+  const settings = {
+    // options auto completions
+    'json.schemas': [
+      {
+        fileMatch: ['package.json'],
+        url: `./node_modules/${ownPkg.name}/lib/package.option.schema.json`,
+      },
+    ],
+  }
+
+  fs.ensureDirSync(vscodeSettingsDir)
+  writeJSON(vscodeSettingsPath, settings)
+}
+
 /**
  * welcome infomation
  */
@@ -386,6 +407,7 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
 
   initialTsConfig(appPath, originalDirname, ownPackageJson)
   initialTsLintConfig(appPath, originalDirname, ownPackageJson)
+  initialVscodeSettings(appPath, originalDirname, ownPackageJson)
 
   if (gitInitialed) {
     firstCommit()

@@ -7,6 +7,8 @@ import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
 import { noopFileSystem, inspect, clearConsole } from '../utils'
 import paths from '../paths'
+import getOptions from '../options'
+import configure from '../config'
 import { CommonOption } from './type'
 
 export interface AnalyzeOption extends CommonOption {
@@ -20,13 +22,13 @@ process.env.NODE_ENV = mode
 require('../env')
 
 function analyze(argv: AnalyzeOption) {
-  clearConsole()
-  console.log(chalk.cyan('Extracting webpack stats...'))
-
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const configure = require('../config').default
-  const config = configure(environment, pkg, paths, { entry: argv.entry })
+  const jmOptions = getOptions(pkg, paths.ownLib)
+  if (jmOptions == null) {
+    return
+  }
+  const config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
 
   if (argv.inspect) {
     inspect(environment.raw, 'Environment:')
@@ -34,6 +36,8 @@ function analyze(argv: AnalyzeOption) {
     return
   }
 
+  clearConsole()
+  console.log(chalk.cyan('Extracting webpack stats...'))
   const compiler = webpack(config)
   compiler.outputFileSystem = noopFileSystem
 

@@ -1,0 +1,113 @@
+{
+  "$id": "jm-cli-options",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "description": "jm-cli options defined in package.json",
+  "type": "object",
+  "properties": {
+    "proxy": {
+      "description": "proxy server settings",
+      "anyOf": [
+        {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/definitions/proxyConfig"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/proxyConfigWithContext"
+          }
+        }
+      ]
+    },
+    "importPlugin": {
+      "description": "babel-import-plugin settings",
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/importPluginConfig"
+          }
+        },
+        {
+          "$ref": "#/definitions/importPluginConfig"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "proxyConfig": {
+      "type": "object",
+      "required": ["target"],
+      "properties": {
+        "target": {
+          "type": "string"
+        },
+        "secure": {
+          "type": "boolean"
+        },
+        "ws": {
+          "type": "boolean"
+        },
+        "changeOrigin": {
+          "type": "boolean"
+        }
+      }
+    },
+    "proxyConfigWithContext": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["context"],
+          "properties": {
+            "context": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/proxyConfig"
+        }
+      ]
+    },
+    "importPluginConfig": {
+      "type": "object",
+      "required": ["libraryName"],
+      "properties": {
+        "libraryName": {
+          "type": "string"
+        },
+        "style": {
+          "enum": ["css", true]
+        },
+        "libraryDirectory": {
+          "type": "string"
+        },
+        "camel2DashComponentName": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

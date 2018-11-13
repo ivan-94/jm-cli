@@ -2,6 +2,7 @@
  * serve builded content in dist
  */
 import fs from 'fs-extra'
+import opener from 'opener'
 import express from 'express'
 import chalk from 'chalk'
 import https from 'https'
@@ -10,8 +11,8 @@ import { interpolateProxy, applyProxyToExpress, proxyInfomation } from '../proxy
 import paths from '../paths'
 import { clearConsole, shouldUseYarn, choosePort, prepareUrls, inspect } from '../utils'
 import { getCerts } from '../cert'
+import getOptions from '../options'
 import { CommonOption } from './type'
-import opener from 'opener'
 
 export interface ServeOption extends CommonOption {
   gzip?: boolean
@@ -44,12 +45,14 @@ function checkDist() {
 }
 
 export default async (argv: ServeOption) => {
-  clearConsole()
   const dist = checkDist()
-  console.log(chalk.cyan(`Starting server...`))
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const proxy = pkg.proxy ? interpolateProxy(pkg.proxy, environment.raw) : undefined
+  const jmOptions = getOptions(pkg, paths.ownLib)
+  if (jmOptions == null) {
+    return
+  }
+  const proxy = jmOptions.proxy ? interpolateProxy(jmOptions.proxy, environment.raw) : undefined
   const port = await choosePort(parseInt(environment.raw.PORT, 10) || 8080)
   const protocol = environment.raw.HTTPS === 'true' ? 'https' : 'http'
   const host = '0.0.0.0'
@@ -69,6 +72,8 @@ export default async (argv: ServeOption) => {
     return
   }
 
+  clearConsole()
+  console.log(chalk.cyan(`Starting server...`))
   const app = express()
 
   if (argv.gzip) {

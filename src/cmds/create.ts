@@ -157,10 +157,12 @@ function initialPackageJson(
     },
   }
   const optionalProperties = {
-    // proxy config, can use template variable in .env.*
-    proxy: {},
-    // for antd, antd-mobile
-    importPlugin: [],
+    jm: {
+      // proxy config, can use template variable in .env.*
+      proxy: {},
+      // for antd, antd-mobile
+      importPlugin: [],
+    },
   }
   let pacakgeJson = {
     ...reservedProperties,

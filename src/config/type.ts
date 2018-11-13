@@ -1,6 +1,7 @@
 import { Configuration } from 'webpack'
 import { WebpackEnviroment } from '../env'
 import { WebpackPaths } from '../paths'
+import { JMOptions, ImportPluginConfig } from '../options'
 
 export type WebpackConfigurer = (
   env: WebpackEnviroment,
@@ -9,9 +10,8 @@ export type WebpackConfigurer = (
   argv: {
     name?: string
     entry?: string[]
+    jmOptions: JMOptions
   },
 ) => Configuration
 
-export interface ImportPlugin {
-  libraryName: string
-}
+export { ImportPluginConfig }

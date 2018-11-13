@@ -8,6 +8,8 @@ import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
 import { inspect, clearConsole } from '../utils'
 import paths from '../paths'
+import getOptions from '../options'
+import configure from '../config'
 import { CommonOption } from './type'
 
 export interface BuildOption extends CommonOption {
@@ -22,12 +24,12 @@ process.env.NODE_ENV = mode
 require('../env')
 
 function build(argv: BuildOption) {
-  clearConsole()
-  console.log(chalk.cyan('Creating an optimized production build...'))
-
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const configure = require('../config').default
+  const jmOptions = getOptions(pkg, paths.ownLib)
+  if (jmOptions == null) {
+    return
+  }
   let config: Configuration[] | Configuration
 
   if (argv.group) {
@@ -45,13 +47,14 @@ function build(argv: BuildOption) {
       configure(environment, pkg, paths, {
         name,
         entry: group[name],
+        jmOptions,
       }),
     )
   } else if (argv.entry) {
     console.log(`Selected entries: ${chalk.cyan(argv.entry.join(', '))}`)
-    config = configure(environment, pkg, paths, { entry: argv.entry })
+    config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
   } else {
-    config = configure(environment, pkg, paths, {})
+    config = configure(environment, pkg, paths, { jmOptions })
   }
 
   if (argv.inspect) {
@@ -60,6 +63,8 @@ function build(argv: BuildOption) {
     return
   }
 
+  clearConsole()
+  console.log(chalk.cyan('Creating an optimized production build...'))
   const compiler = webpack(config as Configuration)
   const startTime = Date.now()
 

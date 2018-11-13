@@ -9,6 +9,8 @@ import chalk from 'chalk'
 import opener from 'opener'
 import { prepareUrls, inspect, clearConsole, choosePort } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
+import getOptions from '../options'
+import configure from '../config'
 import paths from '../paths'
 import { CommonOption } from './type'
 
@@ -104,22 +106,28 @@ function createCompiler(config: WebpackConfiguration): Compiler {
 }
 
 export default async function(argv: StartOption) {
-  clearConsole()
-  console.log(chalk.cyan('Starting the development server...\n'))
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const config = require('../config').default(environment, pkg, paths, { entry: argv.entry })
-  const devServerConfig = getDevServerConfig(pkg.proxy || {}, config, environment.raw)
+  const jmOptions = getOptions(pkg, paths.ownLib)
+  if (jmOptions == null) {
+    return
+  }
+
+  const config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
+  const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw)
 
   if (argv.inspect) {
+    clearConsole()
     inspect(environment.raw, 'Environment:')
     inspect(devServerConfig, 'Development Server Config:')
     inspect(config, 'Webpack Configuration:')
     return
   }
 
+  clearConsole()
+  console.log(chalk.cyan('Starting the development server...\n'))
   const compiler = createCompiler(config)
   const devServer = new webpackDevServer(compiler, devServerConfig)
 

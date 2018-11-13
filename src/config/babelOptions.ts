@@ -1,14 +1,14 @@
 /**
  * babel 配置选项
  */
-import { ImportPlugin } from './type'
+import { ImportPluginConfig } from './type'
 
 // see more options in https://babeljs.io/docs/en/options
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
 // babel 的Typescript插件仅仅是移除了Typescript的语法.
 // react-hot-loader 依赖babel插件
 // babel 有强大的生态
-export default (env: string, importPlugin?: ImportPlugin | ImportPlugin[]) => {
+export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginConfig[]) => {
   const isDevelopment = env === 'development'
   const isProduction = env === 'production'
 

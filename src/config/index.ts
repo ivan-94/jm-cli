@@ -79,7 +79,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               use: {
                 loader: require.resolve('babel-loader'),
                 options: {
-                  ...babelOptions(enviroments.raw.NODE_ENV, pkg.importPlugin),
+                  ...babelOptions(enviroments.raw.NODE_ENV, argv.jmOptions.importPlugin),
                   envName: enviroments.raw.NODE_ENV,
                 },
               },

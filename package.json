@@ -37,7 +37,8 @@
     "start": "ts-node src/index.ts"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "husky": {
     "hooks": {
@@ -78,11 +79,13 @@
     "@babel/preset-typescript": "^7.1.0",
     "@babel/runtime": "^7.1.5",
     "address": "^1.0.3",
+    "ajv": "^6.5.5",
     "autoprefixer": "^8.3.0",
     "babel-loader": "^8.0.4",
     "babel-plugin-import": "^1.11.0",
     "babel-plugin-macros": "^2.4.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.20",
+    "better-ajv-errors": "^0.6.1",
     "cache-loader": "^1.2.5",
     "chalk": "^2.4.1",
     "cli-table2": "^0.2.0",

@@ -34,3 +34,23 @@ declare module 'dumper.js' {
 declare module 'webpack-dev-server/lib/utils/createCertificate' {
   export default function(attr: Array<{ name: string; value: string }>): { private: string; cert: string }
 }
+
+declare module 'ajv' {
+  export interface AjvError {
+    keyword: string
+    dataPath: string
+    schemaPath: string
+    params: any
+    message: string
+  }
+  export default class Ajv {
+    constructor(options?: any)
+    addMetaSchema(schemaDefinition: any): void
+    compile(
+      schema: any,
+    ): {
+      (data: any): boolean
+      errors: AjvError[]
+    }
+  }
+}

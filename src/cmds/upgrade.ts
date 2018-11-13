@@ -142,12 +142,13 @@ export default (argv: UpgradeOption) => {
   const useYarn = argv.yarn == null ? shouldUseYarn() : argv.yarn
   const pkg = fs.readJsonSync(paths.ownPackageJson)
   clearConsole()
-  console.log('Gathering package infos...')
 
   try {
     if (argv.global) {
+      console.log(`Gathering package infos for global ${chalk.cyan(pkg.name)}...`)
       globalUpgrade(useYarn, argv.level!, pkg)
     } else {
+      console.log(`Gathering package infos for local ${chalk.cyan(pkg.name)}...`)
       localUpgrade(useYarn, argv.level!, pkg)
     }
   } catch (err) {

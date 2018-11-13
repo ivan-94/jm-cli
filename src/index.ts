@@ -48,7 +48,7 @@ yargs
   )
   .command(
     'build',
-    'Build project for development',
+    'Build project for production',
     {
       entry: {
         description: 'sepcify entry names to build. example: a,b',

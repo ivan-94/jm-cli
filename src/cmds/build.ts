@@ -6,7 +6,7 @@ import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
-import { inspect, clearConsole } from '../utils'
+import { inspect, clearConsole, shouldUseYarn } from '../utils'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -18,6 +18,7 @@ export interface BuildOption extends CommonOption {
 }
 
 const mode = 'production'
+const useYarn = shouldUseYarn()
 process.env.NODE_ENV = mode
 
 // initial env
@@ -66,7 +67,6 @@ function build(argv: BuildOption) {
   clearConsole()
   console.log(chalk.cyan('Creating an optimized production build...'))
   const compiler = webpack(config as Configuration)
-  const startTime = Date.now()
 
   compiler.run((err, stats) => {
     if (err) {
@@ -90,12 +90,10 @@ function build(argv: BuildOption) {
     if (messages.warnings.length) {
       console.warn(chalk.yellow('⚠️  Compiled with warnings.\n\n'))
       messages.warnings.forEach(e => console.log(e))
-      return
+    } else {
+      console.log(chalk.green('Compiled successfully.'))
     }
-
-    console.log(chalk.green('Compiled successfully.'))
-    const sec = (Date.now() - startTime) / 1e3
-    console.log(`✨ Done in ${sec}s!`)
+    console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
   })
 }
 

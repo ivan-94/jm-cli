@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import yargs from 'yargs'
 import path from 'path'
 import { transformString2Array } from './utils'
@@ -5,6 +6,7 @@ import { StartOption } from './cmds/start'
 import { BuildOption } from './cmds/build'
 import { AnalyzeOption } from './cmds/analyze'
 import { ServeOption } from './cmds/serve'
+import { UpgradeOption } from './cmds/upgrade'
 
 process.on('uncaughtException', err => {
   throw err
@@ -12,8 +14,12 @@ process.on('uncaughtException', err => {
 
 const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
+const pkg = fs.readJSONSync(path.join(cmdDir, 'package.json'))
+const name = pkg.name
+const cmdName = Object.keys(pkg.bin)[0]
 
 yargs
+  .scriptName(cmdName)
   .command(
     'create [name]',
     'Create React project',
@@ -134,6 +140,37 @@ yargs
     },
     argv => {
       require('./cmds/serve').default(argv as ServeOption)
+    },
+  )
+  .command(
+    'upgrade',
+    `upgrade ${name} in current project or global`,
+    {
+      global: {
+        description: 'global upgrade',
+        alias: 'g',
+        type: 'boolean',
+      },
+      yarn: {
+        description: 'use yarn to upgrade. default is true if `yarn` command founded',
+        alias: 'y',
+        type: 'boolean',
+      },
+      // yargs 可以自动将yarn置为false
+      'no-yarn': {
+        description: 'no use yarn to upgrade.',
+        type: 'boolean',
+      },
+      level: {
+        description: 'choose semver level',
+        alias: 'l',
+        type: 'string',
+        choices: ['major', 'minor', 'patch'],
+        default: 'minor',
+      },
+    },
+    argv => {
+      require('./cmds/upgrade').default(argv as UpgradeOption)
     },
   )
   .command('deploy', 'TODO', {}, argv => {})

@@ -14,6 +14,7 @@
 [*] proxy 支持env模板变量
 [ ] jm-deploy集成
 [*] typescript import
+[*] upgrade 命令
 [ ] 自更新
 [ ] polyfill tslib 和 bable-runtime
 [ ] gitignore

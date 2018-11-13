@@ -1,6 +1,8 @@
 [*] 细化Tslint规则
 [*] choosePort
 [*] 动态加载template
+[*] error overlap
+[ ] react-error-overlap
 [ ] 动态加载template, 避免下载依赖
 [*] 清屏
 [*] react-hot-loader

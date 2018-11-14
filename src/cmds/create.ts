@@ -5,6 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import fs from 'fs-extra'
 import json5 from 'json5'
+import ignore from 'ignore'
 import os from 'os'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
@@ -121,6 +122,42 @@ function ensureTemplatePath(ownPath: string, cwd: string, templateName?: string)
   }
 }
 
+/**
+ * clone files from templatePath to appPath,
+ * default it will ignore `node_modules`, `dist` and `yarn.*`, `.git` etc
+ * Template developer also define `.template-ignore` or `.gitinore` to add ignore rules
+ * @param templatePath
+ * @param appPath
+ */
+function cloneTemplate(templatePath: string, appPath: string) {
+  const ig = ignore()
+  const defaultIgnore = ['node_modules', 'dist', 'yarn.*', '.git', '.template-ignore', '.cache-loader']
+  ig.add(defaultIgnore)
+  const templateIgnorePath = path.join(templatePath, '.template-ignore')
+  const gitIgnorePath = path.join(templatePath, '.gitignore')
+
+  if (fs.existsSync(templateIgnorePath)) {
+    ig.add(fs.readFileSync(templateIgnorePath).toString())
+  }
+
+  if (fs.existsSync(gitIgnorePath)) {
+    ig.add(fs.readFileSync(gitIgnorePath).toString())
+  }
+
+  fs.copySync(templatePath, appPath, {
+    overwrite: false,
+    errorOnExist: false,
+    dereference: true,
+    filter: src => {
+      const relativePath = path.relative(templatePath, src)
+      if (relativePath === '') {
+        return true
+      }
+      return !ig.ignores(relativePath)
+    },
+  })
+}
+
 function transformDependencies(org: { [key: string]: string }): string[] {
   return Object.keys(org).map(key => `${key}@${org[key]}`)
 }
@@ -192,16 +229,7 @@ function initialPackageJson(
     pacakgeJson = { ...pacakgeJson, ...omit(pkg, Object.keys(reservedProperties)) }
   }
 
-  const exclude = [/^node_modules/, /^dist/, /yarn\.lock/]
-  fs.copySync(templatePath, appPath, {
-    overwrite: false,
-    errorOnExist: false,
-    dereference: true,
-    filter: src => {
-      const relativePath = path.relative(templatePath, src)
-      return !exclude.some(reg => relativePath.search(reg) !== -1)
-    },
-  })
+  cloneTemplate(templatePath, appPath)
   copyPrettierConfig(appPath, ownPath, pacakgeJson)
   writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
 

@@ -59,6 +59,12 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       }),
     ],
     optimization: {
+      // 让webpack检查和删除已经在所有父模块存在的模块
+      removeAvailableModules: true,
+      // 删除空模块
+      removeEmptyChunks: true,
+      // 合并重复的模块
+      mergeDuplicateChunks: true,
       minimize: true,
       minimizer: [
         new TerserPlugin({

@@ -2,7 +2,7 @@
 [*] choosePort
 [*] 动态加载template
 [*] error overlap
-[ ] 动态加载template, 避免下载依赖
+[ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
 [*] 清屏
 [*] react-hot-loader
 [ ] webpack 进一步优化, css
@@ -12,13 +12,12 @@
 [ ] CLI 用户体验优化
 [*] env支持模板变量
 [*] proxy 支持env模板变量
-[ ] jm-deploy集成
 [*] typescript import
 [*] upgrade 命令
 [*] 自更新
 [ ] polyfill tslib 和 bable-runtime
 [ ] gitignore
-[ ] webpack-dev-server client
+[*] webpack-dev-server client
 [ ] inline runtime
 [*] 美化inspect
 [*] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https
@@ -27,11 +26,15 @@
 [*] tslint 可配，禁用时警告
 [ ] 如何迁移现有项目
 [ ] 生产环境devkit。如摇动打开控制台
-[ ] 加载动画 ora.
-[ ] 美化消息
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
 [ ] 使用find-up 支持在项目的子目录运行
 [ ] debug
 
 # 不紧急
 [ ] react-error-overlap
+[ ] 加载动画 ora.
+[ ] 美化控制台输出
+[ ] Plug'n'Play support
+
+# 待考虑
+[ ] jm-deploy集成

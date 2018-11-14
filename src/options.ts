@@ -15,12 +15,20 @@ export interface ImportPluginConfig {
   libraryDirectory?: boolean
   camel2DashComponentName?: boolean
 }
+
 export interface JMOptions {
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
+  enableDuplicatePackageCheck: boolean
+  enableCircularDependencyCheck: boolean
 }
 
+const defaultOptions: JMOptions = {
+  enableDuplicatePackageCheck: true,
+  enableCircularDependencyCheck: true,
+}
 const key = 'jm'
+
 export default function getOptions(pkg: { [key: string]: any }, dir: string): JMOptions | undefined {
   const schemaPath = path.join(dir, 'option.schema.json')
   const schema = fs.readJsonSync(schemaPath)
@@ -28,7 +36,7 @@ export default function getOptions(pkg: { [key: string]: any }, dir: string): JM
     const ajv = new Ajv({ jsonPointers: true })
     const validate = ajv.compile(schema)
     if (validate(pkg[key])) {
-      return pkg[key]
+      return { ...defaultOptions, ...pkg[key] }
     }
     const errors = prepareErrors(validate.errors)
     const output = betterAjvErrors(schema, pkg[key], errors, { indent: 2 })
@@ -39,7 +47,7 @@ export default function getOptions(pkg: { [key: string]: any }, dir: string): JM
     process.exit(1)
     return
   } else {
-    return {}
+    return defaultOptions
   }
 }
 

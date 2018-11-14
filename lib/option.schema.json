@@ -43,6 +43,16 @@
           "$ref": "#/definitions/importPluginConfig"
         }
       ]
+    },
+    "enableDuplicatePackageCheck": {
+      "description": "enable duplicate-package-checker-webpack-plugin",
+      "type": "boolean",
+      "default": true
+    },
+    "enableCircularDependencyCheck": {
+      "description": "enable circular-dependency-plugin'",
+      "type": "boolean",
+      "default": true
     }
   },
   "definitions": {

@@ -148,16 +148,16 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             chunks: 'initial',
             minChunks: 2,
             enforce: true, // 强制
-            priority: 10,
+            priority: -10,
           },
           // 应用内共有包
           commons: {
-            test: /src/,
             name: 'commons',
+            test: /src/,
             chunks: 'initial',
-            reuseExistingChunk: false,
+            reuseExistingChunk: true,
             minChunks: 2,
-            priority: 10,
+            priority: -20,
           },
         },
       },
@@ -184,6 +184,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
       ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
+      // 注入环境变量到 window.JM_ENV中
       new InjectEnvPlugin(enviroments.userDefine, 'JM_ENV'),
       ...(envConfig.plugins || []),
     ],

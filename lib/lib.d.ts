@@ -38,20 +38,10 @@ declare module '*.png' {
   export default src
 }
 
-// svg sprite
-declare module '*.icon.svg' {
-  const value: {
-    viewBox: string
-    id: string
-    content: string
-  }
-
-  export default value
-}
-
 declare module '*.svg' {
-  const src: string
-  export default src
+  export const ReactComponent: React.SFC<React.SVGProps<SVGSVGElement>>
+  const url: string
+  export default url
 }
 
 declare module '*.module.css' {

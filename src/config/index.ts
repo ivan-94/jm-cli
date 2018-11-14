@@ -10,7 +10,7 @@ import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import diff from 'lodash/difference'
-import babelOptions from './babelOptions'
+import getBabelOptions from './babelOptions'
 import styleLoaders from './styleLoaders'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 
@@ -39,6 +39,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     ...(envConfig.entry as object),
     ...pageEntries,
   }
+  const babelOptions = {
+    ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions.importPlugin),
+    envName: enviroments.raw.NODE_ENV,
+  }
 
   const webpackConfig: Configuration = {
     name,
@@ -60,12 +64,15 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     resolve: {
       modules: ['node_modules'],
-      extensions: ['.tsx', '.ts', '.js'],
+      extensions: ['.tsx', '.ts', '.js', '.jsx'],
       alias: {
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
         // 如 ~/components/Button
         '~': context,
       },
+    },
+    resolveLoader: {
+      modules: [paths.ownNodeModules, 'node_modules'],
     },
     module: {
       strictExportPresence: true,
@@ -75,14 +82,11 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           oneOf: [
             // typescript
             {
-              test: /\.(ts|tsx)$/,
+              test: /\.(ts|tsx|js|jsx)$/,
               include: paths.appSrc,
               use: {
                 loader: require.resolve('babel-loader'),
-                options: {
-                  ...babelOptions(enviroments.raw.NODE_ENV, argv.jmOptions.importPlugin),
-                  envName: enviroments.raw.NODE_ENV,
-                },
+                options: babelOptions,
               },
             },
             {
@@ -106,23 +110,32 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 },
               ],
             },
-            // svg sprite, 处理以.icon.svg结尾的svg文件
+            // svg 可以获取链接，也可以转换为React组件
             {
-              test: /\.icon\.svg$/,
+              test: /\.svg$/,
               use: [
-                require.resolve('cache-loader'),
+                { loader: require.resolve('babel-loader'), options: babelOptions },
                 {
-                  loader: require.resolve('svg-sprite-loader'),
+                  loader: require.resolve('@svgr/webpack'),
                   options: {
-                    esModule: false,
+                    icon: true,
+                    svgo: true,
+                    prettier: false,
+                    babel: false,
                   },
                 },
-                require.resolve('svgo-loader'),
+                {
+                  loader: require.resolve('url-loader'),
+                  options: {
+                    limit: 10000,
+                    name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
+                  },
+                },
               ],
             },
             // images
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg/],
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: require.resolve('url-loader'),
               options: {
                 limit: 10000,

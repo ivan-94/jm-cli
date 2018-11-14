@@ -229,8 +229,8 @@ function initialPackageJson(
   let devDependenciesInstallCommand: string
   if (useYarn) {
     const command = 'yarnpkg'
-    dependenciesInstallCommand = `${command} add ${dependencies.join(' ')}`
-    devDependenciesInstallCommand = `${command} add ${devdependencies.join(' ')} --dev`
+    dependenciesInstallCommand = `${command} add ${dependencies.join(' ')} -s`
+    devDependenciesInstallCommand = `${command} add ${devdependencies.join(' ')} --dev -s`
   } else {
     const command = 'npm'
     dependenciesInstallCommand = `${command} install ${dependencies.join(' ')} --save`
@@ -238,9 +238,9 @@ function initialPackageJson(
   }
 
   console.log(chalk.cyan(`Installing dependencies...`))
-  execSync(dependenciesInstallCommand, { stdio: ['ignore', 'ignore', 'inherit'] })
+  execSync(dependenciesInstallCommand, { stdio: 'inherit' })
   console.log(chalk.cyan(`Installing devdependencies...`))
-  execSync(devDependenciesInstallCommand, { stdio: ['ignore', 'ignore', 'inherit'] })
+  execSync(devDependenciesInstallCommand, { stdio: 'inherit' })
 }
 
 function tryInitialGit(appPath: string) {
@@ -353,6 +353,21 @@ function initialVscodeSettings(appPath: string, ownPath: string, ownPkg: { [key:
   writeJSON(vscodeSettingsPath, settings)
 }
 
+function initialGlobalDeclaration(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
+  const declarationPath = path.join(appPath, 'global.d.ts')
+  const refStr = `/// <reference types="${ownPkg.name}" />`
+  if (!fs.existsSync(declarationPath)) {
+    fs.writeFileSync(declarationPath, refStr + '\n')
+    return
+  }
+
+  let content = fs.readFileSync(declarationPath).toString()
+  if (content.indexOf(refStr) === -1) {
+    content = refStr + '\n' + content
+    fs.writeFileSync(declarationPath, content)
+  }
+}
+
 /**
  * welcome infomation
  */
@@ -409,6 +424,7 @@ export default (cwd: string, originalDirname: string, argv: CreateOption) => {
   initialTsConfig(appPath, originalDirname, ownPackageJson)
   initialTsLintConfig(appPath, originalDirname, ownPackageJson)
   initialVscodeSettings(appPath, originalDirname, ownPackageJson)
+  initialGlobalDeclaration(appPath, originalDirname, ownPackageJson)
 
   if (gitInitialed) {
     firstCommit()

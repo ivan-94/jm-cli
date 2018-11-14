@@ -9,7 +9,8 @@
   "dependencies": {
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "tslib": "^1.9.3"
+    "tslib": "^1.9.3",
+    "react-hot-loader": "^4.3.12"
   },
   "devDependencies": {
     "@types/react": "^16.4.13",

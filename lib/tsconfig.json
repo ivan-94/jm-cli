@@ -1,18 +1,17 @@
 {
+  // 我们使用babel对文件进行编译，所以不会有任何输出
   "compilerOptions": {
     "target": "es5",
     "lib": ["esnext", "dom"],
     "module": "esnext",
+    "noEmit": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "sourceMap": true,
     "allowJs": true,
-    "noEmit": true,
     "jsx": "react",
-    "importHelpers": true,
     "downlevelIteration": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
@@ -22,10 +21,8 @@
     "noUnusedLocals": true,
     "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
+    // 将~/*  映射到的 src/*
     "baseUrl": ".",
-    "rootDir": "src",
-    "outDir": "dist",
-    "typeRoots": ["node_modules/@types", "src/types", "node_modules/@gdjiami/cli/lib"],
     "paths": {
       "~/*": ["src/*"]
     }

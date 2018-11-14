@@ -3,10 +3,10 @@
 [*] 动态加载template
 [*] error overlap
 [ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
-[ ] 模板复制ignore
+[*] 模板复制ignore
 [*] 清屏
 [*] react-hot-loader
-[ ] webpack 进一步优化, css, cache-loader
+[*] webpack 进一步优化, css
 [*] create 欢迎信息
 [ ] 默认template优化
 [ ] User Guide
@@ -16,23 +16,26 @@
 [*] typescript import
 [*] upgrade 命令
 [*] 自更新
-[ ] polyfill tslib 和 bable-runtime
-[ ] gitignore
 [*] webpack-dev-server client
 [*] 美化inspect
 [*] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https
 [*] package.json 配置检查
 [*] package.json vscode schema
 [*] tslint 可配，禁用时警告
-[ ] 如何迁移现有项目
-[ ] 生产环境devkit。如摇动打开控制台
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
-[ ] 使用find-up 支持在项目的子目录运行
-[ ] debug
+[ ] cache-loader 使用场景
+[ ] 通用资源外部化(react, mobx这些)
+[ ] remove cache command
 
 # 不紧急
 [ ] 加载动画 ora.
 [ ] 美化控制台输出
+[ ] debug(verbose)
+[ ] global 模式使用find-up 支持在项目的子目录运行
+[ ] 生产环境devkit。如摇动打开控制台
+[ ] polyfill tslib 和 bable-runtime 现在存在部分第三方应用peer依赖tslib
+[ ] 如何迁移现有项目
+[ ] prefetch
 
 # 待考虑
 [ ] react-error-overlap

@@ -160,17 +160,26 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ],
     },
     optimization: {
+      // 定义拆包规则
+      // 按照默认配置, webpack会自动拆分符合下列条件(AND)的chunks
+      // * 新的chunk可以被共享或者模块来自于node_modules(minChunks)
+      // * 新的chunk大于30kb(minSize)
+      // * 按需模块并行请求(即import数)的最大次数 <= 5(maxAsyncRequests)
+      // * 初始模块并行请求的最大次数 <= 5(maxInitialRequests)
+      // 详见 https://webpack.docschina.org/plugins/split-chunks-plugin/
       splitChunks: {
-        name: true,
+        // cacheGroups用于扩展或覆盖splitChunks.*. 即扩展默认规则
+        // 由于支持多页应用, 所以我们会对初始chunk进行命名, 以便可以在html-webpack-plugin中对这些chunk进行注入
         cacheGroups: {
           // 第三方共有包
           vendor: {
             name: 'vendor',
-            test: /node_modules/,
+            test: /[\\/]node_modules[\\/]/,
             reuseExistingChunk: false,
             chunks: 'initial',
             minChunks: 2,
             enforce: true, // 强制
+            // 一个可拆分的chunk可能属于多个分组, 这个用于设置优先级
             priority: -10,
           },
           // 应用内共有包

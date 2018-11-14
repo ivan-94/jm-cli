@@ -23,7 +23,7 @@
 [*] package.json vscode schema
 [*] tslint 可配，禁用时警告
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
-[ ] cache-loader 使用场景
+[ ] cache-loader, thread-loader 使用场景
 [ ] 通用资源外部化(react, mobx这些)
 [ ] remove cache command
 

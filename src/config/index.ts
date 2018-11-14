@@ -13,6 +13,7 @@ import diff from 'lodash/difference'
 import getBabelOptions from './babelOptions'
 import styleLoaders from './styleLoaders'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
+import genCacheConfig from './cacheOptions'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
@@ -80,28 +81,44 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         { parser: { requireEnsure: false } },
         {
           oneOf: [
-            // typescript
+            // typescript & js
             {
               test: /\.(ts|tsx|js|jsx)$/,
               include: paths.appSrc,
-              use: {
-                loader: require.resolve('babel-loader'),
-                options: babelOptions,
-              },
+              use: [
+                // should I use cache-loader here? see more in https://github.com/webpack-contrib/cache-loader/issues/1#issuecomment-297994952
+                {
+                  loader: require.resolve('cache-loader'),
+                  options: genCacheConfig('babel', enviroments.raw, paths),
+                },
+                {
+                  loader: require.resolve('babel-loader'),
+                  options: babelOptions,
+                },
+              ],
             },
             {
               test: /\.css$/,
-              use: styleLoaders(enviroments.raw, {
-                importLoaders: 1,
-                sourceMap: isProduction && shouldUseSourceMap,
-              }),
+              use: [
+                {
+                  loader: require.resolve('cache-loader'),
+                  options: genCacheConfig('css', enviroments.raw, paths),
+                },
+                ...styleLoaders(enviroments.raw, {
+                  importLoaders: 1,
+                  sourceMap: isProduction && shouldUseSourceMap,
+                }),
+              ],
               sideEffects: true,
             },
             // pug loader
             {
               test: /\.pug$/,
               use: [
-                require.resolve('cache-loader'),
+                {
+                  loader: require.resolve('cache-loader'),
+                  options: genCacheConfig('pug', enviroments.raw, paths),
+                },
                 {
                   loader: require.resolve('pug-loader'),
                   options: {
@@ -114,6 +131,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             {
               test: /\.svg$/,
               use: [
+                {
+                  loader: require.resolve('cache-loader'),
+                  options: genCacheConfig('svg', enviroments.raw, paths),
+                },
                 { loader: require.resolve('babel-loader'), options: babelOptions },
                 {
                   loader: require.resolve('@svgr/webpack'),

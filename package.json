@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -103,6 +103,7 @@
     "fork-ts-checker-webpack-plugin": "^0.4.15",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.3",
+    "hash-sum": "^1.0.2",
     "html-webpack-plugin": "^4.0.0-beta.4",
     "ignore": "^5.0.4",
     "inquirer": "^6.2.0",

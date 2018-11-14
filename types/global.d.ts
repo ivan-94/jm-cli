@@ -68,3 +68,7 @@ declare module 'boxen' {
     },
   ): string
 }
+
+declare module 'hash-sum' {
+  export default function(data: any): string
+}

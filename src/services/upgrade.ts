@@ -29,26 +29,25 @@ export function getUpgradableVersion(
   packageName: string,
   verison: string,
   semverLevel: SemverLevel,
-): [string, boolean] {
+): [string, boolean, string] {
   let newRange: string
   let upgradable: boolean
+  let newMaxVersion: string
   if (semverLevel === 'patch') {
     newRange = `~${verison}`
-    const newMaxVersion = getMaxSatisfying(packageName, newRange)
+    newMaxVersion = getMaxSatisfying(packageName, newRange)
     newRange = `~${newMaxVersion}`
-    upgradable = newMaxVersion !== verison
   } else if (semverLevel === 'minor') {
     newRange = `^${verison}`
-    const newMaxVersion = getMaxSatisfying(packageName, newRange)
+    newMaxVersion = getMaxSatisfying(packageName, newRange)
     newRange = `^${newMaxVersion}`
-    upgradable = newMaxVersion !== verison
   } else {
-    const newMaxVersion = getMaxSatisfying(packageName, 'latest')
+    newMaxVersion = getMaxSatisfying(packageName, 'latest')
     newRange = `^${newMaxVersion}`
-    upgradable = newMaxVersion !== verison
   }
 
-  return [newRange, upgradable]
+  upgradable = newMaxVersion !== verison
+  return [newRange, upgradable, newMaxVersion]
 }
 
 export function getYarnGlobalInstallPackages() {
@@ -78,26 +77,6 @@ export function getNpmGlobalInstallPackages() {
   return list
 }
 
-export function globalUpgrade(useYarn: boolean, level: SemverLevel, pkg: { name: string; version: string }) {
-  console.log(`Current verison: ${pkg.version}`)
-  const list: { [name: string]: string } = useYarn ? getYarnGlobalInstallPackages() : getNpmGlobalInstallPackages()
-  const { name, version } = pkg
-  if (!(name in list)) {
-    throw new Error(chalk.red(`${chalk.cyan(name)} is not installed globally in ${useYarn ? 'yarn' : 'npm'}`))
-  }
-
-  const [newRange, upgradable] = getUpgradableVersion(name, version, level)
-  if (upgradable) {
-    console.log(`New version ${chalk.cyan(newRange)} founded.`)
-    const cmd = useYarn ? `yarn global add "${name}@${newRange}"` : `npm install -g "${name}@${newRange}"`
-    console.log('Upgrading...')
-    execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
-    console.log('✨ Upgrade Success!')
-  } else {
-    console.log(`Already up-to-date`)
-  }
-}
-
 export function getLocalVersion(name: string): string {
   const packagePath = path.join(process.cwd(), 'package.json')
   if (!fs.existsSync(packagePath)) {
@@ -109,21 +88,5 @@ export function getLocalVersion(name: string): string {
     }
     const ownPkgPath = path.join(process.cwd(), 'node_modules', name, 'package.json')
     return fs.readJSONSync(ownPkgPath).version
-  }
-}
-
-export function localUpgrade(useYarn: boolean, level: SemverLevel, pkg: { name: string; version: string }) {
-  const name = pkg.name
-  const version = getLocalVersion(name)
-  console.log(`Current verison: ${version}`)
-  const [newRange, upgradable] = getUpgradableVersion(name, version, level)
-  if (upgradable) {
-    console.log(`New version ${chalk.cyan(newRange)} founded.`)
-    const cmd = useYarn ? `yarn add "${name}@${newRange}" -D` : `npm install "${name}@${newRange}" --save-dev`
-    console.log('Upgrading...')
-    execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
-    console.log('✨ Upgrade Success!')
-  } else {
-    console.log(`Already up-to-date`)
   }
 }

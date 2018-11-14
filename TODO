@@ -15,7 +15,7 @@
 [ ] jm-deploy集成
 [*] typescript import
 [*] upgrade 命令
-[ ] 自更新
+[*] 自更新
 [ ] polyfill tslib 和 bable-runtime
 [ ] gitignore
 [ ] webpack-dev-server client
@@ -31,6 +31,7 @@
 [ ] 美化消息
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
 [ ] 使用find-up 支持在项目的子目录运行
+[ ] debug
 
 # 不紧急
 [ ] react-error-overlap

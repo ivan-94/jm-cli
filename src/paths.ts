@@ -29,6 +29,7 @@ const paths = {
   // own
   ownPath: resolveOwn('.'),
   ownLib: resolveOwn('lib'),
+  ownData: resolveOwn('data'),
   ownNodeModules: resolveOwn('node_modules'),
   ownPackageJson: resolveOwn('package.json'),
 }

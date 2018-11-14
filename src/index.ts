@@ -7,6 +7,7 @@ import { BuildOption } from './cmds/build'
 import { AnalyzeOption } from './cmds/analyze'
 import { ServeOption } from './cmds/serve'
 import { UpgradeOption } from './cmds/upgrade'
+import wrap from './middlewares'
 
 process.on('uncaughtException', err => {
   throw err
@@ -28,13 +29,13 @@ yargs
       at: { description: 'sepcify jm-cli version', alias: 'a', type: 'string', requiresArg: true },
       template: { description: 'template name in npm, file:// or url', alias: 't', type: 'string', requiresArg: true },
     },
-    argv => {
+    wrap(argv => {
       require('./cmds/create').default(cwd, cmdDir, {
         name: argv.name,
         version: argv.at,
         template: argv.template,
       })
-    },
+    }),
   )
   .command(
     'start',
@@ -48,9 +49,9 @@ yargs
         coerce: transformString2Array,
       },
     },
-    argv => {
+    wrap(argv => {
       require('./cmds/start').default(argv as StartOption)
-    },
+    }),
   )
   .command(
     'build',
@@ -86,7 +87,7 @@ yargs
         },
       },
     },
-    argv => {
+    wrap(argv => {
       let { entry, group, ...other } = argv
       if (group && group.default) {
         entry = [...(entry || []), ...group.default]
@@ -94,7 +95,7 @@ yargs
       }
 
       require('./cmds/build').default({ entry, group, ...other } as BuildOption)
-    },
+    }),
   )
   .command(
     'analyze',
@@ -108,9 +109,9 @@ yargs
         coerce: transformString2Array,
       },
     },
-    argv => {
+    wrap(argv => {
       require('./cmds/analyze').default(argv as AnalyzeOption)
-    },
+    }),
   )
   .command(
     'serve',
@@ -138,14 +139,18 @@ yargs
         default: true,
       },
     },
-    argv => {
+    wrap(argv => {
       require('./cmds/serve').default(argv as ServeOption)
-    },
+    }),
   )
   .command(
     'upgrade',
     `upgrade ${name} in current project or global`,
     {
+      'dry-run': {
+        alias: 'd',
+        type: 'boolean',
+      },
       global: {
         description: 'global upgrade',
         alias: 'g',
@@ -162,18 +167,17 @@ yargs
         type: 'boolean',
       },
       level: {
-        description: 'choose semver level',
+        description: `choose semver level. Global mode default is 'major', local mode default is 'minor'`,
         alias: 'l',
         type: 'string',
         choices: ['major', 'minor', 'patch'],
-        default: 'minor',
       },
     },
-    argv => {
+    wrap(argv => {
       require('./cmds/upgrade').default(argv as UpgradeOption)
-    },
+    }),
   )
-  .command('deploy', 'TODO', {}, argv => {})
+  .command('deploy', 'TODO', {}, wrap(argv => {}))
   .option('inspect', {
     description: 'inspect webpack configuration',
     type: 'boolean',

@@ -54,3 +54,17 @@ declare module 'ajv' {
     }
   }
 }
+
+declare module 'boxen' {
+  export default function(
+    message: string,
+    options?: {
+      borderColor?: string
+      borderStyle?: 'single' | 'double' | 'round'
+      padding?: number
+      margin?: number
+      float?: 'right' | 'center' | 'left'
+      align?: 'right' | 'center' | 'left'
+    },
+  ): string
+}

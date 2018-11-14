@@ -19,31 +19,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => ({
       ? 'cheap-module-eval-source-map'
       : 'cheap-module-source-map',
   module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          require.resolve('style-loader'),
-          {
-            loader: require.resolve('css-loader'),
-            options: {
-              importLoaders: 1,
-            },
-          },
-          {
-            loader: require.resolve('postcss-loader'),
-            options: {
-              ident: 'postcss',
-              plugins: () => [
-                require('autoprefixer')({
-                  browsers: ['last 2 versions'],
-                }),
-              ],
-            },
-          },
-        ],
-      },
-    ],
+    rules: [],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

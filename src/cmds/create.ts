@@ -163,6 +163,7 @@ function initialPackageJson(
       // for antd, antd-mobile
       importPlugin: [],
     },
+    browsers: 'last 2 versions',
   }
   let pacakgeJson = {
     ...reservedProperties,

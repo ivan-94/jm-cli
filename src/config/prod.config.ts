@@ -11,7 +11,6 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name } = argv
   const filePrefix = name ? `${name}_` : ''
-  const shouldUseRelativeAssetPaths = enviroments.raw.PUBLIC_URL === './'
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
 
   return {
@@ -19,37 +18,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     bail: true,
     entry: {},
     module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                publicPath: shouldUseRelativeAssetPaths ? '../../' : undefined,
-              },
-            },
-            {
-              loader: require.resolve('css-loader'),
-              options: {
-                importLoaders: 1,
-                minimize: true,
-              },
-            },
-            {
-              loader: require.resolve('postcss-loader'),
-              options: {
-                ident: 'postcss',
-                plugins: () => [
-                  require('autoprefixer')({
-                    browsers: ['last 2 versions'],
-                  }),
-                ],
-              },
-            },
-          ],
-        },
-      ],
+      rules: [],
     },
     plugins: [
       // 抽取CSS文件

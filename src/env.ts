@@ -61,7 +61,7 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
       {
         VERSION: pkg.version,
         NAME: pkg.name,
-        PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || '/' : '/',
+        PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || './' : '/',
         PAGE_EXT: '.html',
         // NODE_ENV 可能会被篡改，所以固定住
         NODE_ENV,

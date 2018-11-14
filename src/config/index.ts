@@ -11,6 +11,7 @@ import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import diff from 'lodash/difference'
 import babelOptions from './babelOptions'
+import styleLoaders from './styleLoaders'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -26,7 +27,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const pageExt = enviroments.raw.PAGE_EXT || '.html'
   const pageEntries = getEntries(context, pageExt, entry)
   const filePrefix = name ? `${name}_` : ''
-  // const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
+  const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
 
   if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
@@ -84,6 +85,14 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 },
               },
             },
+            {
+              test: /\.css$/,
+              use: styleLoaders(enviroments.raw, {
+                importLoaders: 1,
+                sourceMap: isProduction && shouldUseSourceMap,
+              }),
+              sideEffects: true,
+            },
             // pug loader
             {
               test: /\.pug$/,
@@ -120,6 +129,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
               },
             },
+            // 其他loader插入到这里
             ...((envConfig.module && envConfig.module.rules) || []),
             {
               // Exclude `js` files to keep "css" loader working as it injects

@@ -97,6 +97,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     performance: {
       hints: 'warning',
+      assetFilter: assetFilename => !/(\.map$)|(^(vendor\.|favicon\.))/.test(assetFilename),
     },
   }
 }

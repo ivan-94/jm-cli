@@ -3,9 +3,10 @@
 [*] 动态加载template
 [*] error overlap
 [ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
+[ ] 模板复制ignore
 [*] 清屏
 [*] react-hot-loader
-[ ] webpack 进一步优化, css
+[ ] webpack 进一步优化, css, cache-loader
 [*] create 欢迎信息
 [ ] 默认template优化
 [ ] User Guide
@@ -18,7 +19,6 @@
 [ ] polyfill tslib 和 bable-runtime
 [ ] gitignore
 [*] webpack-dev-server client
-[ ] inline runtime
 [*] 美化inspect
 [*] jm serve 测试生产环境包的运行, 支持复用代理配置. 支持https
 [*] package.json 配置检查
@@ -31,10 +31,11 @@
 [ ] debug
 
 # 不紧急
-[ ] react-error-overlap
 [ ] 加载动画 ora.
 [ ] 美化控制台输出
-[ ] Plug'n'Play support
 
 # 待考虑
+[ ] react-error-overlap
+[ ] inline runtime
+[ ] Plug'n'Play support
 [ ] jm-deploy集成

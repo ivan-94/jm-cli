@@ -121,6 +121,14 @@ export function inspect(variable: any, title?: string) {
   console.log('\n\n')
 }
 
+export function isModuleExists(name: string) {
+  try {
+    return !!require.resolve(name)
+  } catch {
+    return false
+  }
+}
+
 /**
  * interpolate ${variable} in string
  */

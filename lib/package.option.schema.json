@@ -6,6 +6,12 @@
   "properties": {
     "jm": {
       "$ref": "option.schema.json"
+    },
+    "browsers": {
+      "type": ["string", "array"],
+      "items": {
+        "type": "string"
+      }
     }
   }
 }

@@ -138,7 +138,7 @@
     // 不要将未绑定的方法传递给其他方法或赋值. 应该转换为箭头函数
     "no-unbound-method": [true, "ignore-static"],
     "no-unnecessary-class": true,
-    "no-unsafe-any": true,
+    "no-unsafe-any": false,
     "no-unsafe-finally": true,
     "no-unused-expression": [true, "allow-fast-null-checks", "allow-tagged-template"],
     "no-use-before-declare": true,
@@ -173,8 +173,8 @@
     /*-----------------------
      *  样式相关 相关(大部分忽略, 由prettier处理)
      *-------------------------*/
-    // 使用T[] 来声明数组, 而不是Array<T>
-    "array-type": true,
+    // 推荐使用T[] 来声明数组, 而不是Array<T>
+    "array-type": false,
     "arrow-return-shorthand": true,
     // 二元操作符变量在先, 如 x + 1
     "binary-expression-operand-order": true,
@@ -226,7 +226,7 @@
     "interface-name": [true, "never-prefix"],
     // 注释使用jsdoc规范
     "jsdoc-format": true,
-    "match-default-export-name": true,
+    "match-default-export-name": false,
     "new-parens": true,
     // 使用as关键字, 而不是<>来进行类型断言
     "no-angle-bracket-type-assertion": true,
@@ -261,9 +261,10 @@
     "prefer-template": [true, "allow-single-concat"],
     "prefer-while": true,
     "return-undefined": true,
-    "variable-name": [true, "ban-keywords", "check-format"],
+    // 只允许UPPER_CASE，lowerCamelCase，UpperCamelCase
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "object-literal-shorthand": true,
-    "promise-function-async": true,
+    "promise-function-async": false,
     /*-----------------------
      *  React 相关(大部分忽略, 由prettier处理)
      *-------------------------*/

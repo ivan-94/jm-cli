@@ -13,6 +13,7 @@ import diff from 'lodash/difference'
 import getBabelOptions from './babelOptions'
 import styleLoaders from './styleLoaders'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
+import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
 import genCacheConfig from './cacheOptions'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -26,7 +27,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
   const context = paths.appSrc
-  const pageExt = enviroments.raw.PAGE_EXT || '.html'
+  const pageExt = ensurePageExt(enviroments.raw.PAGE_EXT || '.html')
   const pageEntries = getEntries(context, pageExt, entry)
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
@@ -255,6 +256,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
       // 注入环境变量到 window.JM_ENV中
       new InjectEnvPlugin(enviroments.userDefine, 'JM_ENV'),
+      // 当pageExt为html时, 解析里面的${ENV}
+      ...(pageExt === '.html' ? [new HtmlInterpolatePlugin(enviroments.raw)] : []),
       ...(envConfig.plugins || []),
     ],
     node: {
@@ -268,6 +271,11 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   return webpackConfig
+}
+
+function ensurePageExt(ext: string) {
+  ext = ext.trim()
+  return ext[0] === '.' ? ext : `.${ext}`
 }
 
 function getEntries(context: string, pageExt: string, entry?: string[]) {

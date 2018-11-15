@@ -1,0 +1,12 @@
+{
+  "docs": {
+    "Getting Started": ["getting-started", "folder-structure"],
+    "Configurations": ["doc2"],
+    "Deployment": ["doc3"],
+    "CLI": ["exampledoc4"],
+    "Template Development": ["exampledoc5"]
+  },
+  "docs-other": {
+    "First Category": ["doc4", "doc5"]
+  }
+}

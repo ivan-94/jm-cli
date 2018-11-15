@@ -23,9 +23,11 @@
 [*] package.json vscode schema
 [*] tslint 可配，禁用时警告
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
-[ ] cache-loader, thread-loader 使用场景
+[*] cache-loader, thread-loader 使用场景
 [ ] 通用资源外部化(react, mobx这些)
 [ ] remove cache command
+[ ] 打印typescript，react版本信息
+[ ] 打印编译后的包信息
 
 # 不紧急
 [ ] 加载动画 ora.
@@ -36,6 +38,7 @@
 [ ] polyfill tslib 和 bable-runtime 现在存在部分第三方应用peer依赖tslib
 [ ] 如何迁移现有项目
 [ ] prefetch
+[ ] 进一步性能优化
 
 # 待考虑
 [ ] react-error-overlap

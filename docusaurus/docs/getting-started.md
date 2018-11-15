@@ -4,11 +4,12 @@ title: Getting Started
 sidebar_label: Getting Started
 ---
 
-`jm-cli` 是`mygzb`前端团队使用的项目运行和构建工具。旨在提供高性能，约定大于配置的构建环境，让开发者更专注于业务的开发。
+`jm-cli` 是`mygzb`前端团队使用的项目运行和构建工具。提供了高性能, 强团队编码规范, 约定大于配置的构建环境. 可以让开发者更专注于业务的开发,
+增强项目的可维护性.
 
 ## 安装
 
-```
+```shell
 yarn global add @gdjima/cli
 # or
 npm i -g @gdjiami/ci
@@ -20,7 +21,7 @@ jm help
 
 ## 创建项目
 
-```
+```shell
 jm create my-app
 ```
 

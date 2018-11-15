@@ -86,6 +86,11 @@ yargs
           }, {})
         },
       },
+      measure: {
+        description: 'measures your webpack build speed',
+        alias: 'm',
+        type: 'boolean',
+      },
     },
     wrap(argv => {
       let { entry, group, ...other } = argv

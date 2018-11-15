@@ -47,10 +47,10 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
       require.resolve('@babel/preset-typescript'),
     ],
     plugins: [
+      [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
+      [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
       require.resolve('babel-plugin-macros'),
       require.resolve('@babel/plugin-transform-destructuring'),
-      [require.resolve('@babel/plugin-proposal-decorators'), false],
-      [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
       [require.resolve('@babel/plugin-proposal-object-rest-spread'), { useBuiltIns: true }],
       [
         require.resolve('@babel/plugin-transform-runtime'),
@@ -82,12 +82,6 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
           ])
         : []),
     ].filter(Boolean),
-    overrides: [
-      {
-        test: /\.tsx?$/,
-        plugins: [[require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }]],
-      },
-    ],
     compact: isProduction,
     cacheDirectory: true,
     cacheCompression: isProduction,

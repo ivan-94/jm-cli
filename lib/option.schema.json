@@ -53,6 +53,11 @@
       "description": "enable circular-dependency-plugin'",
       "type": "boolean",
       "default": true
+    },
+    "happypack": {
+      "description": "happy pack mode, default is true when cpus cores > 1",
+      "type": "boolean",
+      "default": true
     }
   },
   "definitions": {

@@ -15,6 +15,7 @@ import { CommonOption } from './type'
 export interface BuildOption extends CommonOption {
   entry?: string[]
   group?: StringArrayObject
+  measure?: boolean
 }
 
 const mode = 'production'
@@ -62,6 +63,12 @@ function build(argv: BuildOption) {
     inspect(environment.raw, 'Environment:')
     inspect(config, 'Webpack Configuration:')
     return
+  }
+
+  if (argv.measure) {
+    const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+    const smp = new SpeedMeasurePlugin()
+    config = smp.wrap(config)
   }
 
   clearConsole()

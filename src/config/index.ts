@@ -17,6 +17,7 @@ import genCacheConfig from './cacheOptions'
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const HappyPack = require('happypack')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
@@ -40,10 +41,23 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     ...(envConfig.entry as object),
     ...pageEntries,
   }
+
   const babelOptions = {
     ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions.importPlugin),
     envName: enviroments.raw.NODE_ENV,
   }
+
+  const babelLoders = [
+    // should I use cache-loader here? see more in https://github.com/webpack-contrib/cache-loader/issues/1#issuecomment-297994952
+    {
+      loader: require.resolve('cache-loader'),
+      options: genCacheConfig('babel', enviroments.raw, paths),
+    },
+    {
+      loader: require.resolve('babel-loader'),
+      options: babelOptions,
+    },
+  ]
 
   const webpackConfig: Configuration = {
     name,
@@ -85,17 +99,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             {
               test: /\.(ts|tsx|js|jsx)$/,
               include: paths.appSrc,
-              use: [
-                // should I use cache-loader here? see more in https://github.com/webpack-contrib/cache-loader/issues/1#issuecomment-297994952
-                {
-                  loader: require.resolve('cache-loader'),
-                  options: genCacheConfig('babel', enviroments.raw, paths),
-                },
-                {
-                  loader: require.resolve('babel-loader'),
-                  options: babelOptions,
-                },
-              ],
+              use: argv.jmOptions.happypack
+                ? { loader: require.resolve('happypack/loader'), options: { id: 'babel' } }
+                : babelLoders,
             },
             {
               test: /\.css$/,
@@ -233,6 +239,16 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         checkSyntacticErrors: true,
         formatter: 'codeframe',
       }),
+      // happypack
+      ...(argv.jmOptions.happypack
+        ? [
+            new HappyPack({
+              id: 'babel',
+              loaders: babelLoders,
+              verbose: false,
+            }),
+          ]
+        : []),
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),

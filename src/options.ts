@@ -4,6 +4,7 @@
 import Ajv, { AjvError } from 'ajv'
 import betterAjvErrors from 'better-ajv-errors'
 import fs from 'fs-extra'
+import os from 'os'
 import path from 'path'
 import groupBy from 'lodash/groupBy'
 import { ProxyConfig } from './proxy'
@@ -21,11 +22,13 @@ export interface JMOptions {
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
   enableCircularDependencyCheck: boolean
+  happypack: boolean
 }
 
 const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: true,
   enableCircularDependencyCheck: true,
+  happypack: os.cpus().length > 1,
 }
 const key = 'jm'
 

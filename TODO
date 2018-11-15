@@ -2,7 +2,6 @@
 [*] choosePort
 [*] 动态加载template
 [*] error overlap
-[ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
 [*] 模板复制ignore
 [*] 清屏
 [*] react-hot-loader
@@ -28,6 +27,8 @@
 [ ] remove cache command
 [ ] 打印typescript，react版本信息
 [ ] 打印编译后的包信息
+[ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
+[ ] package.json fields ignore. gitignore(会默认被npm忽略掉)
 
 # 不紧急
 [ ] 加载动画 ora.
@@ -38,7 +39,9 @@
 [ ] polyfill tslib 和 bable-runtime 现在存在部分第三方应用peer依赖tslib
 [ ] 如何迁移现有项目
 [ ] prefetch
+[ ] manifest
 [ ] 进一步性能优化
+[ ] PWA
 
 # 待考虑
 [ ] react-error-overlap

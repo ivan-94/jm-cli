@@ -125,7 +125,8 @@ function ensureTemplatePath(ownPath: string, cwd: string, templateName?: string)
 /**
  * clone files from templatePath to appPath,
  * default it will ignore `node_modules`, `dist` and `yarn.*`, `.git` etc
- * Template developer also define `.template-ignore` or `.gitinore` to add ignore rules
+ * Template developer also define `.template-ignore` to add ignore rules
+ * .gitignore will automatic recognized by npm
  * @param templatePath
  * @param appPath
  */
@@ -134,14 +135,9 @@ function cloneTemplate(templatePath: string, appPath: string) {
   const defaultIgnore = ['node_modules', 'dist', 'yarn.*', '.git', '.template-ignore', '.cache-loader']
   ig.add(defaultIgnore)
   const templateIgnorePath = path.join(templatePath, '.template-ignore')
-  const gitIgnorePath = path.join(templatePath, '.gitignore')
 
   if (fs.existsSync(templateIgnorePath)) {
     ig.add(fs.readFileSync(templateIgnorePath).toString())
-  }
-
-  if (fs.existsSync(gitIgnorePath)) {
-    ig.add(fs.readFileSync(gitIgnorePath).toString())
   }
 
   fs.copySync(templatePath, appPath, {

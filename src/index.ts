@@ -17,6 +17,7 @@ const cwd = process.cwd()
 const cmdDir = path.resolve(__dirname, '../')
 const pkg = fs.readJSONSync(path.join(cmdDir, 'package.json'))
 const name = pkg.name
+const version = pkg.version
 const cmdName = Object.keys(pkg.bin)[0]
 
 yargs
@@ -38,7 +39,7 @@ yargs
     }),
   )
   .command(
-    'start',
+    ['start', '$0'],
     'Start development server',
     {
       entry: {
@@ -183,6 +184,13 @@ yargs
     }),
   )
   .command('deploy', 'TODO', {}, wrap(argv => {}))
+  .command('version', 'show version', {}, argv => {
+    console.log(version)
+  })
+  .command('help', 'show helps', {}, () => {
+    yargs.showHelp()
+  })
+  .version(version)
   .option('inspect', {
     description: 'inspect webpack configuration',
     type: 'boolean',

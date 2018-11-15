@@ -1,7 +1,7 @@
 {
   "docs": {
     "Getting Started": ["getting-started", "folder-structure", "features"],
-    "Configurations": ["environments"],
+    "Configurations": ["environments", "configurations"],
     "Deployment": ["doc3"],
     "CLI": ["exampledoc4"],
     "Template Development": ["exampledoc5"]

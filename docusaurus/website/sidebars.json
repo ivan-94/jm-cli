@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Getting Started": ["getting-started", "folder-structure"],
+    "Getting Started": ["getting-started", "folder-structure", "features"],
     "Configurations": ["doc2"],
     "Deployment": ["doc3"],
     "CLI": ["exampledoc4"],

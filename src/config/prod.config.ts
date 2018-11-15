@@ -2,6 +2,8 @@
  * 生产环境配置
  */
 import { WebpackConfigurer } from './type'
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
@@ -26,6 +28,18 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         filename: `static/css/${filePrefix}[name].css?[contenthash:8]`,
         chunkFilename: `static/css/${filePrefix}[name].chunk.css?[contenthash:8]`,
       }),
+      // 检查是否存在多个版本的包
+      argv.jmOptions.enableDuplicatePackageCheck &&
+        new DuplicatePackageCheckerPlugin({
+          verbose: true,
+          showHelp: true,
+        }),
+      // 循环依赖检查
+      argv.jmOptions.enableCircularDependencyCheck &&
+        new CircularDependencyPlugin({
+          exclude: /a\.js|node_modules/, // exclude node_modules
+          failOnError: false, // show a warning when there is a circular dependency
+        }),
     ],
     optimization: {
       // 让webpack检查和删除已经在所有父模块存在的模块

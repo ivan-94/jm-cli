@@ -29,6 +29,8 @@
 [ ] 打印编译后的包信息
 [ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
 [ ] package.json fields ignore. gitignore(会默认被npm忽略掉)
+[ ] build支持不删除目标目录
+[ ] decorator 可配置. 这是废弃的标准, 默认应该禁止
 
 # 不紧急
 [ ] 加载动画 ora.
@@ -48,3 +50,15 @@
 [ ] inline runtime
 [ ] Plug'n'Play support
 [ ] jm-deploy集成
+
+# Doc
+
+[] 配置
+  [] 多页模式
+[] 应用规范
+[] CLI
+[] 使用技巧
+  [] 技术栈
+  [] 代码分割
+  [] 状态管理
+  [] 预渲染

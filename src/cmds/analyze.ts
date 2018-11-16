@@ -33,6 +33,7 @@ async function analyze(argv: AnalyzeOption) {
 
   let config: Configuration[] | Configuration
 
+  // FIXME: group 分析目前还有一些问题, 只能分析单一分组信息
   if (argv.group) {
     // 应用分组模式
     const group = argv.group

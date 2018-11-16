@@ -24,7 +24,7 @@
 [*] 利用http-webpack-plugin 注入JM_开头的变量. 并动态支持类型
 [*] cache-loader, thread-loader 使用场景
 [ ] 通用资源外部化(react, mobx这些)
-[ ] remove cache command
+[*] remove cache command
 [ ] 打印typescript，react版本信息
 [ ] 打印编译后的包信息
 [ ] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录

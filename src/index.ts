@@ -173,6 +173,14 @@ yargs
       require('./cmds/upgrade').default(argv as UpgradeOption)
     }),
   )
+  .command(
+    'clean',
+    'clean cache',
+    {},
+    wrap(argv => {
+      require('./cmds/clean-cache').default()
+    }),
+  )
   .command('deploy', 'TODO', {}, wrap(argv => {}))
   .command('version', 'show version', {}, argv => {
     console.log(version)

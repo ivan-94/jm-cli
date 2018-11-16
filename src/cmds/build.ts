@@ -32,6 +32,7 @@ function build(argv: BuildOption) {
   if (jmOptions == null) {
     return
   }
+
   let config: Configuration[] | Configuration
 
   if (argv.group) {

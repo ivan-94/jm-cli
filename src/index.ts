@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import yargs from 'yargs'
 import path from 'path'
-import { transformString2Array } from './utils'
+import { transformString2Array, transformGroup } from './utils'
 import { StartOption } from './cmds/start'
 import { BuildOption } from './cmds/build'
 import { AnalyzeOption } from './cmds/analyze'
@@ -69,23 +69,7 @@ yargs
         desc: `sepcify entry group. It will override --entry. example --group.client=a,b --group.server=c,d`,
         type: 'string',
         requiresArg: true,
-        coerce: argv => {
-          if (Array.isArray(argv)) {
-            return argv.reduce<StringArrayObject>((group, cur) => {
-              const entry = transformString2Array(cur)
-              const name = entry.join('_')
-              group[name] = entry
-              return group
-            }, {})
-          } else if (typeof argv === 'string') {
-            return { default: transformString2Array(argv) }
-          }
-
-          return Object.keys(argv).reduce<StringArrayObject>((group, cur) => {
-            group[cur] = transformString2Array(argv[cur])
-            return group
-          }, {})
-        },
+        coerce: transformGroup,
       },
       measure: {
         description: 'measures your webpack build speed',
@@ -113,6 +97,12 @@ yargs
         type: 'string',
         requiresArg: true,
         coerce: transformString2Array,
+      },
+      group: {
+        desc: `sepcify entry group. It will override --entry. example --group.client=a,b --group.server=c,d`,
+        type: 'string',
+        requiresArg: true,
+        coerce: transformGroup,
       },
     },
     wrap(argv => {

@@ -36,6 +36,27 @@ export function transformString2Array(str: string): string[] {
   return str.split(',')
 }
 
+/**
+ * transform --group.foo=a,b or --group=a,b --group=b,c
+ */
+export function transformGroup(argv: string | string[] | { [key: string]: string }) {
+  if (Array.isArray(argv)) {
+    return argv.reduce<StringArrayObject>((group, cur) => {
+      const entry = transformString2Array(cur)
+      const name = entry.join('_')
+      group[name] = entry
+      return group
+    }, {})
+  } else if (typeof argv === 'string') {
+    return { default: transformString2Array(argv) }
+  }
+
+  return Object.keys(argv).reduce<StringArrayObject>((group, cur) => {
+    group[cur] = transformString2Array(argv[cur])
+    return group
+  }, {})
+}
+
 export function writeJSON(path: string, data: object) {
   fs.writeFileSync(path, JSON.stringify(data, null, 2) + os.EOL)
 }

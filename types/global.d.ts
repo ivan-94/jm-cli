@@ -15,7 +15,7 @@ type StringObject = { [key: string]: string }
 
 declare module 'webpack-bundle-analyzer' {
   const value: {
-    start: (stat: any) => void
+    start: (stat: any, options: { port?: number; host?: string }) => void
   }
   export default value
 }

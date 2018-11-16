@@ -40,7 +40,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           exclude: /a\.js|node_modules/, // exclude node_modules
           failOnError: false, // show a warning when there is a circular dependency
         }),
-    ],
+    ].filter(Boolean),
     optimization: {
       // 让webpack检查和删除已经在所有父模块存在的模块
       removeAvailableModules: true,

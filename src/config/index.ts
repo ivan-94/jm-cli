@@ -199,18 +199,15 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         cacheGroups: {
           // 第三方共有包
           vendor: {
-            name: 'vendor',
             test: /[\\/]node_modules[\\/]/,
             reuseExistingChunk: false,
             chunks: 'initial',
             minChunks: 2,
-            enforce: true, // 强制
             // 一个可拆分的chunk可能属于多个分组, 这个用于设置优先级
             priority: -10,
           },
           // 应用内共有包
           commons: {
-            name: 'commons',
             test: /src/,
             chunks: 'initial',
             reuseExistingChunk: true,

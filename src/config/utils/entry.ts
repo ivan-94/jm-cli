@@ -76,10 +76,9 @@ export function genTemplatePlugin(
       filename: page + '.html',
       inject: true,
       /**
-       * HtmlWebpackPlugin 目前不支持多页应用parent chunks识别，所有这里只能限定
-       * parent chunk的名称
+       * html-wepback-plugin 已经支持父parent的识别
        */
-      chunks: ['main', 'runtime', 'polyfill', 'vendor', 'commons', page],
+      chunks: [page],
       template: pagePath,
       minify: isProduction
         ? {

@@ -134,7 +134,7 @@ containers/
 根目录下存在三个目录, 主要影响 Typescript 类型检查:
 
 - `tsconfig.json` typescript 项目配置, 会影响类型检查. 开发者一般要避免去修改它的配置. 将来`tsconfig.json`的
-  `extends`功能完善了, 配置会集成进`jm-cli`代码库中
+  `extends`功能完善了, 配置会集成进`jm-cli`代码库中.(这个功能将在 Typescript3.2 中实现)
 - `tslint.json` 主要用于限制代码规范. 它扩展了`jm-cli`内部定义 tslint 规则, 这份规则是团队开发的规范定义. 所以开发者
   一般不需要去修改里面的规则.
 - `global.d.ts` 全局的类型声明. 主要用于对未提供类型声明文件的第三方库, 进行类型声明.

@@ -2,21 +2,19 @@
  * 基础配置
  */
 import webpack, { Configuration } from 'webpack'
-import fs from 'fs-extra'
-import glob from 'glob'
 import path from 'path'
 import chalk from 'chalk'
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
-import diff from 'lodash/difference'
-import getBabelOptions from './babelOptions'
-import styleLoaders from './styleLoaders'
+import getBabelOptions from './utils/babelOptions'
+import genCacheConfig from './utils/cacheOptions'
+import styleLoaders from './utils/styleLoaders'
+import { getEntries, genTemplatePlugin } from './utils/entry'
+import getTslintConfig from './utils/tslintConfig'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
-import genCacheConfig from './cacheOptions'
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HappyPack = require('happypack')
 
@@ -276,114 +274,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 function ensurePageExt(ext: string) {
   ext = ext.trim()
   return ext[0] === '.' ? ext : `.${ext}`
-}
-
-function getEntries(context: string, pageExt: string, entry?: string[]) {
-  const entries: { [name: string]: string } = {}
-
-  let pages = scanPages(context, pageExt).map(p => path.basename(p, pageExt))
-  if (entry && entry.length) {
-    pages = pages.filter(p => entry.indexOf(p) !== -1)
-
-    if (pages.length !== entry.length) {
-      const notfoundedPages = diff(entry, pages).map(i => `${i}${pageExt}`)
-      console.error(`${chalk.blue(notfoundedPages.join(', '))} not found in ${chalk.cyan(context)}`)
-      process.exit(1)
-    }
-  }
-
-  pages.forEach(page => {
-    let entryFileExt = '.tsx'
-
-    if (fs.existsSync(path.join(context, `${page}.tsx`))) {
-      entryFileExt = '.tsx'
-    } else if (fs.existsSync(path.join(context, `${page}.ts`))) {
-      entryFileExt = '.ts'
-    } else {
-      console.error(
-        `${chalk.green(
-          `${page}${pageExt}`,
-        )} founded, but not any entry file(${page}.tsx or ${page}.ts) found in ${context}.`,
-      )
-      process.exit(1)
-    }
-
-    // 检查入口文件是否存在
-    const entry = `./${page}${entryFileExt}`
-    entries[page] = entry
-  })
-
-  return entries
-}
-
-/**
- * scan enty pages
- */
-function scanPages(context: string, ext: string) {
-  return glob.sync(path.join(context, `*${ext}`), {})
-}
-
-// 生成*.html 文件
-function genTemplatePlugin(
-  context: string,
-  pageEntries: { [key: string]: string },
-  isProduction: boolean,
-  templateParameters: { [key: string]: string },
-  ext: string = '.html',
-) {
-  const pages = Object.keys(pageEntries)
-  return pages.map(page => {
-    const pagePath = path.join(context, `${page}${ext}`)
-
-    return new HtmlWebpackPlugin({
-      templateParameters,
-      filename: page + '.html',
-      inject: true,
-      /**
-       * HtmlWebpackPlugin 目前不支持多页应用parent chunks识别，所有这里只能限定
-       * parent chunk的名称
-       */
-      chunks: ['main', 'runtime', 'polyfill', 'vendor', 'commons', page],
-      template: pagePath,
-      minify: isProduction
-        ? {
-            removeComments: true,
-            collapseWhitespace: true,
-            removeRedundantAttributes: true,
-            useShortDoctype: true,
-            removeEmptyAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            keepClosingSlash: true,
-            minifyJS: true,
-            minifyCSS: true,
-            minifyURLs: true,
-          }
-        : undefined,
-    })
-  })
-}
-
-function getTslintConfig(configPath: string, enviroments: { [key: string]: string }) {
-  if (enviroments.UNSAFE_DISABLE_TSLINT === 'true') {
-    console.log(
-      chalk.yellow(
-        `⚠️ Warning: ${chalk.cyan('UNSAFE_DISABLE_TSLINT')} was turn on. Please follow the team development guidelines`,
-      ),
-    )
-    return false
-  }
-
-  if (!fs.existsSync(configPath)) {
-    // TODO:
-    chalk.yellow(
-      `⚠️ Warning: tslint not found in ${chalk.cyan(configPath)}. type ${chalk.blueBright(
-        'jm create-tslint',
-      )} to create one.`,
-    )
-    return false
-  }
-
-  return configPath
 }
 
 export default configure

@@ -1,8 +1,8 @@
 /**
  * babel 配置选项
  */
-import { ImportPluginConfig } from './type'
-import { isModuleExists } from '../utils'
+import { ImportPluginConfig } from '../type'
+import { isModuleExists } from '../../utils'
 
 // see more options in https://babeljs.io/docs/en/options
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q

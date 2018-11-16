@@ -3,7 +3,7 @@
  */
 import hash from 'hash-sum'
 import path from 'path'
-import { WebpackPaths } from '../paths'
+import { WebpackPaths } from '../../paths'
 
 export default function genCacheConfig(
   id: string,

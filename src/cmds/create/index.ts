@@ -4,7 +4,6 @@
 import path from 'path'
 import chalk from 'chalk'
 import fs from 'fs-extra'
-import json5 from 'json5'
 import ignore from 'ignore'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
@@ -12,6 +11,11 @@ import { execSync } from 'child_process'
 import pickBy from 'lodash/pickBy'
 import { shouldUseYarn, writeJSON, clearConsole } from '../../utils'
 import ensureTemplatePath from './getTemplate'
+import genGitIgnore from './genGitignore'
+import genGlobalDeclaration from './genGlobalDeclaration'
+import genVscodeSettings from './genVscodeSettings'
+import genTsLintConfig from './genTsLintConfig'
+import genTsConfig from './genTsConfig'
 
 export interface CreateOption {
   name: string
@@ -254,92 +258,6 @@ function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: strin
 }
 
 /**
- * 初始化tsconfig.json
- * TODO: 目前tsconfig.json 不支持extends node_modules 中的配置. 而且baseurl和rootDir都是相对tsconfi.json所在的位置
- */
-function initialTsConfig(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
-  const tsConfigPath = path.join(appPath, 'tsconfig.json')
-  const builinTsConfigPath = path.join(ownPath, 'lib/tsconfig.json')
-
-  if (fs.existsSync(tsConfigPath)) {
-    return
-  }
-
-  fs.copyFileSync(builinTsConfigPath, tsConfigPath)
-}
-
-function initialTsLintConfig(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
-  const tsLintConfigPath = path.join(appPath, 'tslint.json')
-  const builinTsLintConfigPath = path.posix.join(ownPkg.name, 'lib/tslint.json')
-
-  if (fs.existsSync(tsLintConfigPath)) {
-    const config = json5.parse(fs.readFileSync(tsLintConfigPath).toString()) as {
-      extends?: string | string[]
-      defaultSeverity?: string
-    }
-    let dirty: boolean = false
-    if (config.extends) {
-      if (typeof config.extends === 'string' && config.extends !== builinTsLintConfigPath) {
-        config.extends = [builinTsLintConfigPath, config.extends]
-        dirty = true
-      } else if (config.extends.indexOf(builinTsLintConfigPath) === -1) {
-        ;(config.extends as string[]).unshift(builinTsLintConfigPath)
-        dirty = true
-      }
-    }
-
-    if (config.defaultSeverity && config.defaultSeverity !== 'warning') {
-      config.defaultSeverity = 'warning'
-      dirty = true
-    }
-
-    if (dirty) {
-      writeJSON(tsLintConfigPath, config)
-    }
-  } else {
-    writeJSON(tsLintConfigPath, {
-      extends: [builinTsLintConfigPath],
-    })
-  }
-}
-
-function initialVscodeSettings(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
-  const vscodeSettingsDir = path.join(appPath, '.vscode')
-  const vscodeSettingsPath = path.join(vscodeSettingsDir, 'settings.json')
-  if (fs.existsSync(vscodeSettingsPath)) {
-    return
-  }
-
-  const settings = {
-    // options auto completions
-    'json.schemas': [
-      {
-        fileMatch: ['package.json'],
-        url: `./node_modules/${ownPkg.name}/lib/package.option.schema.json`,
-      },
-    ],
-  }
-
-  fs.ensureDirSync(vscodeSettingsDir)
-  writeJSON(vscodeSettingsPath, settings)
-}
-
-function initialGlobalDeclaration(appPath: string, ownPath: string, ownPkg: { [key: string]: any }) {
-  const declarationPath = path.join(appPath, 'global.d.ts')
-  const refStr = `/// <reference types="${ownPkg.name}" />`
-  if (!fs.existsSync(declarationPath)) {
-    fs.writeFileSync(declarationPath, refStr + '\n')
-    return
-  }
-
-  let content = fs.readFileSync(declarationPath).toString()
-  if (content.indexOf(refStr) === -1) {
-    content = refStr + '\n' + content
-    fs.writeFileSync(declarationPath, content)
-  }
-}
-
-/**
  * welcome infomation
  */
 function welcome(args: { name: string; appPath: string }) {
@@ -392,10 +310,8 @@ export default async (cwd: string, originalDirname: string, argv: CreateOption) 
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
 
-  initialTsConfig(appPath, originalDirname, ownPackageJson)
-  initialTsLintConfig(appPath, originalDirname, ownPackageJson)
-  initialVscodeSettings(appPath, originalDirname, ownPackageJson)
-  initialGlobalDeclaration(appPath, originalDirname, ownPackageJson)
+  const generators = [genTsConfig, genTsLintConfig, genVscodeSettings, genGlobalDeclaration, genGitIgnore]
+  generators.forEach(g => g(appPath, originalDirname, ownPackageJson))
 
   if (gitInitialed) {
     firstCommit()

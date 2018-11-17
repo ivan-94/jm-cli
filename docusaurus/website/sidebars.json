@@ -3,7 +3,7 @@
     "Getting Started": ["getting-started", "folder-structure", "features"],
     "Configurations": ["environments", "configurations", "multi-entry"],
     "API": ["cli", "template"],
-    "Standards": ["tslint"]
+    "Standards": ["tslint", "ecosystem"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

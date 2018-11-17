@@ -81,9 +81,7 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle />
           <PromoSection>
-            <Button href="#try">Try It Out</Button>
-            <Button href={docUrl('doc1.html', language)}>Example Link</Button>
-            <Button href={docUrl('doc2.html', language)}>Example Link 2</Button>
+            <Button href={docUrl('getting-started.html', language)}>Getting Started</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -101,16 +99,35 @@ const Features = () => (
   <Block layout="fourColumn">
     {[
       {
-        content: 'This is the content of my feature',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'top',
-        title: 'Feature One',
+        content: '不需要关心底层编译细节, 容易维护, 专注业务开发',
+        title: '一个命令, 一个依赖',
       },
       {
-        content: 'The content of my second feature',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'top',
-        title: 'Feature Two',
+        content: '只支持Typescript, 配合使用Tslint约束代码规范, Prettier保持统一的代码格式',
+        title: 'Typescript + Tslint + Prettier',
+      },
+      {
+        content: '使用语义化版本, 随时更新到兼容版本, 使用最新特性',
+        title: '同步更新',
+      },
+    ]}
+  </Block>
+)
+
+const FeaturesPost = () => (
+  <Block layout="fourColumn">
+    {[
+      {
+        content: '模板可以使用任意的npm包',
+        title: '自定义模板',
+      },
+      {
+        content: '只提供最小化的配置项, 不提供eject, 从代码到项目结构, 保证统一, 面向团队',
+        title: '约定大于配置',
+      },
+      {
+        content: 'jm start! 即刻运行项目',
+        title: '全局模式',
       },
     ]}
   </Block>
@@ -198,11 +215,7 @@ class Index extends React.Component {
         <HomeSplash language={language} />
         <div className="mainContainer">
           <Features />
-          <FeatureCallout />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase language={language} />
+          <FeaturesPost />
         </div>
       </div>
     )

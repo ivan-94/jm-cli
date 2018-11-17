@@ -2,7 +2,7 @@
   "docs": {
     "Getting Started": ["getting-started", "folder-structure", "features"],
     "Configurations": ["environments", "configurations", "multi-entry"],
-    "CLI": ["exampledoc4"],
+    "API": ["cli"],
     "Standards": ["tslint"],
     "Deployment": ["doc3"],
     "Template Development": ["exampledoc5"]

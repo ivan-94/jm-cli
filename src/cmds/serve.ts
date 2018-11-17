@@ -9,7 +9,7 @@ import https from 'https'
 import http from 'http'
 import { interpolateProxy, applyProxyToExpress, proxyInfomation } from '../proxy'
 import paths from '../paths'
-import { clearConsole, shouldUseYarn, choosePort, prepareUrls, inspect } from '../utils'
+import { shouldUseYarn, choosePort, prepareUrls, inspect } from '../utils'
 import { getCerts } from '../cert'
 import getOptions from '../options'
 import { CommonOption } from './type'
@@ -72,7 +72,6 @@ export default async (argv: ServeOption) => {
     return
   }
 
-  clearConsole()
   console.log(chalk.cyan(`Starting server...`))
   const app = express()
 

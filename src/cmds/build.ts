@@ -6,7 +6,7 @@ import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
-import { inspect, clearConsole, shouldUseYarn } from '../utils'
+import { inspect, shouldUseYarn } from '../utils'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -74,7 +74,6 @@ function build(argv: BuildOption) {
     config = smp.wrap(config)
   }
 
-  clearConsole()
   console.log(chalk.cyan('Creating an optimized production build...'))
   const compiler = webpack(config as Configuration)
 

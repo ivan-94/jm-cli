@@ -9,7 +9,7 @@ import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
 import { execSync } from 'child_process'
 import pickBy from 'lodash/pickBy'
-import { shouldUseYarn, writeJSON, clearConsole } from '../../utils'
+import { shouldUseYarn, writeJSON } from '../../utils'
 import ensureTemplatePath from './getTemplate'
 import genGitIgnore from './genGitignore'
 import genGlobalDeclaration from './genGlobalDeclaration'
@@ -271,7 +271,6 @@ function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: strin
  */
 function welcome(args: { name: string; appPath: string }) {
   const cmd = useYarn ? 'yarn' : 'npm'
-  clearConsole()
   console.log(`
 ✨ Success! Created ${chalk.blue(args.name)} at ${chalk.cyan(args.appPath)}
 Inside that directory, you can run several commands:\n
@@ -290,7 +289,6 @@ Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
  * @param argv 命令参数
  */
 export default async (cwd: string, originalDirname: string, argv: CreateOption) => {
-  clearConsole()
   console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
 
   const { name, version, template } = argv

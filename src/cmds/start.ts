@@ -119,14 +119,12 @@ export default async function(argv: StartOption) {
   const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw)
 
   if (argv.inspect) {
-    clearConsole()
     inspect(environment.raw, 'Environment:')
     inspect(devServerConfig, 'Development Server Config:')
     inspect(config, 'Webpack Configuration:')
     return
   }
 
-  clearConsole()
   console.log(chalk.cyan('Starting the development server...\n'))
   const compiler = createCompiler(config)
   const devServer = new webpackDevServer(compiler, devServerConfig)

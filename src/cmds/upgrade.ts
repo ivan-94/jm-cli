@@ -12,7 +12,7 @@ import {
   getUpgradableVersion,
   getLocalVersion,
 } from '../services/upgrade'
-import { shouldUseYarn, clearConsole } from '../utils'
+import { shouldUseYarn } from '../utils'
 import { CommonOption } from './type'
 
 export interface UpgradeOption extends CommonOption {
@@ -79,7 +79,6 @@ export default (argv: UpgradeOption) => {
   const pkg = fs.readJsonSync(paths.ownPackageJson)
   const global = argv.global
   const level = argv.level || (argv.global ? 'major' : 'minor')
-  clearConsole()
 
   try {
     if (global) {

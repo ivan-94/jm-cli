@@ -6,7 +6,7 @@ import chalk from 'chalk'
 import Table from 'cli-table2'
 import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
-import { noopFileSystem, inspect, clearConsole, choosePort } from '../utils'
+import { noopFileSystem, inspect, choosePort } from '../utils'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -67,7 +67,6 @@ async function analyze(argv: AnalyzeOption) {
     return
   }
 
-  clearConsole()
   console.log(chalk.cyan('Extracting webpack stats...'))
   const compiler = webpack(config as Configuration)
   compiler.outputFileSystem = noopFileSystem

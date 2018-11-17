@@ -98,7 +98,12 @@ function cloneTemplate(templatePath: string, appPath: string) {
 }
 
 function transformDependencies(org: { [key: string]: string }): string[] {
-  return Object.keys(org).map(key => `${key}@${org[key]}`)
+  return Object.keys(org).map(key => {
+    if (org[key] === '*') {
+      return key
+    }
+    return `${key}@${org[key]}`
+  })
 }
 
 function initialPackageJson(
@@ -112,7 +117,7 @@ function initialPackageJson(
     binName: string
   },
 ) {
-  const { name, binName, cliName, cliVersion } = argv
+  let { name, binName, cliName, cliVersion } = argv
   const reservedProperties = {
     name,
     version: '0.1.0',
@@ -142,7 +147,7 @@ function initialPackageJson(
     browsers: 'last 2 versions',
     optionalDependencies: {},
   }
-  let pacakgeJson = {
+  let pacakgeJson: { [key: string]: any } = {
     ...reservedProperties,
     ...optionalProperties,
   }
@@ -178,6 +183,17 @@ function initialPackageJson(
     }
   }
 
+  // install cli commands
+  let packageToInstall = cliName
+  cliVersion = cliVersion || pacakgeJson.devDependencies[cliName]
+  delete pacakgeJson.devDependencies[cliName]
+  if (cliVersion) {
+    const validSemver = semver.valid(cliVersion)
+    if (validSemver) {
+      packageToInstall += `@${validSemver}`
+    }
+  }
+
   cloneTemplate(templatePath, appPath)
   copyPrettierConfig(appPath, ownPath, pacakgeJson)
   writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
@@ -190,15 +206,6 @@ function initialPackageJson(
     })
     .concat(transformDependencies(pacakgeJson.devDependencies))
   const dependencies = transformDependencies(pacakgeJson.dependencies)
-
-  // install cli commands
-  let packageToInstall = cliName
-  if (cliVersion) {
-    const validSemver = semver.valid(cliVersion)
-    if (validSemver) {
-      packageToInstall += `@${validSemver}`
-    }
-  }
 
   devdependencies.push(packageToInstall)
 

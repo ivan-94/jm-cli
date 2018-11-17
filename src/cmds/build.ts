@@ -16,6 +16,8 @@ export interface BuildOption extends CommonOption {
   entry?: string[]
   group?: StringArrayObject
   measure?: boolean
+  dontClean?: boolean
+  dontCopy?: boolean
 }
 
 const mode = 'production'
@@ -106,7 +108,11 @@ function build(argv: BuildOption) {
 }
 
 export default (argv: BuildOption) => {
-  fs.emptyDirSync(paths.appDist)
-  fs.copySync(paths.appPublic, paths.appDist, { dereference: false })
+  if (!argv.dontClean) {
+    fs.emptyDirSync(paths.appDist)
+  }
+  if (!argv.dontCopy) {
+    fs.copySync(paths.appPublic, paths.appDist, { dereference: false })
+  }
   build(argv)
 }

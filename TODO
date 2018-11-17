@@ -30,7 +30,7 @@
 [*] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
 [*] package.json fields ignore. 
 [*] gitignore(会默认被npm忽略掉)
-[ ] build支持不删除目标目录
+[*] build支持不删除目标目录
 [ ] decorator 可配置. 这是废弃的标准, 默认应该禁止
 
 # 不紧急

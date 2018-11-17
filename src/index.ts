@@ -65,6 +65,14 @@ yargs
         requiresArg: true,
         coerce: transformString2Array,
       },
+      'dont-clean': {
+        description: "don't clean dist folder",
+        type: 'boolean',
+      },
+      'dont-copy': {
+        description: "don't copy files in `public`",
+        type: 'boolean',
+      },
       group: {
         desc: `sepcify entry group. It will override --entry. example --group.client=a,b --group.server=c,d`,
         type: 'string',
@@ -181,7 +189,8 @@ yargs
       require('./cmds/cleanCache').default()
     }),
   )
-  .command('deploy', 'TODO', {}, wrap(argv => {}))
+  // .command('deploy', 'TODO', {}, wrap(argv => {}))
+  // .command('test', 'TODO', {}, wrap(argv => {}))
   .command('version', 'show version', {}, argv => {
     console.log(version)
   })

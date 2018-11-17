@@ -2,10 +2,8 @@
   "docs": {
     "Getting Started": ["getting-started", "folder-structure", "features"],
     "Configurations": ["environments", "configurations", "multi-entry"],
-    "API": ["cli"],
-    "Standards": ["tslint"],
-    "Deployment": ["doc3"],
-    "Template Development": ["exampledoc5"]
+    "API": ["cli", "template"],
+    "Standards": ["tslint"]
   },
   "docs-other": {
     "First Category": ["doc4", "doc5"]

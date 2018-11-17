@@ -24,6 +24,7 @@ jm create [name] [options]
 | Options                    | Description                                                                                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | --template -t [npm-module] | 指定自定义模板. 模板可以是任意合法的`npm module`. 详情参考[`npm-install`](https://docs.npmjs.com/cli/install) |
+| --force -f                 | 总是下载新的模板, 忽略缓存                                                                                    |
 | --at -a [version]          | 限定安装的`jm-cli`的依赖版本                                                                                  |
 
 ### 使用示例

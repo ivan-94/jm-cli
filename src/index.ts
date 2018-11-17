@@ -26,7 +26,7 @@ yargs
     'create [name]',
     'Create React project',
     {
-      name: { description: 'project name' },
+      force: { description: 'disable template cache', alias: 'f', type: 'boolean' },
       at: { description: 'sepcify jm-cli version', alias: 'a', type: 'string', requiresArg: true },
       template: { description: 'template name in npm, file:// or url', alias: 't', type: 'string', requiresArg: true },
     },

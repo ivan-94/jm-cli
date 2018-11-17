@@ -18,6 +18,7 @@ import genTsLintConfig from './genTsLintConfig'
 import genTsConfig from './genTsConfig'
 
 export interface CreateOption {
+  force?: boolean
   name: string
   version?: string
   template?: string
@@ -139,6 +140,7 @@ function initialPackageJson(
       importPlugin: [],
     },
     browsers: 'last 2 versions',
+    optionalDependencies: {},
   }
   let pacakgeJson = {
     ...reservedProperties,
@@ -286,7 +288,7 @@ export default async (cwd: string, originalDirname: string, argv: CreateOption) 
 
   const { name, version, template } = argv
   validatePackageName(name)
-  const templatePath = await ensureTemplatePath(originalDirname, cwd, template)
+  const templatePath = await ensureTemplatePath(!!argv.force, originalDirname, cwd, template)
   if (!fs.existsSync(templatePath)) {
     console.error(`Template path ${templatePath} not existed.`)
     process.exit(1)

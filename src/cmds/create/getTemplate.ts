@@ -54,7 +54,7 @@ function getAbsolutePath(base: string) {
 /**
  * 获取和下载自定义模板
  */
-export default async function getTemplate(ownPath: string, cwd: string, templateName?: string) {
+export default async function getTemplate(force: boolean, ownPath: string, cwd: string, templateName?: string) {
   if (templateName == null) {
     // default template
     return path.join(ownPath, 'template')
@@ -81,7 +81,7 @@ export default async function getTemplate(ownPath: string, cwd: string, template
   // 已存在, 不需要重复下载
   if (templateJsonExisted) {
     pkg = fs.readJsonSync(templateJson)
-    if (templateName in pkg && pkg[templateName].packName === packName) {
+    if (!force && templateName in pkg && pkg[templateName].packName === packName) {
       return getAbsolutePath(pkg[templateName].path)
     }
   }

@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Multiple Entry · JM-CLI</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;会扫描&lt;code&gt;src&lt;/code&gt;目录下的模板文件(默认是.html)来确定页面入口. &lt;code&gt;start&lt;/code&gt;, &lt;code&gt;build&lt;/code&gt;以及&lt;code&gt;analyze&lt;/code&gt;命令都支持&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Multiple Entry · JM-CLI"/><meta property="og:type" content="website"/><meta property="og:url" content="https://carney520.github.io/jm-cli/index.html"/><meta property="og:description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;会扫描&lt;code&gt;src&lt;/code&gt;目录下的模板文件(默认是.html)来确定页面入口. &lt;code&gt;start&lt;/code&gt;, &lt;code&gt;build&lt;/code&gt;以及&lt;code&gt;analyze&lt;/code&gt;命令都支持&lt;/p&gt;
+"/><meta property="og:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><link rel="shortcut icon" href="/jm-cli/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jm-cli/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jm-cli/"><img class="logo" src="/jm-cli/img/docusaurus.svg" alt="JM-CLI"/><h2 class="headerTitleWithLogo">JM-CLI</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/jm-cli/docs/getting-started" target="_self">Doc</a></li><li class=""><a href="/jm-cli/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Configurations</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/folder-structure">Folder Structure</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/features">Features</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Configurations</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/environments">Environments</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/configurations">Configurations</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/jm-cli/docs/multi-entry">Multiple Entry</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/cli">CLI</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/template">Custom Template</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Standards</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/tslint">Tslint Rules</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/ecosystem">Ecosystem</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Multiple Entry</h1></header><article><div><span><p><code>jm-cli</code>会扫描<code>src</code>目录下的模板文件(默认是.html)来确定页面入口. <code>start</code>, <code>build</code>以及<code>analyze</code>命令都支持
+<strong>--entry</strong>, <code>build</code>和<code>analyze</code>还支持<strong>--group</strong>命令.</p>
+<h2><a class="anchor" aria-hidden="true" id="使用-entry-显式指定入口页面"></a><a href="#使用-entry-显式指定入口页面" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用<strong>--entry</strong>显式指定入口页面</h2>
+<p><strong>--entry</strong>选项用于显式指定入口页面, 多个页面使用','分隔, 例如:</p>
+<pre><code class="hljs css language-shell">jm start --entry=a,b
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="使用-group-对应用进行分组"></a><a href="#使用-group-对应用进行分组" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用<strong>--group</strong>对应用进行分组</h2>
+<h3><a class="anchor" aria-hidden="true" id="默认的拆包和合并行为"></a><a href="#默认的拆包和合并行为" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>默认的拆包和合并行为</h3>
+<p>webpack 在生产环境构建时会对模块进行拆包和合并. 一般情况下推荐调用<code>jm build</code>直接编译, <code>splitChunks</code>的默认配置已经可以使用大部分场景.</p>
+<p>默认情况下多个页面'直接依赖(initial import)'的 node_modules 下的模块, 会抽取到<code>vendor</code> chunk. 在多个页面之间共享. 例如:</p>
+<pre><code class="hljs css language-html"><span class="hljs-comment">&lt;!-- admin.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/runtime.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/vendor~admin~index.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/admin.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- index.html --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/runtime.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/vendor~admin~index.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"static/js/index.js?xxx"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
+<p>可以看到<code>runtime.js</code>和<code>vendor~admin~index.js</code>是在两个页面之间共享的. 这样可以利用浏览器缓存, 减少资源加载次数.
+而每个页面特定的依赖会放在各自的<code>{name}.js</code>文件中.</p>
+<p>对于'按需依赖(async import)'则按照<code>SplitChunks</code>的默认行为进行拆包合并. <a href="https://webpack.docschina.org/plugins/split-chunks-plugin/">详见文档</a></p>
+<p>对于 SplitChunks 的工作原理可以看这两篇文章:</p>
+<ul>
+<li><a href="https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366">webpack 4: Code Splitting, chunk graph and the splitChunks optimization</a></li>
+<li><a href="https://medium.com/dailyjs/webpack-4-splitchunks-plugin-d9fbbe091fd0">Webpack 4 — Mysterious SplitChunks Plugin</a></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="group-的应用场景"></a><a href="#group-的应用场景" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><strong>--group</strong>的应用场景</h3>
+<p>如果你的多个页面是相互隔离的, 比如依赖于不同的版本, 或者想独立的编译但又不想重新编译其他页面, 或者不想在页面之间拆包和共享 chunk.
+这时候应用分组就可以派上用场了</p>
+<p><code>jm-cli</code>支持对页面进行分组. 使用<strong>--group</strong>选项来指定分组, 每个分组会被独立的编译:</p>
+<pre><code class="hljs css language-shell">jm build --group.admin=admin,another-admin --group.app=index,another-app
+<span class="hljs-meta">#</span><span class="bash"> or</span>
+jm build --group=admin,another-admin --group=index,another-app
+</code></pre>
+<p>可以使用<strong>--group.{GROUP_NAME}</strong>来指定分组名. 分组名的意义是为了避免文件覆盖, 因为所有文件都是输出到同一个目录的.
+使用<strong>--group=a,b</strong>形式, 会使用'_'组合页面名称来作为分组名, 如 a_b</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/jm-cli/docs/configurations"><span class="arrow-prev">← </span><span>Configurations</span></a><a class="docs-next button" href="/jm-cli/docs/cli"><span>CLI</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#使用-entry-显式指定入口页面">使用<strong>--entry</strong>显式指定入口页面</a></li><li><a href="#使用-group-对应用进行分组">使用<strong>--group</strong>对应用进行分组</a><ul class="toc-headings"><li><a href="#默认的拆包和合并行为">默认的拆包和合并行为</a></li><li><a href="#group-的应用场景"><strong>--group</strong>的应用场景</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jm-cli/" class="nav-home"><img src="/jm-cli/img/docusaurus.svg" alt="JM-CLI" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jm-cli/docs/en/getting-started.html">Getting Started</a><a href="/jm-cli/docs/en/environments.html">Configurations</a><a href="/jm-cli/docs/en/cli.html">CLI Reference</a></div><div><h5>More</h5><a href="https://github.com/carney520/jm-cli">GitHub</a><a class="github-button" href="https://github.com/carney520/jm-cli" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2018 mygzb.com</section></footer></div></body></html>

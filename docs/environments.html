@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Environments · JM-CLI</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;通过&lt;code&gt;dot-env&lt;/code&gt;来识别项目根目录下的.env*文件.&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Environments · JM-CLI"/><meta property="og:type" content="website"/><meta property="og:url" content="https://carney520.github.io/jm-cli/index.html"/><meta property="og:description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;通过&lt;code&gt;dot-env&lt;/code&gt;来识别项目根目录下的.env*文件.&lt;/p&gt;
+"/><meta property="og:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><link rel="shortcut icon" href="/jm-cli/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jm-cli/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jm-cli/"><img class="logo" src="/jm-cli/img/docusaurus.svg" alt="JM-CLI"/><h2 class="headerTitleWithLogo">JM-CLI</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/jm-cli/docs/getting-started" target="_self">Doc</a></li><li class=""><a href="/jm-cli/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Configurations</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/folder-structure">Folder Structure</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/features">Features</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Configurations</h3><ul><li class="navListItem navListItemActive"><a class="navItem" href="/jm-cli/docs/environments">Environments</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/configurations">Configurations</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/multi-entry">Multiple Entry</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/cli">CLI</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/template">Custom Template</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Standards</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/tslint">Tslint Rules</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/ecosystem">Ecosystem</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Environments</h1></header><article><div><span><p><code>jm-cli</code>通过<code>dot-env</code>来识别项目根目录下的.env*文件.</p>
+<h2><a class="anchor" aria-hidden="true" id="加载优先级"></a><a href="#加载优先级" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>加载优先级</h2>
+<ul>
+<li><code>环境变量</code>. 如<code>cross-env HTTPS=true jm start</code></li>
+<li><code>.env.{NODE_ENV}.local</code> 本地.env 文件, <code>.local</code> 文件不会被提交到版本库. 旨在覆盖.env*中的默认配置</li>
+<li><code>.env.{NODE_ENV}</code></li>
+<li><code>.env</code></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="变量展开"></a><a href="#变量展开" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>变量展开</h2>
+<p><code>.env</code>文件支持变量展开, 这样可以避免重复定义:</p>
+<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash"> 这是注释</span>
+JM_APP_NAME=my-app
+JM_API_ROOT=${JM_APP_NAME}/api
+JM_STATIC_ROOT=${JM_APP_NAME}/static
+</code></pre>
+<p>变量不一定是当前文件定义的, 它可以是任何已存在的环境变量:</p>
+<pre><code class="hljs css language-shell">JM_APP_ENV=${NODE_ENV}/api
+</code></pre>
+<p>除此之外. <code>package.json</code>中的<code>proxy</code>配置也支持环境变量名展开, 这样可以避免重复修改 package.json:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"jm"</span>: {
+    <span class="hljs-attr">"proxy"</span>: {
+      <span class="hljs-attr">"${JM_API_ROOT}"</span>: {
+        <span class="hljs-attr">"target"</span>: <span class="hljs-string">"${JM_DEV_SERVER}"</span>,
+        <span class="hljs-attr">"changeOrigin"</span>: <span class="hljs-literal">true</span>,
+        <span class="hljs-attr">"secure"</span>: <span class="hljs-literal">false</span>
+      }
+    }
+  }
+}
+</code></pre>
+<blockquote>
+<p>Note: proxy 配置项只支持<code>context</code>和<code>target</code>的变量展开</p>
+</blockquote>
+<h2><a class="anchor" aria-hidden="true" id="内置可配置项"></a><a href="#内置可配置项" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>内置可配置项</h2>
+<table>
+<thead>
+<tr><th>Variable</th><th>Development / Production / Configurable</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>VERSION</td><td>✅ / ✅ / 🚫</td><td>版本号, 从 package.json 中获取</td></tr>
+<tr><td>NAME</td><td>✅ / ✅ / 🚫</td><td>应用名称, 从 package.json 中获取</td></tr>
+<tr><td>NODE_ENV</td><td>✅ / ✅ / 🚫</td><td>当前环境. start 执行下为 development; build 和 serve 下为 production; test 下为 test</td></tr>
+<tr><td>PUBLIC_URL</td><td>🚫 / ✅ / ✅</td><td>影响 webpack 的 public_path. 默认为<code>./</code>, 即相对路径. 如果需要在特殊环境部署, 可以设置该选项</td></tr>
+<tr><td>SOURCE_MAP</td><td>✅ / ✅ / ✅</td><td>是否生成 source_map, 默认为 true</td></tr>
+<tr><td>EVAL</td><td>✅ / 🚫 / ✅</td><td>是否使用 eval_source_map, 默认为 false, 如果需要在开发环境调试编译后的代码, 可以开启该选项</td></tr>
+<tr><td>PAGE_EXT</td><td>✅ / ✅ / ✅</td><td>模板文件扩展名, 默认为<code>.html</code></td></tr>
+<tr><td>UNSAFE_DISABLE_TSLINT</td><td>✅ / ✅ / ✅</td><td>禁用 Tslint. 不推荐! 请遵循团队规范, 特殊情况下使用</td></tr>
+<tr><td>PORT</td><td>✅ / 🚫 / ✅</td><td>设置默认端口号. 如果端口被占用, 会自动选取其他端口</td></tr>
+<tr><td>HTTPS</td><td>✅ / 🚫 / ✅</td><td>是否开启 HTTPS. jm-cli 会自动生成自签名证书</td></tr>
+</tbody>
+</table>
+<h2><a class="anchor" aria-hidden="true" id="自定义配置项"></a><a href="#自定义配置项" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>自定义配置项</h2>
+<p>除了上述的内置配置项, 只有<code>JM_</code>为前缀的自定义环境变量会被保留.</p>
+<h2><a class="anchor" aria-hidden="true" id="在模板文件中访问环境变量"></a><a href="#在模板文件中访问环境变量" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>在模板文件中访问环境变量</h2>
+<p>模板文件, 如 pug, 可以直接访问内置变量和用户自定义变量. 例如</p>
+<pre><code class="hljs css language-pug">meta(<span class="hljs-attribute">name</span>=<span class="hljs-string">"name"</span> <span class="hljs-attribute">content</span>=NAME)
+meta(<span class="hljs-attribute">name</span>=<span class="hljs-string">"version"</span> <span class="hljs-attribute">content</span>=VERSION)
+</code></pre>
+<p>如果使用纯 html, 可以这样访问环境变量, 使用和.env 文件变量替换一样的语法:</p>
+<pre><code class="hljs css language-html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"name"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"${NAME}"</span> /&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"version"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">${VERSION}</span>" /&gt;</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="在-ts-代码中访问环境变量"></a><a href="#在-ts-代码中访问环境变量" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>在 Ts 代码中访问环境变量</h2>
+<p>一共有两种方式:</p>
+<h3><a class="anchor" aria-hidden="true" id="processenv"></a><a href="#processenv" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>process.env.*</h3>
+<p>这是<code>NodeJS</code>风格的环境变量访问方式. webpack 中也支持, 只不过它会在编译阶段内联到源码中.</p>
+<p>它的好处是可以实现代码优化, 比如根本无法执行到的条件分支会被移除, 例如:</p>
+<pre><code class="hljs css language-typescript"><span class="hljs-keyword">if</span> (process.env.NODE_ENV === <span class="hljs-string">'development'</span>) {
+  <span class="hljs-built_in">console</span>.log(data)
+}
+</code></pre>
+<p>在生产环境构建时会被内联成:</p>
+<pre><code class="hljs css language-typescript"><span class="hljs-keyword">if</span> (<span class="hljs-string">'production'</span> === <span class="hljs-string">'development'</span>) {
+  <span class="hljs-built_in">console</span>.log(data)
+}
+</code></pre>
+<p>这个代码分支是无法到达的, 所以代码优化器(如 urglifyJS)会移除掉这些<code>Dead Code</code>. 缺点也比较明显, 你
+无法在运行时干预它, 对他们进行重新配置.他们在编译时就已经固化, 要改变他们只能重新编译. 所以<code>jm-cli</code>
+提供了另一种的访问方式.</p>
+<h3><a class="anchor" aria-hidden="true" id="windowjm-env"></a><a href="#windowjm-env" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>window.JM_ENV.*</h3>
+<p><code>window.JM_ENV</code>对象在编译时注入到了入口 html 文件. 你可以通过这个对象来访问你的<strong>自定义环境变量</strong>. 例如:</p>
+<pre><code class="hljs css language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">new</span> RpcClient(<span class="hljs-built_in">window</span>.JM_ENV.JM_RPC_ROOT || <span class="hljs-string">'/root'</span>)
+</code></pre>
+<p>所有希望在运行时可配的环境变量都应该使用这种方式.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/jm-cli/docs/features"><span class="arrow-prev">← </span><span>Features</span></a><a class="docs-next button" href="/jm-cli/docs/configurations"><span>Configurations</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#加载优先级">加载优先级</a></li><li><a href="#变量展开">变量展开</a></li><li><a href="#内置可配置项">内置可配置项</a></li><li><a href="#自定义配置项">自定义配置项</a></li><li><a href="#在模板文件中访问环境变量">在模板文件中访问环境变量</a></li><li><a href="#在-ts-代码中访问环境变量">在 Ts 代码中访问环境变量</a><ul class="toc-headings"><li><a href="#processenv">process.env.*</a></li><li><a href="#windowjm-env">window.JM_ENV.*</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jm-cli/" class="nav-home"><img src="/jm-cli/img/docusaurus.svg" alt="JM-CLI" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jm-cli/docs/en/getting-started.html">Getting Started</a><a href="/jm-cli/docs/en/environments.html">Configurations</a><a href="/jm-cli/docs/en/cli.html">CLI Reference</a></div><div><h5>More</h5><a href="https://github.com/carney520/jm-cli">GitHub</a><a class="github-button" href="https://github.com/carney520/jm-cli" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2018 mygzb.com</section></footer></div></body></html>

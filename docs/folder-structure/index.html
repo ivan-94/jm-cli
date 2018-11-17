@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Folder Structure · JM-CLI</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;默认的项目结构如下&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Folder Structure · JM-CLI"/><meta property="og:type" content="website"/><meta property="og:url" content="https://carney520.github.io/jm-cli/index.html"/><meta property="og:description" content="&lt;p&gt;默认的项目结构如下&lt;/p&gt;
+"/><meta property="og:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://carney520.github.io/jm-cli/img/docusaurus.png"/><link rel="shortcut icon" href="/jm-cli/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jm-cli/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jm-cli/"><img class="logo" src="/jm-cli/img/docusaurus.svg" alt="JM-CLI"/><h2 class="headerTitleWithLogo">JM-CLI</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/jm-cli/docs/getting-started" target="_self">Doc</a></li><li class=""><a href="/jm-cli/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Getting Started</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/getting-started">Getting Started</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/jm-cli/docs/folder-structure">Folder Structure</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/features">Features</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Configurations</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/environments">Environments</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/configurations">Configurations</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/multi-entry">Multiple Entry</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/cli">CLI</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/template">Custom Template</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Standards</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/tslint">Tslint Rules</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/ecosystem">Ecosystem</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Folder Structure</h1></header><article><div><span><p>默认的项目结构如下</p>
+<pre><code class="hljs css language-shell">my-app
+├── README.md
+├── node_modules
+├── package.json
+├── yarn.lock
+├── global.d.ts
+├── tsconfig.json
+├── tslint.json
+├── .gitignore
+├── .env
+├── .env.production
+├── .env.development
+├── public
+└── src
+    ├── layouts
+    |   └── layout.pug
+    ├── css
+    |   └── ...
+    ├── components
+    |   └── ...
+    ├── containers
+    |   └── ...
+    ├── utils
+    |   ├── inject.ts
+    |   └── index.ts
+    ├── ...
+    ├── admin.pug
+    ├── admin.tsx
+    ├── index.pug
+    └── index.tsx
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="配置文件"></a><a href="#配置文件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>配置文件</h3>
+<p><code>.env*</code> 是项目配置文件，使用<code>dot-env</code>库进行解析。 按照加载的优先级排序如下：</p>
+<ul>
+<li><code>.env.{NODE_ENV}.local</code> <strong>NODE_ENV</strong>为当前的环境.<code>start</code>命令下为<code>development</code>; <code>build</code>，<code>analyze</code>下为<code>production</code>. <strong>local 后缀的会被<code>git</code>忽略</strong>，所以用于放置开发者自己的配置项，这些配置项一般是多变的, 如代理地址。</li>
+<li><code>.env.{NODE_ENV}</code> 会被<code>git</code>识别。用于放置指定环境的默认配置项</li>
+<li><code>.env</code> 放置开发环境无关的配置项</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="静态文件"></a><a href="#静态文件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>静态文件</h3>
+<p>不需要经过 webpack 处理的静态文件放置在<code>public</code>目录下, 如<code>favicon</code>. 这些文件在 <code>start</code> 时可以被开发服务器伺服。在 <code>build</code> 执行时, 被复制到<code>dist</code>目录</p>
+<h3><a class="anchor" aria-hidden="true" id="入口文件"></a><a href="#入口文件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>入口文件</h3>
+<p><code>src/{ENTRY}.pug</code> + <code>src/{ENTRY}.tsx</code> 定义应用的入口。在<code>create</code>默认创建的项目中，使用<code>pug</code>作为模板引擎，因为可以利用<code>pug</code>的一些特性(如 layout)减少多个入口文件的代码重复, 另外可以在<code>pug</code>文件中使用变量，甚至是导入其他资源。 例如:</p>
+<pre><code class="hljs css language-pug"><span class="hljs-variable">html</span>
+  <span class="hljs-variable">head</span>
+    <span class="hljs-function"><span class="hljs-title">meta</span>(<span class="hljs-variable">name</span>=<span class="hljs-string">"version"</span> <span class="hljs-variable">content</span>=<span class="hljs-variable">VERSION</span>)</span>
+  <span class="hljs-variable">body</span>
+    <span class="hljs-function"><span class="hljs-title">img</span>(<span class="hljs-variable">src</span>=<span class="hljs-title">require</span>(<span class="hljs-string">'~imgs/myimg.png'</span>))</span>
+</code></pre>
+<p>当然这不是强制的，可在在配置文件中设置<code>PAGE_EXT=.html</code>使用 html 作为模板文件的扩展名.</p>
+<p>在运行或编译项目时，<code>jm-cli</code>会先搜索 src 下的 html 模板文件，并将同名的 Typescript 文件作为 webpack 的入口文件. 所以要求<strong>模板文件名和 Typescript 入口文件名必须保持一致</strong></p>
+<h3><a class="anchor" aria-hidden="true" id="react-组件"></a><a href="#react-组件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>React 组件</h3>
+<p>按照组件的类型划分为<code>Container</code>和<code>Component</code>:</p>
+<ul>
+<li><code>Container</code> 是有状态的，一般是页面, 包含业务逻辑。</li>
+<li><code>Component</code> 则是无状态或者说无业务状态的，它们可以被多个 Container 中共享。</li>
+</ul>
+<p>在<code>containers</code>内部文件结构可以进一步细化：</p>
+<pre><code class="hljs css language-shell">containers/
+  ├── Admin/             # 后台模块
+  |   ├─── Dashboard/     # 页面
+  |   ├─── Settings/
+  |   ├─── Orders/
+  |   |  ├─── model.ts   # 具体子模块model
+  |   |  ├─── style.css
+  |   |  └─── index.tsx
+  |   ├── index.ts       # hu根组件
+  |   ├── model.ts       # 根Model
+  |   ├── Routes.tsx     # 定义路由
+  |   ├── style.css      # 全局样式
+  |   └── stores.ts      # 聚合所有models
+  └── App/               # 前台模块
+      └─....
+</code></pre>
+<p>如果是多页应用，结构可以像上面一样。在<code>containers</code>下面创建<code>子模块</code>目录， 例如<code>Admin</code>, <code>App</code>. 如果是单页应用不需要
+再嵌套这一层。例如:</p>
+<pre><code class="hljs css language-shell">containers/
+  ├─── Dashboard/     # 页面
+  ├─── Settings/
+  ├─── Orders/
+  |  ├─── model.ts   # 具体子模块model
+  |  ├─── style.css
+  |  └─── index.tsx
+  ├── index.ts       # 根组件          ----+
+  ├── model.ts       # 根Model             |
+  ├── Routes.tsx     # 定义路由             |-----&gt; 这些文件也可以提取到src根目录
+  ├── style.css      # 全局样式             |
+  └── stores.ts      # 聚合所有models  -----+
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="src-其他目录规范-及模块引用方式"></a><a href="#src-其他目录规范-及模块引用方式" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>src 其他目录规范，及模块引用方式</h3>
+<p>除了<code>components</code>和<code>containers</code>, 还可以定义以下常见的目录:</p>
+<ul>
+<li><code>utils</code> 方法工具函数</li>
+<li><code>css</code> 或 <code>style</code> 放置 css 文件. 但是我们更推荐使用<code>CSS-in-js</code>模式, 直接生成 React 组件, 让样式更语义化.</li>
+<li><code>icons</code> 放置 svg icons. <code>jm-cli</code>支持获取它们的链接也支持转换成 React 组件形式进行引用</li>
+<li><code>images</code> 放置图片</li>
+<li><code>services</code> 放置公共服务</li>
+</ul>
+<p><code>jm-cli</code>只会处理放置在<code>src</code>下的文件. 这样可以提高重新编译的速度.</p>
+<p>可以使用<code>~/*</code>来导入<code>src</code>目录下的模块, 例如<code>~/icons/logo.svg</code> 相当于<code>{project root}/src/icons/logo.svg</code>.</p>
+<p>使用这种方式可以避免使用相对路径来引用模块, 例如<code>../../icons/logo.svg</code>, 这样会导致模块导入语句变得难以维护.
+特别是当文件迁移到其他目录时.</p>
+<h3><a class="anchor" aria-hidden="true" id="typescript-相关文件"></a><a href="#typescript-相关文件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Typescript 相关文件</h3>
+<p>根目录下存在三个目录, 主要影响 Typescript 类型检查:</p>
+<ul>
+<li><code>tsconfig.json</code> typescript 项目配置, 会影响类型检查. 开发者一般要避免去修改它的配置. 将来<code>tsconfig.json</code>的
+<code>extends</code>功能完善了, 配置会集成进<code>jm-cli</code>代码库中.(这个功能将在 Typescript3.2 中实现)</li>
+<li><code>tslint.json</code> 主要用于限制代码规范. 它扩展了<code>jm-cli</code>内部定义 tslint 规则, 这份规则是团队开发的规范定义. 所以开发者
+一般不需要去修改里面的规则.</li>
+<li><code>global.d.ts</code> 全局的类型声明. 主要用于对未提供类型声明文件的第三方库, 进行类型声明.</li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/jm-cli/docs/getting-started"><span class="arrow-prev">← </span><span>Getting Started</span></a><a class="docs-next button" href="/jm-cli/docs/features"><span>Features</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jm-cli/" class="nav-home"><img src="/jm-cli/img/docusaurus.svg" alt="JM-CLI" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jm-cli/docs/en/getting-started.html">Getting Started</a><a href="/jm-cli/docs/en/environments.html">Configurations</a><a href="/jm-cli/docs/en/cli.html">CLI Reference</a></div><div><h5>More</h5><a href="https://github.com/carney520/jm-cli">GitHub</a><a class="github-button" href="https://github.com/carney520/jm-cli" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2018 mygzb.com</section></footer></div></body></html>

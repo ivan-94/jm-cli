@@ -178,7 +178,7 @@ yargs
     'clean cache',
     {},
     wrap(argv => {
-      require('./cmds/clean-cache').default()
+      require('./cmds/cleanCache').default()
     }),
   )
   .command('deploy', 'TODO', {}, wrap(argv => {}))

@@ -6,12 +6,12 @@ import chalk from 'chalk'
 import fs from 'fs-extra'
 import json5 from 'json5'
 import ignore from 'ignore'
-import os from 'os'
 import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
 import { execSync } from 'child_process'
-import omit from 'lodash/omit'
-import { shouldUseYarn, writeJSON, clearConsole } from '../utils'
+import pickBy from 'lodash/pickBy'
+import { shouldUseYarn, writeJSON, clearConsole } from '../../utils'
+import ensureTemplatePath from './getTemplate'
 
 export interface CreateOption {
   name: string
@@ -58,68 +58,6 @@ function ensureAppPath(appPath: string) {
     process.exit(1)
   }
   fs.ensureDirSync(appPath)
-}
-
-function getInstallPackage(templateName: string, cwd: string) {
-  if (templateName && templateName.match(/^file:/)) {
-    return `file:${path.resolve(cwd, templateName.match(/^file:(.*)?$/)![1])}`
-  }
-  return templateName
-}
-
-function ensureTemplatePath(ownPath: string, cwd: string, templateName?: string): string {
-  if (templateName == null) {
-    // default template
-    return path.join(ownPath, 'template')
-  }
-
-  // install template from npm
-  templateName = getInstallPackage(templateName, cwd)
-  const tempDir = path.join(os.tmpdir(), '.jm')
-  const tempPackageJson = path.join(tempDir, 'package.json')
-  const tempPackageJsonExisted = fs.existsSync(tempPackageJson)
-
-  // 已存在, 不需要重复下载
-  if (tempPackageJsonExisted) {
-    const pkg = fs.readJsonSync(tempPackageJson)
-    if (pkg.templates && templateName in pkg.templates) {
-      return pkg.templates[templateName]
-    }
-  }
-
-  process.chdir(tempDir)
-
-  try {
-    if (!tempPackageJsonExisted) {
-      writeJSON('package.json', { name: 'temp', version: '0.1.0' })
-    }
-
-    console.log(`Downloading template from ${chalk.cyan(templateName)}...`)
-    const argv = ['install', templateName, '--save-bundle']
-    execSync(`npm ${argv.join(' ')}`, { stdio: ['ignore', 'ignore', 'inherit'] })
-
-    const pkg = fs.readJSONSync('package.json')
-    let pkgName = pkg.bundleDependencies && pkg.bundleDependencies[0]
-    if (pkgName == null) {
-      throw new Error(`cannot read package name from ${chalk.cyan(templateName)}.`)
-    }
-    const modulePath = path.join(tempDir, 'node_modules', pkgName)
-    // save download records
-    pkg.templates = {
-      ...(pkg.templates || {}),
-      [templateName]: modulePath,
-    }
-    delete pkg.bundleDependencies
-    writeJSON('package.json', pkg)
-
-    return modulePath
-  } catch (err) {
-    console.log(chalk.red(`❌  Failed to download template from ${chalk.cyan(templateName)}:`))
-    console.log(err.message)
-    process.exit(1)
-    // suppress Typescript type check
-    return ''
-  }
 }
 
 /**
@@ -207,7 +145,6 @@ function initialPackageJson(
 
   if (fs.existsSync(templatePackageJson)) {
     const pkg = require(templatePackageJson)
-    pacakgeJson = { ...pkg, ...pacakgeJson }
 
     if (pkg.dependencies) {
       pacakgeJson.dependencies = { ...pacakgeJson.dependencies, ...pkg.dependencies }
@@ -221,8 +158,18 @@ function initialPackageJson(
       pacakgeJson.scripts = { ...pacakgeJson.scripts, ...pkg.scripts }
     }
 
-    // 其他配置
-    pacakgeJson = { ...pacakgeJson, ...omit(pkg, Object.keys(reservedProperties)) }
+    // 合并package.json
+    const includeFields: string[] = pkg.includeFields || []
+    const pickedPkg = pickBy(
+      pkg,
+      (value, key) => key in optionalProperties || key.startsWith('jm') || includeFields.indexOf(key) !== -1,
+    )
+
+    pacakgeJson = {
+      ...pacakgeJson,
+      // whitelist
+      ...pickedPkg,
+    }
   }
 
   cloneTemplate(templatePath, appPath)
@@ -415,13 +362,13 @@ Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
  * @param originalDirname cli项目根目录
  * @param argv 命令参数
  */
-export default (cwd: string, originalDirname: string, argv: CreateOption) => {
+export default async (cwd: string, originalDirname: string, argv: CreateOption) => {
   clearConsole()
   console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
 
   const { name, version, template } = argv
   validatePackageName(name)
-  const templatePath = ensureTemplatePath(originalDirname, cwd, template)
+  const templatePath = await ensureTemplatePath(originalDirname, cwd, template)
   if (!fs.existsSync(templatePath)) {
     console.error(`Template path ${templatePath} not existed.`)
     process.exit(1)

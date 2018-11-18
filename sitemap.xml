@@ -8,6 +8,7 @@
 <url> <loc>https://carney520.github.io/jm-cli/blog/2017/09/25/testing-rss</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://carney520.github.io/jm-cli/blog/2017/04/10/blog-post-two</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://carney520.github.io/jm-cli/blog/2016/03/11/blog-post</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://carney520.github.io/jm-cli/docs/babel-macro</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://carney520.github.io/jm-cli/docs/babel-macro" /> </url>
 <url> <loc>https://carney520.github.io/jm-cli/docs/cli</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://carney520.github.io/jm-cli/docs/cli" /> </url>
 <url> <loc>https://carney520.github.io/jm-cli/docs/configurations</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://carney520.github.io/jm-cli/docs/configurations" /> </url>
 <url> <loc>https://carney520.github.io/jm-cli/docs/ecosystem</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://carney520.github.io/jm-cli/docs/ecosystem" /> </url>

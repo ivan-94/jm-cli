@@ -66,5 +66,9 @@ sidebar_label: Custom Template
 ## 测试
 
 ```shell
-jm create [name] --template file:./my-tempale --force
+jm create [name] --template file:./my-tempale --force
 ```
+
+## 示例模板
+
+- [jm-app-template](https://github.com/carney520/jm-app-template)

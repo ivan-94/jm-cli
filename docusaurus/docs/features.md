@@ -32,7 +32,7 @@ Typescript 是`jm-cli`强制使用的语言, 它可以让项目更容易维护�
 ## Tslint
 
 `jm-cli`默认使用`Tslint`在编码上的交叉, 作为`Typescript`的延伸约束. 这部分约束是 Typescript 没有覆盖的, 比如变量命名, 成员的定义顺序,
-模块分组等等. 默认的 Tslint 规则见[编码规范]()
+模块分组等等. 默认的 Tslint 规则见[编码规范](tslint.md)
 
 ## Prettier
 
@@ -64,12 +64,12 @@ export default hot(module)(App)
 `jm-cli`使用`svgr`方案替换了旧的`svg-sprite-loader`. `svgr`可以支持获取 url 或者转换为 React 组件的方式来获取 svg 图标/图片.
 
 ```typescript
-import logo from './logo.svg' // 图片形式
-import { ReactComponent as Star } from './star.svg' // React组件形式
-
-// ...
-<img src={logo}/>
-<Star style={{fill: 'red'}}>
+import logo from './logo.svg' // 图片形式
+import { ReactComponent as Star } from './star.svg' // React组件形式
+
+// ...
+<img src={logo}/>
+<Star style={{fill: 'red'}}>
 ```
 
 ## 其他特性
@@ -90,3 +90,7 @@ API 代理, 详见配置
 ### babel-import-plugin
 
 用于支持`antd`, `antd-mobile`或`rxjs`等库的按需加载
+
+### babel-macros-plugin
+
+零配置使用 babel 插件, 详见[babel-macros-plugin](babel-macro.md)

@@ -64,12 +64,12 @@ export default hot(module)(App)
 `jm-cli`使用`svgr`方案替换了旧的`svg-sprite-loader`. `svgr`可以支持获取 url 或者转换为 React 组件的方式来获取 svg 图标/图片.
 
 ```typescript
-import logo from './logo.svg' // 图片形式
-import { ReactComponent as Star } from './star.svg' // React组件形式
-
-// ...
-<img src={logo}/>
-<Star style={{fill: 'red'}}>
+import logo from './logo.svg' // 图片形式
+import { ReactComponent as Star } from './star.svg' // React组件形式
+
+// ...
+<img src={logo}/>
+<Star style={{fill: 'red'}}>
 ```
 
 ## 其他特性

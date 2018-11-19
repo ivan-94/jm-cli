@@ -1,0 +1,6 @@
+*.md
+package.json
+lib/
+bin/
+types/
+yarn.lock

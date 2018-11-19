@@ -9,16 +9,17 @@ sidebar_label: CLI
 创建项目, 并将`jm-cli`作为开发依赖安装, 并注入一些常用的命令作为`npm script`. 如:
 
 ```json
-  "scripts": {
-    "start": "jm start",
-    "build": "jm build",
-    "serve": "jm serve",
-    "analyze": "jm analyze"
-  }
+  "scripts": {
+    "start": "jm start",
+    "build": "jm build",
+    "serve": "jm serve",
+    "analyze": "jm analyze"
+  }
 ```
 
 ```shell
-jm create [name] [options]
+jm create [name] [options]
+
 ```
 
 | Options                    | Description                                                                                                   |
@@ -30,20 +31,20 @@ jm create [name] [options]
 ### 使用示例
 
 ```shell
-# 指定本地template, 可以用于自定义模板测试
-jm create --template file:./my-template
-
-# 指定tarball 文件
-jm create --template file:./package.tgz
-
-# 指定github版本库
-jm create --template https://github.com/indexzero/forever/tarball/v0.5.6
-
-# 指定npm公共包
-jm create --template @gdjiami/app-template
-
-# 指定jm-cli的版本
-jm create --at 0.1.20
+# 指定本地template, 可以用于自定义模板测试
+jm create --template file:./my-template
+
+# 指定tarball 文件
+jm create --template file:./package.tgz
+
+# 指定github版本库
+jm create --template https://github.com/indexzero/forever/tarball/v0.5.6
+
+# 指定npm公共包
+jm create --template @gdjiami/app-template
+
+# 指定jm-cli的版本
+jm create --at 0.1.20
 ```
 
 ## Start
@@ -58,7 +59,7 @@ jm create --at 0.1.20
 ### 使用示例
 
 ```shell
-jm start -e a,b
+jm start -e a,b
 ```
 
 ## Build
@@ -78,14 +79,14 @@ jm start -e a,b
 ### 使用示例
 
 ```shell
-# 指定编译的页面
-jm build --entry a,b
-
-# 应用分组
-jm build --group.admin admin,admin2 --group.app app,app2
-
-# 只编译后台, 保留其他页面的编译结果
-jm build --group.admin admin,admin2 --dont-clean
+# 指定编译的页面
+jm build --entry a,b
+
+# 应用分组
+jm build --group.admin admin,admin2 --group.app app,app2
+
+# 只编译后台, 保留其他页面的编译结果
+jm build --group.admin admin,admin2 --dont-clean
 ```
 
 ## Analyze
@@ -95,8 +96,8 @@ jm build --group.admin admin,admin2 --dont-clean
 参数和 `start`一样
 
 ```shell
-jm analyze --entry admin
-jm analyze
+jm analyze --entry admin
+jm analyze
 ```
 
 ## Serve
@@ -138,11 +139,11 @@ jm analyze
 详细 见[`npm的版本规范`](https://docs.npmjs.com/misc/semver)
 
 ```shell
-# 全局
-jm upgrade --global
-
-# 强制使用npm
-jm upgrade --no-yarn
+# 全局
+jm upgrade --global
+
+# 强制使用npm
+jm upgrade --no-yarn
 ```
 
 ## Clean
@@ -158,8 +159,10 @@ jm upgrade --no-yarn
 查看 CLI 帮助
 
 ```shell
-jm help
-jm help create
+jm help
+
+jm help create
+
 ```
 
 ## 通用参数

@@ -10,9 +10,9 @@ sidebar_label: Getting Started
 ## 安装
 
 ```shell
-yarn global add @gdjima/cli
+yarn global add @gdjiami/cli
 # or
-npm i -g @gdjiami/ci
+npm i -g @gdjiami/cli
 
 jm help
 ```
@@ -27,7 +27,7 @@ jm create my-app
 
 上面的命令将创建一个默认的项目。 项目结构如下:
 
-```
+```sh
 my-app
 ├── README.md
 ├── node_modules
@@ -57,7 +57,7 @@ my-app
 ```
 
 `jm-cli`天然支持多页应用，这里的`admin.pug`和`index.pug`就是两个应用入口。`jm-cli`会搜索与它们同名的 Typescript 入口文件。
-项目结构的具体详情将在[`Folder Structure`]()中说明。现在可以打开项目目录运行:
+项目结构的具体详情将在[`Folder Structure`](folder-structure.md)中说明。现在可以打开项目目录运行:
 
 ```
 cd my-app

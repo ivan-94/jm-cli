@@ -16,6 +16,7 @@ import genGlobalDeclaration from './genGlobalDeclaration'
 import genVscodeSettings from './genVscodeSettings'
 import genTsLintConfig from './genTsLintConfig'
 import genTsConfig from './genTsConfig'
+import genPrettier from './genPrettier'
 
 export interface CreateOption {
   force?: boolean
@@ -195,7 +196,6 @@ function initialPackageJson(
   }
 
   cloneTemplate(templatePath, appPath)
-  copyPrettierConfig(appPath, ownPath, pacakgeJson)
   writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
 
   console.log(`Installing pacakges. This might take a couple of minutes.`)
@@ -244,25 +244,6 @@ function firstCommit() {
     })
   } catch {
     // ignore
-  }
-}
-
-function copyPrettierConfig(appPath: string, ownPath: string, pkg: { [key: string]: any }) {
-  const legalPrettierConfigName = [
-    '.prettierrc',
-    '.prettierrc.json',
-    'prettier.config.js',
-    '.prettierrc.yaml',
-    '.prettierrc.toml',
-    '.prettierrc.yml',
-  ]
-  for (let file of legalPrettierConfigName) {
-    if (fs.existsSync(path.join(appPath, file))) {
-      return
-    }
-  }
-  if (pkg.prettier == null) {
-    pkg.prettier = fs.readJSONSync(path.join(ownPath, '.prettierrc'))
   }
 }
 
@@ -317,7 +298,7 @@ export default async (cwd: string, originalDirname: string, argv: CreateOption) 
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
 
-  const generators = [genTsConfig, genTsLintConfig, genVscodeSettings, genGlobalDeclaration, genGitIgnore]
+  const generators = [genTsConfig, genTsLintConfig, genVscodeSettings, genGlobalDeclaration, genGitIgnore, genPrettier]
   generators.forEach(g => g(appPath, originalDirname, ownPackageJson))
 
   if (gitInitialed) {

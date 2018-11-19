@@ -11,10 +11,11 @@ sidebar_label: Ecosystem
 - 状态管理器: `mobx` mobx 并没有像`redux`统一的使用规范.
   - 不可变数据: `immer`
 - 样式:
-  - `css` 使用标准的 css, 配合 postcss 可以使用较为先进的特性
+  - `css` 使用标准的 css, 配合 postcss 可以使用较为先进的特性. 使用BEM命名规范
   - `styled-components` CSS-in-JS 解决方法, 直接转换成 React 组件
 - 静态资源:
   - 图标: svg 使用`svgr`转换成 react 组件使用
 - 组件库: `antd`, `antd-mobile`. 我们还在这些基础组件库的基础上扩展了轻度耦合业务的组件库
 - 工具库: `loadsh`
 - 图表: `recharts`
+- 代码分割: 使用React 16.6的lazy功能

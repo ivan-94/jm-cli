@@ -8,11 +8,11 @@ jm-cli 是 mygzb 前端团队使用的项目运行和构建工具。提供了高
 ## 安装
 
 ```shell
-yarn global add @gdjima/cli
-# or
-npm i -g @gdjiami/cli
-
-jm help
+yarn global add @gdjiami/cli
+# or
+npm i -g @gdjiami/cli
+
+jm help
 ```
 
 jm-cli 支持在全局模式调用，也支持作为项目的依赖调用。我们推荐后者，因为他和项目是绑定版本的，不会应该版本不兼容而无法运行。
@@ -20,44 +20,44 @@ jm-cli 支持在全局模式调用，也支持作为项目的依赖调用。我�
 ## 创建项目
 
 ```shell
-jm create my-app
+jm create my-app
 ```
 
 上面的命令将创建一个默认的项目。 项目结构如下:
 
-```
-my-app
-├── README.md
-├── node_modules
-├── package.json
-├── yarn.lock
-├── global.d.ts
-├── tsconfig.json
-├── tslint.json
-├── .gitignore
-├── .env
-├── .env.production
-├── .env.development
-├── public
-└── src
-    ├── layouts
-    |   └── layout.pug
-    ├── css
-    |   └── ...
-    ├── components
-    |   └── ...
-    ├── containers
-    |   └── ...
-    ├── admin.pug
-    ├── admin.tsx
-    ├── index.pug
-    └── index.tsx
+```sh
+my-app
+├── README.md
+├── node_modules
+├── package.json
+├── yarn.lock
+├── global.d.ts
+├── tsconfig.json
+├── tslint.json
+├── .gitignore
+├── .env
+├── .env.production
+├── .env.development
+├── public
+└── src
+    ├── layouts
+    |   └── layout.pug
+    ├── css
+    |   └── ...
+    ├── components
+    |   └── ...
+    ├── containers
+    |   └── ...
+    ├── admin.pug
+    ├── admin.tsx
+    ├── index.pug
+    └── index.tsx
 ```
 
 jm-cli 天然支持多页应用，这里的 admin.pug 和 index.pug 就是两个应用入口。jm-cli 会搜索与它们同名的 Typescript 入口文件。 项目结构的具体详情将在 Folder Structure 中说明。现在可以打开项目目录运行:
 
 ```shell
-cd my-app
+cd my-app
 ```
 
 ## NPM Scripts

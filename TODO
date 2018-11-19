@@ -33,6 +33,7 @@
 [*] build支持不删除目标目录
 [*] 处理模板中package.json中的jm-cli依赖
 [ ] decorator 可配置. 这是废弃的标准, 默认应该禁止
+[ ] build支持 --stat 选项
 
 # 不紧急
 [ ] 加载动画 ora.

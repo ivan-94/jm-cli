@@ -148,6 +148,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                     svgo: true,
                     prettier: false,
                     babel: false,
+                    svgProps: { fill: 'currentColor' },
+                    expandProps: 'end',
                   },
                 },
                 {

@@ -2,7 +2,7 @@
  * babel 配置选项
  */
 import { ImportPluginConfig } from '../type'
-import { isModuleExists } from '../../utils'
+import { isModuleExistsInCwd, resolveModuleInCwd } from '../../utils'
 
 // see more options in https://babeljs.io/docs/en/options
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
@@ -65,7 +65,7 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
         },
       ],
       require.resolve('@babel/plugin-syntax-dynamic-import'),
-      isDevelopment && isModuleExists('react-hot-loader') && require.resolve('react-hot-loader/babel'),
+      isDevelopment && isModuleExistsInCwd('react-hot-loader') && resolveModuleInCwd('react-hot-loader/babel'),
       isProduction && [
         // Remove PropTypes from production build
         require.resolve('babel-plugin-transform-react-remove-prop-types'),

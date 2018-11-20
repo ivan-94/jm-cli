@@ -142,12 +142,23 @@ export function inspect(variable: any, title?: string) {
   console.log('\n\n')
 }
 
-export function isModuleExists(name: string) {
+export function isModuleExistsInCwd(name: string) {
   try {
-    return !!require.resolve(name)
+    const cwdNodeModules = path.join(process.cwd(), 'node_modules')
+    if (!fs.existsSync(cwdNodeModules)) {
+      return false
+    }
+    return !!require.resolve(name, {
+      paths: [cwdNodeModules],
+    })
   } catch {
     return false
   }
+}
+
+export function resolveModuleInCwd(name: string) {
+  const cwdNodeModules = path.join(process.cwd(), 'node_modules')
+  return require.resolve(name, { paths: [cwdNodeModules] })
 }
 
 /**

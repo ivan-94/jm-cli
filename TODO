@@ -48,6 +48,10 @@
 [ ] 进一步性能优化
 [ ] PWA
 
+# BUG
+[*] 页面无法重新刷新
+[ ] 无法识别react-hot-reload
+
 # 待考虑
 [ ] react-error-overlap
 [ ] inline runtime

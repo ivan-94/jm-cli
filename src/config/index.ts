@@ -26,7 +26,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
   const context = paths.appSrc
   const pageExt = ensurePageExt(enviroments.raw.PAGE_EXT || '.html')
-  const pageEntries = getEntries(context, pageExt, entry)
+  const pageEntries = getEntries(context, pageExt, entry, isProduction)
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
 

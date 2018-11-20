@@ -7,9 +7,7 @@ import { WebpackConfigurer } from './type'
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => ({
-  entry: {
-    main: [require.resolve('webpack-dev-server/client') + '?/', require.resolve('webpack/hot/dev-server')],
-  },
+  entry: {},
   devtool:
     enviroments.raw.SOURCE_MAP === 'false'
       ? false

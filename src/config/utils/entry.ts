@@ -12,8 +12,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 /**
  * scan entries in src
  */
-export function getEntries(context: string, pageExt: string, entry?: string[]) {
-  const entries: { [name: string]: string } = {}
+export function getEntries(context: string, pageExt: string, entry?: string[], isProduction?: boolean) {
+  const entries: { [name: string]: string[] } = {}
 
   let pages = scanPages(context, pageExt).map(p => path.basename(p, pageExt))
   if (entry && entry.length) {
@@ -44,7 +44,13 @@ export function getEntries(context: string, pageExt: string, entry?: string[]) {
 
     // 检查入口文件是否存在
     const entry = `./${page}${entryFileExt}`
-    entries[page] = entry
+    entries[page] = []
+    // dev client
+    if (!isProduction) {
+      entries[page].push(require.resolve('webpack-dev-server/client') + '?/')
+      entries[page].push(require.resolve('webpack/hot/dev-server'))
+    }
+    entries[page].push(entry)
   })
 
   return entries
@@ -62,7 +68,7 @@ function scanPages(context: string, ext: string) {
  */
 export function genTemplatePlugin(
   context: string,
-  pageEntries: { [key: string]: string },
+  pageEntries: { [key: string]: string[] },
   isProduction: boolean,
   templateParameters: { [key: string]: string },
   ext: string = '.html',

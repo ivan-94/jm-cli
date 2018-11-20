@@ -30,9 +30,9 @@
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Getting Started</h1></header><article><div><span><p><code>jm-cli</code> 是<code>mygzb</code>前端团队使用的项目运行和构建工具。提供了高性能, 强团队编码规范, 约定大于配置的构建环境. 可以让开发者更专注于业务的开发,
 增强项目的可维护性.</p>
 <h2><a class="anchor" aria-hidden="true" id="安装"></a><a href="#安装" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>安装</h2>
-<pre><code class="hljs css language-shell">yarn global add @gdjima/cli
+<pre><code class="hljs css language-shell">yarn global add @gdjiami/cli
 <span class="hljs-meta">#</span><span class="bash"> or</span>
-npm i -g @gdjiami/ci
+npm i -g @gdjiami/cli
 
 jm help
 </code></pre>
@@ -41,7 +41,7 @@ jm help
 <pre><code class="hljs css language-shell">jm create my-app
 </code></pre>
 <p>上面的命令将创建一个默认的项目。 项目结构如下:</p>
-<pre><code class="hljs">my-app
+<pre><code class="hljs css language-sh">my-app
 ├── README.md
 ├── node_modules
 ├── package.json
@@ -49,27 +49,27 @@ jm help
 ├── global.d.ts
 ├── tsconfig.json
 ├── tslint.json
-├── <span class="hljs-string">.gitignore</span>
-├── <span class="hljs-string">.env</span>
-├── <span class="hljs-string">.env.production</span>
-├── <span class="hljs-string">.env.development</span>
+├── .gitignore
+├── .env
+├── .env.production
+├── .env.development
 ├── public
 └── src
     ├── layouts
     |   └── layout.pug
     ├── css
-    |   └── <span class="hljs-string">...</span>
+    |   └── ...
     ├── components
-    |   └── <span class="hljs-string">...</span>
+    |   └── ...
     ├── containers
-    |   └── <span class="hljs-string">...</span>
+    |   └── ...
     ├── admin.pug
     ├── admin.tsx
     ├── index.pug
     └── index.tsx
 </code></pre>
 <p><code>jm-cli</code>天然支持多页应用，这里的<code>admin.pug</code>和<code>index.pug</code>就是两个应用入口。<code>jm-cli</code>会搜索与它们同名的 Typescript 入口文件。
-项目结构的具体详情将在<a href=""><code>Folder Structure</code></a>中说明。现在可以打开项目目录运行:</p>
+项目结构的具体详情将在<a href="/jm-cli/docs/folder-structure"><code>Folder Structure</code></a>中说明。现在可以打开项目目录运行:</p>
 <pre><code class="hljs"><span class="hljs-keyword">cd</span> my-<span class="hljs-keyword">app</span>
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="npm-scripts"></a><a href="#npm-scripts" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>NPM Scripts</h2>

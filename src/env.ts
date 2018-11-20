@@ -20,8 +20,13 @@ if (!NODE_ENV) {
   process.exit()
 }
 
-// .env 文件, 优先加载.env.*.local, 再加载.env.*, 最后是.env
-const dotenvsFiles = [`${paths.appDotenv}`, `${paths.appDotenv}.${NODE_ENV}`, `${paths.appDotenv}.${NODE_ENV}.local`]
+// .env 文件, 优先加载.env.*.local, 再加载.env.*, 最后是.env, .env.local
+const dotenvsFiles = [
+  `${paths.appDotenv}`,
+  `${paths.appDotenv}.${NODE_ENV}`,
+  `${paths.appDotenv}.${NODE_ENV}.local`,
+  `${paths.appDotenv}.local`,
+]
 
 dotenvsFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {

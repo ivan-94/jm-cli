@@ -24,8 +24,8 @@ if (!NODE_ENV) {
 const dotenvsFiles = [
   `${paths.appDotenv}`,
   `${paths.appDotenv}.${NODE_ENV}`,
-  `${paths.appDotenv}.${NODE_ENV}.local`,
   `${paths.appDotenv}.local`,
+  `${paths.appDotenv}.${NODE_ENV}.local`,
 ]
 
 dotenvsFiles.forEach(dotenvFile => {

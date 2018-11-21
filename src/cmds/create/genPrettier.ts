@@ -18,7 +18,7 @@ const genPrettier: Generator = (appPath: string, ownPath: string, pkg: { [key: s
     }
   }
 
-  fs.copyFileSync(path.join(ownPath, '.prettierrc'), path.join(appPath, '.prettierrc'))
+  fs.copyFileSync(path.join(ownPath, 'lib/prettierrc'), path.join(appPath, '.prettierrc'))
   fs.copyFileSync(path.join(ownPath, 'lib/prettierignore'), path.join(appPath, '.prettierignore'))
 }
 

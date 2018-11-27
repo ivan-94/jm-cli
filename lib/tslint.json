@@ -51,7 +51,8 @@
     // 禁止any
     "no-any": true,
     // 不要使用magic number, 比如foo(1), 1代表什么意思? 应该使用常量保存下来
-    "no-magic-numbers": true,
+    // 暂时禁用, 会误判, 比如是地图坐标
+    "no-magic-numbers": false,
     // 不要重新赋值参数
     "no-parameter-reassignment": true,
     // 禁止使用 /// <refrence path=>
@@ -168,7 +169,8 @@
     "max-file-line-count": [true, 500],
     "max-line-length": [true, 120],
     "no-duplicate-imports": true,
-    "object-literal-sort-keys": [true, "ignore-case", "shorthand-first"],
+    // 字面量字段排序
+    "object-literal-sort-keys": false,
     "prefer-const": true,
     /*-----------------------
      *  样式相关 相关(大部分忽略, 由prettier处理)
@@ -219,8 +221,8 @@
     ],
     // 优先使用interface, 而不是type
     "interface-over-type-literal": true,
-    // 必须提供文件注释
-    "file-header": true,
+    // 提供文件注释, 可以在默认导出上进行注释, 让一些文档生成工具可以更好地识别
+    "file-header": false,
     "encoding": true,
     // 不要使用I*这种接口形式
     "interface-name": [true, "never-prefix"],

@@ -135,6 +135,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             // svg 可以获取链接，也可以转换为React组件
             {
               test: /\.svg$/,
+              exclude: /fonts?/,
               use: [
                 {
                   loader: require.resolve('cache-loader'),

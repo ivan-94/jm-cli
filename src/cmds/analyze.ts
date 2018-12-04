@@ -6,7 +6,8 @@ import chalk from 'chalk'
 import Table from 'cli-table2'
 import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
-import { noopFileSystem, inspect, choosePort } from '../utils'
+import Ora from 'ora'
+import { message, noopFileSystem, inspect, choosePort, logSymbols } from '../utils'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -37,7 +38,7 @@ async function analyze(argv: AnalyzeOption) {
   if (argv.group) {
     // 应用分组模式
     const group = argv.group
-    console.log(`Analyzing multi-entry-group project:`)
+    message.info(`selected entries:`)
     const table = new Table({
       head: ['Group', 'Entries'],
     })
@@ -55,7 +56,7 @@ async function analyze(argv: AnalyzeOption) {
     )
   } else if (argv.entry) {
     // 显示指定入口
-    console.log(`Selected entries: ${chalk.cyan(argv.entry.join(', '))}`)
+    message.info(`Selected entries: ${chalk.cyan(argv.entry.join(', '))}`)
     config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
   } else {
     config = configure(environment, pkg, paths, { jmOptions })
@@ -67,13 +68,13 @@ async function analyze(argv: AnalyzeOption) {
     return
   }
 
-  console.log(chalk.cyan('Extracting webpack stats...'))
+  const spinner = new Ora({ text: 'Extracting webpack stats...' }).start()
   const compiler = webpack(config as Configuration)
   compiler.outputFileSystem = noopFileSystem
 
   compiler.run(async (err, stats) => {
     if (err) {
-      console.error(chalk.red('❌ Failed to compile.'))
+      spinner.stopAndPersist({ text: 'Failed to compile.', symbol: logSymbols.error })
       console.error(err.stack || err)
       // @ts-ignore
       if (err.details) {
@@ -84,7 +85,7 @@ async function analyze(argv: AnalyzeOption) {
     }
 
     if (stats.hasErrors()) {
-      console.error(chalk.red('❌  Failed to compile.\n\n'))
+      spinner.stopAndPersist({ text: 'Failed to compile.\n\n', symbol: logSymbols.error })
       const messages = formatMessages(stats)
       if (messages.errors.length) {
         messages.errors.forEach(e => console.log(e))
@@ -96,7 +97,7 @@ async function analyze(argv: AnalyzeOption) {
 
     analyzer.start(stats.toJson(), { port })
 
-    console.log(chalk.green('Extract successfully.'))
+    spinner.stopAndPersist({ text: 'Extract successfully.', symbol: logSymbols.success })
   })
 }
 

@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import json5 from 'json5'
 import path from 'path'
-import { writeJSON } from '../../utils'
+import { writeJSON, message } from '../../utils'
 import { Generator } from './type'
 
 const genTsLintConfig: Generator = (appPath, ownPath, ownPkg) => {
@@ -31,11 +31,13 @@ const genTsLintConfig: Generator = (appPath, ownPath, ownPkg) => {
 
     if (dirty) {
       writeJSON(tsLintConfigPath, config)
+      message.info('updated tslint.json')
     }
   } else {
     writeJSON(tsLintConfigPath, {
       extends: [builinTsLintConfigPath],
     })
+    message.info('created tslint.json')
   }
 }
 

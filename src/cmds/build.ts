@@ -6,7 +6,8 @@ import webpack, { Configuration } from 'webpack'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
-import { inspect, shouldUseYarn } from '../utils'
+import { message, inspect, shouldUseYarn, logSymbols } from '../utils'
+import Ora from 'ora'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -39,7 +40,7 @@ function build(argv: BuildOption) {
 
   if (argv.group) {
     const group = argv.group
-    console.log(`Building multi-entry-group project:`)
+    message.info(`selected entries:`)
     const table = new Table({
       head: ['Group', 'Entries'],
     })
@@ -56,7 +57,7 @@ function build(argv: BuildOption) {
       }),
     )
   } else if (argv.entry) {
-    console.log(`Selected entries: ${chalk.cyan(argv.entry.join(', '))}`)
+    message.info(`Selected entries: ${chalk.cyan(argv.entry.join(', '))}`)
     config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
   } else {
     config = configure(environment, pkg, paths, { jmOptions })
@@ -74,12 +75,12 @@ function build(argv: BuildOption) {
     config = smp.wrap(config)
   }
 
-  console.log(chalk.cyan('Creating an optimized production build...'))
+  const spinner = new Ora({ text: 'Creating an optimized production build...' }).start()
   const compiler = webpack(config as Configuration)
 
   compiler.run((err, stats) => {
     if (err) {
-      console.error(chalk.red('❌ Failed to compile.'))
+      spinner.stopAndPersist({ text: 'Failed to compile.', symbol: logSymbols.error })
       console.error(err.stack || err)
       // @ts-ignore
       if (err.details) {
@@ -91,16 +92,16 @@ function build(argv: BuildOption) {
 
     const messages = formatMessages(stats)
     if (messages.errors.length) {
-      console.error(chalk.red('❌  Failed to compile.\n\n'))
+      spinner.stopAndPersist({ text: 'Failed to compile.\n\n', symbol: logSymbols.error })
       messages.errors.forEach(e => console.log(e))
       return
     }
 
     if (messages.warnings.length) {
-      console.warn(chalk.yellow('⚠️  Compiled with warnings.\n\n'))
+      spinner.stopAndPersist({ text: 'Compiled with warnings.\n\n', symbol: logSymbols.warn })
       messages.warnings.forEach(e => console.log(e))
     } else {
-      console.log(chalk.green('Compiled successfully.'))
+      spinner.stopAndPersist({ text: 'Compiled successfully.', symbol: logSymbols.success })
     }
     console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
   })

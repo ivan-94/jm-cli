@@ -8,11 +8,13 @@ import fs from 'fs-extra'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import path from 'path'
+import Ora from 'ora'
 import { getYarnGlobalInstallPackages, getNpmGlobalInstallPackages, getUpgradableVersion } from '../services/upgrade'
 import paths from '../paths'
 import { shouldUseYarn } from '../utils'
 
 const Daily = 24 * 3600 * 1000
+let spinner = new Ora()
 
 /**
  * 判断是否是全局模式调用命令
@@ -23,7 +25,8 @@ function isGlobalMode() {
 }
 
 function checkGlobalUpdate(useYarn: boolean, pkg: { name: string; version: string }) {
-  console.log('Checking for update...')
+  spinner.text = 'Checking for update...'
+  spinner.start()
   let list = useYarn ? getYarnGlobalInstallPackages() : getNpmGlobalInstallPackages()
   const { name, version } = pkg
 
@@ -38,6 +41,7 @@ function checkGlobalUpdate(useYarn: boolean, pkg: { name: string; version: strin
 
   // 全局模式检查是否有最新版本
   const [, upgradable, newMaxVersion] = getUpgradableVersion(name, version, 'major')
+  spinner.stop()
   if (upgradable) {
     showUpdateInfo(useYarn, name, version, newMaxVersion)
   }
@@ -62,7 +66,8 @@ function showUpdateInfo(useYarn: boolean, name: string, version: string, newVers
 }
 
 async function checkLocalUpdate(useYarn: boolean, pkg: { name: string; version: string }) {
-  console.log('Checking for update...')
+  spinner.text = 'Checking for update...'
+  spinner.start()
   const { name, version } = pkg
   const [newRange, upgradable, newMaxVersion] = getUpgradableVersion(name, version, 'minor')
   if (upgradable) {
@@ -76,10 +81,11 @@ async function checkLocalUpdate(useYarn: boolean, pkg: { name: string; version: 
 
     if (ok) {
       const cmd = useYarn ? `yarn add "${name}@${newRange}" -D` : `npm install "${name}@${newRange}" --save-dev`
-      console.log('Upgrading...')
+      spinner.start()
+      spinner.text = 'Upgrading...'
       execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
       console.log(cmd)
-      console.log('✨ Upgrade Success!')
+      spinner.succeed('Upgrade Success!')
     }
   }
 }
@@ -111,5 +117,6 @@ export default async (argv: Arguments) => {
   } finally {
     // save lastUpdate
     fs.writeJSONSync(lastUpdatePath, Date.now())
+    spinner.stop()
   }
 }

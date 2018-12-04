@@ -7,12 +7,13 @@ import formatMessages from 'webpack-format-messages'
 import webpack = require('webpack')
 import chalk from 'chalk'
 import opener from 'opener'
-import { prepareUrls, inspect, clearConsole, choosePort } from '../utils'
+import { message, prepareUrls, inspect, clearConsole, choosePort } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import getOptions from '../options'
 import configure from '../config'
 import paths from '../paths'
 import { CommonOption } from './type'
+import Ora = require('ora')
 
 export interface StartOption extends CommonOption {
   entry?: string[]
@@ -74,32 +75,35 @@ function createCompiler(config: WebpackConfiguration): Compiler {
     compiler = webpack(config)
   } catch (err) {
     // config error
-    console.error(chalk.red('❌  Failed to compile.\n'))
+    message.error(chalk.red('Failed to compile.\n'))
     console.log(err.message || err)
     console.log()
     process.exit(1)
   }
+  let spinner = new Ora()
 
   compiler!.hooks.invalid.tap('invalid', () => {
     clearConsole()
-    console.log(chalk.cyan('Compiling...'))
+    spinner.text = 'Compiling...'
+    spinner.start()
   })
 
   compiler!.hooks.done.tap('done', stats => {
+    spinner.stop()
     const messages = formatMessages(stats)
     if (messages.errors.length) {
-      console.error(chalk.red('❌  Failed to compile.\n\n'))
+      message.error('Failed to compile.\n\n')
       messages.errors.forEach(e => console.log(e))
       return
     }
 
     if (messages.warnings.length) {
-      console.warn(chalk.yellow('⚠️  Compiled with warnings.\n\n'))
+      message.warn('Compiled with warnings.\n\n')
       messages.warnings.forEach(e => console.log(e))
       return
     }
 
-    console.log(chalk.green('Compiled successfully.'))
+    message.success(chalk.green('Compiled successfully.'))
   })
 
   return compiler!
@@ -125,7 +129,7 @@ export default async function(argv: StartOption) {
     return
   }
 
-  console.log(chalk.cyan('Starting the development server...\n'))
+  const spinner = new Ora({ text: 'Starting the development server...\n' }).start()
   const compiler = createCompiler(config)
   const devServer = new webpackDevServer(compiler, devServerConfig)
 
@@ -134,24 +138,27 @@ export default async function(argv: StartOption) {
   const host = '0.0.0.0'
 
   devServer.listen(port, host, err => {
+    spinner.stop()
     if (err) {
-      return console.log(err)
+      message.error('Fail to setup development server:')
+      console.log(message)
+      return
     }
 
     const urls = prepareUrls(protocol, host, port)
-    console.log(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
-    console.log(`Webpack output is served from ${chalk.cyan('/')}`)
+    message.info(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    message.info(`Webpack output is served from ${chalk.cyan('/')}`)
     const contentBase = devServerConfig.contentBase
     const folders =
       typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
     if (folders) {
-      console.log(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)
+      message.info(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)
     }
 
     if (devServerConfig.proxy) {
       const proxyInfo = proxyInfomation(devServerConfig.proxy as ProxyConfig)
       if (proxyInfo) {
-        console.log(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
+        message.info(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
       }
     }
 

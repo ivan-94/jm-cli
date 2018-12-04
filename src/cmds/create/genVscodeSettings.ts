@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { writeJSON } from '../../utils'
+import { writeJSON, message } from '../../utils'
 import { Generator } from './type'
 
 const genVscodeSettings: Generator = (appPath: string, ownPath: string, ownPkg: { [key: string]: any }) => {
@@ -22,6 +22,7 @@ const genVscodeSettings: Generator = (appPath: string, ownPath: string, ownPkg: 
 
   fs.ensureDirSync(vscodeSettingsDir)
   writeJSON(vscodeSettingsPath, settings)
+  message.info('created .vscode')
 }
 
 export default genVscodeSettings

@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { Generator } from './type'
+import { message } from '../../utils'
 
 /**
  * 初始化tsconfig.json
@@ -15,6 +16,7 @@ const genTsConfig: Generator = (appPath, ownPath, ownPkg) => {
   }
 
   fs.copyFileSync(builinTsConfigPath, tsConfigPath)
+  message.info('created tsconfig.json')
 }
 
 export default genTsConfig

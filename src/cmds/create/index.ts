@@ -9,7 +9,7 @@ import validateNpmName from 'validate-npm-package-name'
 import semver from 'semver'
 import { execSync } from 'child_process'
 import pickBy from 'lodash/pickBy'
-import { shouldUseYarn, writeJSON } from '../../utils'
+import { shouldUseYarn, writeJSON, message } from '../../utils'
 import ensureTemplatePath from './getTemplate'
 import genGitIgnore from './genGitignore'
 import genGlobalDeclaration from './genGlobalDeclaration'
@@ -42,7 +42,7 @@ const builinDevDependencies = [
 function validatePackageName(name: string) {
   const res = validateNpmName(name)
   if (!res.validForNewPackages) {
-    console.error(`Could not create a project called ${chalk.red(name)} because of npm naming restrictions:`)
+    message.error(`Could not create a project called ${chalk.red(name)} because of npm naming restrictions:`)
     printValidationResults(res.errors)
     printValidationResults(res.warnings)
     process.exit(1)
@@ -60,7 +60,7 @@ function printValidationResults(results?: string[]) {
 function ensureAppPath(appPath: string) {
   if (fs.existsSync(appPath)) {
     const name = path.basename(appPath)
-    console.error(`Could not create a project called ${name}, directory existed.`)
+    message.error(`Could not create a project called ${name}, directory existed.`)
     process.exit(1)
   }
   fs.ensureDirSync(appPath)
@@ -198,7 +198,7 @@ function initialPackageJson(
   cloneTemplate(templatePath, appPath)
   writeJSON(path.join(appPath, 'package.json'), pacakgeJson)
 
-  console.log(`Installing pacakges. This might take a couple of minutes.`)
+  message.info(`Installing pacakges. This might take a couple of minutes.`)
 
   const devdependencies = builinDevDependencies
     .filter(dep => {
@@ -221,9 +221,9 @@ function initialPackageJson(
     devDependenciesInstallCommand = `${command} install ${devdependencies.join(' ')} --save-dev`
   }
 
-  console.log(chalk.cyan(`Installing dependencies...`))
+  message.info(chalk.cyan(`Installing dependencies...`))
   execSync(dependenciesInstallCommand, { stdio: 'inherit' })
-  console.log(chalk.cyan(`Installing devdependencies...`))
+  message.info(chalk.cyan(`Installing devdependencies...`))
   execSync(devDependenciesInstallCommand, { stdio: 'inherit' })
 }
 
@@ -270,13 +270,13 @@ Typing ${chalk.green(`cd ${args.name}`)} to start code happily.
  * @param argv 命令参数
  */
 export default async (cwd: string, originalDirname: string, argv: CreateOption) => {
-  console.log(`Creating a new React Project in ${chalk.green(cwd)}\n`)
+  message.info(`Creating a new React Project in ${chalk.green(cwd)}\n`)
 
   const { name, version, template } = argv
   validatePackageName(name)
   const templatePath = await ensureTemplatePath(!!argv.force, originalDirname, cwd, template)
   if (!fs.existsSync(templatePath)) {
-    console.error(`Template path ${templatePath} not existed.`)
+    message.error(`Template path ${templatePath} not existed.`)
     process.exit(1)
   }
   const appPath = path.join(cwd, name)
@@ -286,7 +286,7 @@ export default async (cwd: string, originalDirname: string, argv: CreateOption) 
   // initialized git before install packages, because some package like `husky` depend on Git enviroment
   let gitInitialed = tryInitialGit(appPath)
   if (gitInitialed) {
-    console.log('Initialized a git repository.')
+    message.info('Initialized a git repository.')
   }
 
   // create package.json

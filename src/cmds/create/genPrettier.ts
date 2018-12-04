@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { Generator } from './type'
+import { message } from '../../utils'
 
 const genPrettier: Generator = (appPath: string, ownPath: string, pkg: { [key: string]: any }) => {
   const legalPrettierConfigName = [
@@ -20,6 +21,7 @@ const genPrettier: Generator = (appPath: string, ownPath: string, pkg: { [key: s
 
   fs.copyFileSync(path.join(ownPath, 'lib/prettierrc'), path.join(appPath, '.prettierrc'))
   fs.copyFileSync(path.join(ownPath, 'lib/prettierignore'), path.join(appPath, '.prettierignore'))
+  message.info('created prettier configurations')
 }
 
 export default genPrettier

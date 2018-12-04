@@ -4,7 +4,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { execSync } from 'child_process'
 import tar from 'tar'
-import { writeJSON } from '../../utils'
+import { writeJSON, message } from '../../utils'
 
 function getInstallPackage(templateName: string, cwd: string) {
   if (templateName && templateName.match(/^file:/)) {
@@ -26,14 +26,14 @@ function tryPack(templateName: string) {
 function handleError(err: { stdout?: Buffer }) {
   if (err.stdout) {
     try {
-      const message = JSON.parse(err.stdout.toString()) as { error: { code: string; summary: string } }
-      console.log(chalk.red(`Failed to download template:\n ${chalk.reset(message.error.summary)}`))
+      const msg = JSON.parse(err.stdout.toString()) as { error: { code: string; summary: string } }
+      message.error(`Failed to download template:\n ${chalk.reset(msg.error.summary)}`)
     } catch {
-      console.log(chalk.red(`Failed to download template:`))
+      message.error(`Failed to download template:`)
       console.log(err)
     }
   } else {
-    console.log(chalk.red(`Failed to download template:`))
+    message.error(`Failed to download template:`)
     console.log(err)
   }
   process.exit(1)
@@ -87,7 +87,7 @@ export default async function getTemplate(force: boolean, ownPath: string, cwd: 
   }
 
   try {
-    console.log(`Downloading template from ${chalk.cyan(templateName)}...`)
+    message.info(`Downloading template from ${chalk.cyan(templateName)}...`)
 
     const cmd = `npm pack ${templateName} --json`
     execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })

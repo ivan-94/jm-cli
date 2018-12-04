@@ -7,9 +7,10 @@ import express from 'express'
 import chalk from 'chalk'
 import https from 'https'
 import http from 'http'
+import Ora from 'ora'
 import { interpolateProxy, applyProxyToExpress, proxyInfomation } from '../proxy'
 import paths from '../paths'
-import { shouldUseYarn, choosePort, prepareUrls, inspect } from '../utils'
+import { shouldUseYarn, choosePort, prepareUrls, inspect, message } from '../utils'
 import { getCerts } from '../cert'
 import getOptions from '../options'
 import { CommonOption } from './type'
@@ -31,12 +32,10 @@ require('../env')
 function checkDist() {
   const distPath = paths.appDist
   if (!fs.existsSync(distPath) || fs.readdirSync(distPath, { withFileTypes: true }).length === 0) {
-    console.log(
-      chalk.red(
-        `❌ Error: dist ${chalk.cyan(distPath)} is empty. Call ${chalk.green(
-          useYarn ? `yarn build` : 'npm build',
-        )} to build bundle for production.`,
-      ),
+    message.error(
+      `Error: dist ${chalk.cyan(distPath)} is empty. Call ${chalk.green(
+        useYarn ? `yarn build` : 'npm build',
+      )} to build bundle for production.`,
     )
     process.exit(1)
     return ''
@@ -72,7 +71,7 @@ export default async (argv: ServeOption) => {
     return
   }
 
-  console.log(chalk.cyan(`Starting server...`))
+  const spinner = new Ora({ text: `Starting server...` }).start()
   const app = express()
 
   if (argv.gzip) {
@@ -95,18 +94,20 @@ export default async (argv: ServeOption) => {
   }
 
   const callback = (err: Error) => {
+    spinner.stop()
     if (err != null) {
+      message.error('Failed to setup server:')
       console.log(err)
       return
     }
 
     const urls = prepareUrls(protocol, host, port)
-    console.log(`Server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
-    console.log(`Static resources is served from ${chalk.cyan(dist)}`)
+    message.info(`Server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    message.info(`Static resources is served from ${chalk.cyan(dist)}`)
     if (proxy) {
       const proxyInfo = proxyInfomation(proxy)
       if (proxyInfo) {
-        console.log(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
+        message.info(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
       }
     }
 

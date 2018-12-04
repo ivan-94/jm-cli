@@ -182,3 +182,25 @@ export function interpolate(str: string, local: { [key: string]: string }) {
 
   return str
 }
+
+export const logSymbols = {
+  success: chalk.bgGreen(chalk.white(' DONE ')),
+  error: chalk.bgRed(chalk.white(' FAIL ')),
+  warn: chalk.bgYellow(chalk.white(' WARN ')),
+  info: chalk.bgBlue(chalk.white(' INFO ')),
+}
+
+export const message = {
+  success: (text: string) => {
+    console.log(logSymbols.success + ' ' + text)
+  },
+  error: (text: string) => {
+    console.log(logSymbols.error + ' ' + text)
+  },
+  warn: (text: string) => {
+    console.log(logSymbols.warn + ' ' + text)
+  },
+  info: (text: string) => {
+    console.log(logSymbols.info + ' ' + text)
+  },
+}

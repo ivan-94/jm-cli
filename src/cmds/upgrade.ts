@@ -5,6 +5,7 @@ import chalk from 'chalk'
 import fs from 'fs-extra'
 import { execSync } from 'child_process'
 import paths from '../paths'
+import Ora from 'ora'
 import {
   SemverLevel,
   getYarnGlobalInstallPackages,
@@ -12,7 +13,7 @@ import {
   getUpgradableVersion,
   getLocalVersion,
 } from '../services/upgrade'
-import { shouldUseYarn } from '../utils'
+import { shouldUseYarn, message } from '../utils'
 import { CommonOption } from './type'
 
 export interface UpgradeOption extends CommonOption {
@@ -28,7 +29,7 @@ export function globalUpgrade(
   pkg: { name: string; version: string },
   dryRun: boolean,
 ) {
-  console.log(`Current verison: ${pkg.version}`)
+  message.info(`Current verison: ${pkg.version}`)
   const list: { [name: string]: string } = useYarn ? getYarnGlobalInstallPackages() : getNpmGlobalInstallPackages()
   const { name, version } = pkg
   if (!(name in list)) {
@@ -37,16 +38,16 @@ export function globalUpgrade(
 
   const [newRange, upgradable] = getUpgradableVersion(name, version, level)
   if (upgradable) {
-    console.log(`New version ${chalk.cyan(newRange)} founded.`)
+    message.info(`New version ${chalk.cyan(newRange)} founded.`)
     const cmd = useYarn ? `yarn global add "${name}@${newRange}"` : `npm install -g "${name}@${newRange}"`
     if (dryRun) {
       return
     }
-    console.log('Upgrading...')
+    const spinner = new Ora({ text: 'Upgrading...' }).start()
     execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
-    console.log('✨ Upgrade Success!')
+    spinner.stopAndPersist({ text: '✨ Upgrade Success!' })
   } else {
-    console.log(`Already up-to-date`)
+    message.info(`Already up-to-date`)
   }
 }
 
@@ -58,19 +59,19 @@ export function localUpgrade(
 ) {
   const name = pkg.name
   const version = getLocalVersion(name)
-  console.log(`Current verison: ${version}`)
+  message.info(`Current verison: ${version}`)
   const [newRange, upgradable] = getUpgradableVersion(name, version, level)
   if (upgradable) {
-    console.log(`New version ${chalk.cyan(newRange)} founded.`)
+    message.info(`New version ${chalk.cyan(newRange)} founded.`)
     if (dryRun) {
       return
     }
     const cmd = useYarn ? `yarn add "${name}@${newRange}" -D` : `npm install "${name}@${newRange}" --save-dev`
-    console.log('Upgrading...')
+    const spinner = new Ora({ text: 'Upgrading...' }).start()
     execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
-    console.log('✨ Upgrade Success!')
+    spinner.stopAndPersist({ text: '✨ Upgrade Success!' })
   } else {
-    console.log(`Already up-to-date`)
+    message.info(`Already up-to-date`)
   }
 }
 
@@ -82,13 +83,13 @@ export default (argv: UpgradeOption) => {
 
   try {
     if (global) {
-      console.log(`Gathering package infos for global ${chalk.cyan(pkg.name)}...`)
+      message.info(`Gathering package infos for global ${chalk.cyan(pkg.name)}...`)
       globalUpgrade(useYarn, level, pkg, !!argv.dryRun)
     } else {
-      console.log(`Gathering package infos for local ${chalk.cyan(pkg.name)}...`)
+      message.info(`Gathering package infos for local ${chalk.cyan(pkg.name)}...`)
       localUpgrade(useYarn, level, pkg, !!argv.dryRun)
     }
   } catch (err) {
-    console.log(chalk.redBright(`❌  Failed to upgrade: ${chalk.white(err.message || err)}`))
+    message.error('Failed to upgrade: ${chalk.white(err.message || err)}')
   }
 }

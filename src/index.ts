@@ -202,4 +202,5 @@ yargs
     description: 'inspect webpack configuration',
     type: 'boolean',
   })
+  .strict()
   .help().argv

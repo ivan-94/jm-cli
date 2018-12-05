@@ -105,14 +105,20 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             {
               test: /\.css$/,
               use: [
-                {
-                  loader: require.resolve('cache-loader'),
-                  options: genCacheConfig('css', enviroments.raw, paths),
-                },
-                ...styleLoaders(enviroments.raw, {
-                  importLoaders: 1,
-                  sourceMap: isProduction && shouldUseSourceMap,
-                }),
+                ...styleLoaders(
+                  enviroments.raw,
+                  {
+                    importLoaders: 1,
+                    sourceMap: isProduction && shouldUseSourceMap,
+                  },
+                  undefined,
+                  [
+                    {
+                      loader: require.resolve('cache-loader'),
+                      options: genCacheConfig('css', enviroments.raw, paths),
+                    },
+                  ],
+                ),
               ],
               sideEffects: true,
             },

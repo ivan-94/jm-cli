@@ -9,7 +9,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
  * @param cssOption css-loader 的参数
  * @param preProcessor 其他预处理器， 如sass
  */
-export default (environment: StringObject, cssOption: object, preProcessor?: string) => {
+export default (
+  environment: StringObject,
+  cssOption: object,
+  preProcessor?: string,
+  afterLoaders?: RuleSetLoader[],
+) => {
   const { NODE_ENV, SOURCE_MAP, PUBLIC_URL } = environment
   const isProduction = NODE_ENV === 'production'
   const shouldUseRelativeAssetPaths = PUBLIC_URL === './' || PUBLIC_URL === '.'
@@ -23,6 +28,7 @@ export default (environment: StringObject, cssOption: object, preProcessor?: str
         publicPath: shouldUseRelativeAssetPaths ? '../../' : undefined,
       },
     },
+    ...(afterLoaders || []),
     {
       loader: require.resolve('css-loader'),
       options: cssOption,

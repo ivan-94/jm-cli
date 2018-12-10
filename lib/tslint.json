@@ -113,7 +113,7 @@
     "no-misused-new": true,
     // 禁止使用null, 因为undefined和null在职责上面是有些重叠的. 最初Javascript发明undefined就是为了表示一个值
     // 不存在. 而null则跟Java引用对象的概念一样, 表示一个引用为空. 所以推荐只使用一种方式, 避免困惑
-    "no-null-keyword": true,
+    "no-null-keyword": false,
     // 相比const x = { ... } as T 更推荐const x: T = { ... }
     "no-object-literal-type-assertion": true,
     // return await 没有必要

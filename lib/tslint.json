@@ -253,7 +253,7 @@
         "module-source-path": "full"
       }
     ],
-    "prefer-method-signature": true,
+    "prefer-method-signature": false,
     "prefer-switch": [
       true,
       {
@@ -275,7 +275,8 @@
     "jsx-no-multiline-js": false,
     "jsx-no-lambda": true,
     "jsx-key": true,
-    "jsx-no-string-ref": true
+    "jsx-no-string-ref": true,
+    "jsx-curly-spacing": false
   },
   "rulesDirectory": []
 }

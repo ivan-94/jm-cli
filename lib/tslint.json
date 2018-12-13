@@ -104,8 +104,6 @@
     "no-for-in-array": true,
     // promise 必须被处理
     "no-floating-promises": true,
-    // 禁止导入不在dependencies中的模块
-    "no-implicit-dependencies": [true, ["~"]],
     "no-invalid-template-strings": true,
     // 禁止在类之外使用this
     "no-invalid-this": true,
@@ -115,7 +113,7 @@
     // 不存在. 而null则跟Java引用对象的概念一样, 表示一个引用为空. 所以推荐只使用一种方式, 避免困惑
     "no-null-keyword": false,
     // 相比const x = { ... } as T 更推荐const x: T = { ... }
-    "no-object-literal-type-assertion": true,
+    "no-object-literal-type-assertion": false,
     // return await 没有必要
     "no-return-await": true,
     // 即父作用域定义的变量, 不应该在当前作用域定义. 容易导致bug
@@ -137,7 +135,7 @@
       }
     ],
     // 不要将未绑定的方法传递给其他方法或赋值. 应该转换为箭头函数
-    "no-unbound-method": [true, "ignore-static"],
+    "no-unbound-method": false,
     "no-unnecessary-class": true,
     "no-unsafe-any": false,
     "no-unsafe-finally": true,

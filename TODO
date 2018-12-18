@@ -25,7 +25,7 @@
 [*] cache-loader, thread-loader 使用场景
 [ ] 通用资源外部化(react, mobx这些)
 [*] remove cache command
-[ ] 打印typescript，react版本信息
+[*] 打印typescript，react版本信息
 [ ] 打印编译后的包信息
 [*] 动态加载template, 避免下载依赖, template 可以定制忽略的文件或目录
 [*] package.json fields ignore. 
@@ -34,10 +34,13 @@
 [*] 处理模板中package.json中的jm-cli依赖
 [ ] decorator 可配置. 这是废弃的标准, 默认应该禁止
 [ ] build支持 --stat 选项
+[ ] 生成器
+[ ] tab生成
 
 # 不紧急
-[ ] 加载动画 ora.
-[ ] 美化控制台输出
+[*] 加载动画 ora.
+[*] 美化控制台输出
+[ ] start 输出本地和远程地址
 [ ] debug(verbose)
 [ ] global 模式使用find-up 支持在项目的子目录运行
 [ ] 生产环境devkit。如摇动打开控制台
@@ -50,7 +53,12 @@
 
 # BUG
 [*] 页面无法重新刷新
-[ ] 无法识别react-hot-reload
+[*] 无法识别react-hot-reload
+[ ] 修复windows更新错误
+[*] 检查是否有不安全的包
+[ ] 允许public为空
+[ ] 处理link module not found
+[*] polyfill
 
 # 待考虑
 [ ] react-error-overlap

@@ -7,7 +7,7 @@
     "jm": {
       "$ref": "option.schema.json"
     },
-    "browsers": {
+    "browserslist": {
       "type": ["string", "array"],
       "items": {
         "type": "string"

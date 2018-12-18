@@ -103,7 +103,7 @@
     "no-eval": true,
     "no-for-in-array": true,
     // promise 必须被处理
-    "no-floating-promises": true,
+    "no-floating-promises": false,
     "no-invalid-template-strings": true,
     // 禁止在类之外使用this
     "no-invalid-this": true,
@@ -150,7 +150,7 @@
     // 在相加两个值时, 类型必须一样
     "restrict-plus-operands": true,
     // 如果条件断言永远是true或false时警告
-    "strict-type-predicates": true,
+    "strict-type-predicates": false,
     "switch-default": true,
     // 优先使用===进行比较
     "triple-equals": [true, "allow-null-check", "allow-undefined-check"],

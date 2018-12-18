@@ -39,7 +39,7 @@ export default (
         ident: 'postcss',
         plugins: () => [
           require('postcss-flexbugs-fixes'),
-          // 可以在package.json 中指定browsers 选项，设置浏览器兼容列表
+          // 可以在package.json 中指定browserslist 选项，设置浏览器兼容列表
           // see more infomation in https://github.com/csstools/postcss-preset-env
           require('postcss-preset-env')({
             autoprefixer: {

@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Getting Started": ["getting-started", "folder-structure", "features"],
+    "Getting Started": ["getting-started", "folder-structure", "features", "compatibility"],
     "Configurations": ["environments", "configurations", "multi-entry", "babel-macro"],
     "API": ["cli", "template"],
     "Standards": ["tslint", "ecosystem"]

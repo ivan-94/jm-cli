@@ -20,17 +20,7 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
       [
         require.resolve('@babel/preset-env'),
         {
-          // We want Create React App to be IE 9 compatible until React itself
-          // no longer works with IE 9
-          targets: {
-            ie: 9,
-          },
-          // Users cannot override this behavior because this Babel
-          // configuration is highly tuned for ES5 support
-          ignoreBrowserslistConfig: true,
-          // If users import all core-js they're probably not concerned with
-          // bundle size. We shouldn't rely on magic to try and shrink it.
-          useBuiltIns: false,
+          useBuiltIns: 'usage',
           // Do not transform modules to CJS
           modules: false,
           // Exclude transforms that make all code slower
@@ -53,6 +43,11 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
       require.resolve('@babel/plugin-transform-destructuring'),
       [require.resolve('@babel/plugin-proposal-object-rest-spread'), { useBuiltIns: true }],
       [
+        // babel会注入一些帮助方法, 如_extends, generator等. 默认情况下, 这些helper都很小, 会在每个使用
+        // 他们的模块中重复. 这样可能会导致包的体积变大. 使用这个插件会让模块通过导入@babel/runtime来导入helper.
+        // @babel/runtime 类似于Typescript中的tslib
+        // * 注意Polyfill和Helper的区别, Polyfill是环境的填充物, 而Helper是编译结果的运行时帮助方法
+        // * Polyfill 可以通过@babel/polyfill定义
         require.resolve('@babel/plugin-transform-runtime'),
         {
           corejs: false,

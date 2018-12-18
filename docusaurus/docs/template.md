@@ -55,7 +55,7 @@ sidebar_label: Custom Template
 - devDependencies
 - scripts
 - jm
-- browsers
+- browserslist
 - jm\_ 为前缀的字段
 - includeFields 中指定的字段
 
@@ -66,7 +66,8 @@ sidebar_label: Custom Template
 ## 测试
 
 ```shell
-jm create [name] --template file:./my-tempale --force
+jm create [name] --template file:./my-tempale --force
+
 ```
 
 ## 示例模板

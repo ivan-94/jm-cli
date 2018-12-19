@@ -20,6 +20,8 @@ export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginCon
       [
         require.resolve('@babel/preset-env'),
         {
+          // 自动检查被转译的代码中是否使用了特性, 如果指定环境不存在, 则自动添加Polyfill
+          // 注意, 这无法检测没有经过babel转译的代码中的特性, 如第三方库. 这些需要显式添加
           useBuiltIns: 'usage',
           // Do not transform modules to CJS
           modules: false,

@@ -34,7 +34,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "build:doc": "cd docusaurus/website && npm run build && npm run publish-gh-pages "
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",

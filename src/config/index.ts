@@ -14,6 +14,7 @@ import { getEntries, genTemplatePlugin } from './utils/entry'
 import getTslintConfig from './utils/tslintConfig'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
+import WatchMissingNodeModulesPlugin from './plugins/WatchMissingNodeModulesPlugin'
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HappyPack = require('happypack')
@@ -223,6 +224,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
+      // 监听丢失的模块. 如果没有这个插件, 一旦没有找到对应的模块, 将需要重启webpack.
+      // 在使用link 模块时比较有用
+      new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
       // 注入环境变量到 window.JM_ENV中
       new InjectEnvPlugin(enviroments.userDefine, 'JM_ENV'),

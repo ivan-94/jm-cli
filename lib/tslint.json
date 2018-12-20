@@ -223,7 +223,7 @@
     "file-header": false,
     "encoding": true,
     // 不要使用I*这种接口形式
-    "interface-name": [true, "never-prefix"],
+    "interface-name": false,
     // 注释使用jsdoc规范
     "jsdoc-format": true,
     "match-default-export-name": false,

@@ -43,7 +43,7 @@ function getDevServerConfig(
   }
 
   return {
-    disableHostCheck: !proxy,
+    disableHostCheck: true,
     compress: true,
     clientLogLevel: 'none',
     contentBase: [paths.appPublic, paths.appDist],

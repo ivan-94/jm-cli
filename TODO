@@ -36,6 +36,7 @@
 [ ] build支持 --stat 选项
 [ ] 生成器
 [ ] tab生成
+[ ] 支持js
 
 # 不紧急
 [*] 加载动画 ora.
@@ -59,6 +60,10 @@
 [ ] 允许public为空
 [ ] 处理link module not found
 [*] polyfill
+[ ] cache 添加browserslist为key
+[ ] 不要写死host
+[] host check false
+[] 默认打开第一个entry
 
 # 待考虑
 [ ] react-error-overlap

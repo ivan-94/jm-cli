@@ -14,4 +14,4 @@ export type WebpackConfigurer = (
   },
 ) => Configuration
 
-export { ImportPluginConfig }
+export { ImportPluginConfig, JMOptions }

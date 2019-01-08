@@ -58,6 +58,11 @@
       "description": "happy pack mode, default is true when cpus cores > 1",
       "type": "boolean",
       "default": true
+    },
+    "useBuiltIns": {
+      "description": "babel-env-preset useBuiltIns option",
+      "type": "string",
+      "default": "usage"
     }
   },
   "definitions": {

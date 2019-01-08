@@ -22,12 +22,14 @@ export interface JMOptions {
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
   enableCircularDependencyCheck: boolean
+  useBuiltIns: 'entry' | 'usage'
   happypack: boolean
 }
 
 const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: true,
   enableCircularDependencyCheck: true,
+  useBuiltIns: 'usage',
   happypack: os.cpus().length > 1,
 }
 const key = 'jm'

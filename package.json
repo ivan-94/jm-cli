@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.30",
+  "version": "0.1.34",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",

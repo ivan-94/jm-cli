@@ -43,7 +43,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   const babelOptions = {
-    ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions.importPlugin),
+    ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions),
     envName: enviroments.raw.NODE_ENV,
   }
 

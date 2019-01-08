@@ -1,7 +1,7 @@
 /**
  * babel 配置选项
  */
-import { ImportPluginConfig } from '../type'
+import { JMOptions } from '../type'
 import { isModuleExistsInCwd, resolveModuleInCwd } from '../../utils'
 
 // see more options in https://babeljs.io/docs/en/options
@@ -9,9 +9,10 @@ import { isModuleExistsInCwd, resolveModuleInCwd } from '../../utils'
 // babel 的Typescript插件仅仅是移除了Typescript的语法.
 // react-hot-loader 依赖babel插件
 // babel 有强大的生态
-export default (env: string, importPlugin?: ImportPluginConfig | ImportPluginConfig[]) => {
+export default (env: string, options: JMOptions) => {
   const isDevelopment = env === 'development'
   const isProduction = env === 'production'
+  const importPlugin = options.importPlugin
 
   return {
     babelrc: false,

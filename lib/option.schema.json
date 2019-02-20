@@ -61,7 +61,7 @@
     },
     "useBuiltIns": {
       "description": "babel-env-preset useBuiltIns option",
-      "type": "string",
+      "enum": [false, "usage", "entry"],
       "default": "usage"
     }
   },

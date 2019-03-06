@@ -3,6 +3,7 @@
  */
 import Table from 'cli-table2'
 import webpack, { Configuration } from 'webpack'
+import path from 'path'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
@@ -19,18 +20,21 @@ export interface BuildOption extends CommonOption {
   measure?: boolean
   dontClean?: boolean
   dontCopy?: boolean
+  cacheByNpmVersion?: boolean
 }
 
 const mode = 'production'
 const useYarn = shouldUseYarn()
 process.env.NODE_ENV = mode
 
+const versionFile = path.join(paths.appDist, '.version')
+const pkg = require(paths.appPackageJson)
+
 // initial env
 require('../env')
 
 function build(argv: BuildOption) {
   const environment = require('../env').default()
-  const pkg = require(paths.appPackageJson)
   const jmOptions = getOptions(pkg, paths.ownLib)
   if (jmOptions == null) {
     return
@@ -104,15 +108,29 @@ function build(argv: BuildOption) {
       spinner.stopAndPersist({ text: 'Compiled successfully.', symbol: logSymbols.success })
     }
     console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
+    fs.writeFileSync(versionFile, pkg.version)
   })
 }
 
 export default (argv: BuildOption) => {
+  if (argv.cacheByNpmVersion && !argv.inspect) {
+    // 检查dist目录是否存在, 且版本匹配
+    if (fs.existsSync(versionFile)) {
+      const version = fs.readFileSync(versionFile).toString()
+      if (pkg.version === version) {
+        message.info(`Build results cached by npm version(${version}), return`)
+        return
+      }
+    }
+  }
+
   if (!argv.dontClean) {
     fs.emptyDirSync(paths.appDist)
   }
+
   if (!argv.dontCopy) {
     fs.copySync(paths.appPublic, paths.appDist, { dereference: false })
   }
+
   build(argv)
 }

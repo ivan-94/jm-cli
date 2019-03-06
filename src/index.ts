@@ -65,6 +65,10 @@ yargs
         requiresArg: true,
         coerce: transformString2Array,
       },
+      'cache-by-npm-verison': {
+        description: 'cache build output by npm version',
+        type: 'boolean',
+      },
       'dont-clean': {
         description: "don't clean dist folder",
         type: 'boolean',

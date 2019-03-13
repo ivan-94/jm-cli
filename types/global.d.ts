@@ -72,3 +72,17 @@ declare module 'boxen' {
 declare module 'hash-sum' {
   export default function(data: any): string
 }
+
+declare module 'core-js-builder' {
+  export default function(opt: {targets?: string | string[], modules: string[], filename?: string}): Promise<string>
+}
+
+declare module 'core-js-compat' {
+  export default function(opt: {targets?: string | string[]}): {list: string[], targets: {[key: string]: {[browser: string]: string }}}
+}
+
+declare module 'terser' {
+  export default {
+    minify(code: string, options: any): {error?: Error, code?: string}
+  }
+}

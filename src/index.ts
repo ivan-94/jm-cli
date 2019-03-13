@@ -7,6 +7,7 @@ import { BuildOption } from './cmds/build'
 import { AnalyzeOption } from './cmds/analyze'
 import { ServeOption } from './cmds/serve'
 import { UpgradeOption } from './cmds/upgrade'
+import { PolyfillOption } from './cmds/polyfill'
 import wrap from './middlewares'
 
 process.on('uncaughtException', err => {
@@ -149,6 +150,21 @@ yargs
     },
     wrap(argv => {
       require('./cmds/serve').default(argv as ServeOption)
+    }),
+  )
+  .command(
+    'polyfill',
+    'generate polyfill base on browserslist',
+    {
+      out: {
+        alias: 'o',
+        type: 'string',
+        default: 'public/polyfill.js',
+      },
+    },
+
+    wrap(argv => {
+      require('./cmds/polyfill').default(argv as PolyfillOption)
     }),
   )
   .command(

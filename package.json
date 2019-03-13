@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.1.37",
+  "version": "0.2.0",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -96,6 +96,7 @@
     "chalk": "^2.4.1",
     "circular-dependency-plugin": "^5.0.2",
     "cli-table2": "^0.2.0",
+    "core-js-builder": "^3.0.0-beta.18",
     "cors": "^2.8.5",
     "css-loader": "^1.0.1",
     "detect-port": "^1.2.3",
@@ -134,7 +135,7 @@
     "typescript": "^3.3.3",
     "url-loader": "^1.0.1",
     "validate-npm-package-name": "^3.0.0",
-    "webpack": "^4.25.1",
+    "webpack": "^4.29.6",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-dev-server": "^3.1.10",
     "webpack-format-messages": "^2.0.3",

@@ -150,6 +150,14 @@ jm upgrade --no-yarn
 
 清除 `babel`和`cache-loader`的缓存. 如果新增了依赖或者遇到编译问题, 应该首先删除掉这些缓存
 
+## Polyfill
+
+根据`package.json`配置的browserslist和polyfill值来创建polyfill文件. 详见[兼容性](compatibility.md)
+
+```shell
+jm polyfill --out public/polyfill.js
+```
+
 ## Version
 
 查看版本

@@ -11,9 +11,14 @@ sidebar_label: Browser Compatibility
 
 ```json
 {
-  "browserslist": ["Firefox >= 37", "chrome > 28"]
+  "browserslist": ["Firefox >= 37", "chrome > 28"],
+  "jm": {
+    "useBuiltIns": "usage",
+  }
 }
 ```
+
+> 可以通过`jm.useBuiltIns`来配置@babel/preset-env
 
 更多配置方式[详见browserslist](https://github.com/browserslist/browserslist#queries)
 
@@ -35,12 +40,44 @@ jm-cli 默认将`@babel/preset-env`配置为[**useBuiltIns: 'usage'**](https://b
 > ```
 >  https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.includes,WeakMap,default
 > ```
-> 详见 [Feature list](https://polyfill.io/v2/docs/features/#feature-list)
+> 详见 [Feature list](https://polyfill.io/v2/docs/features/#feature-list)
 >
+
+## 使用`jm polyfill`命令生成polyfill文件
+
+Polyfill.io是一个第三方服务，而且位于国外，这可能会对我们的应用造成一些影响。在`v0.2`后，新增了一个`polyfill`
+命令，根据`package.json`指定的`browserslist`和`polyfill`来生成polyfill文件.
+
+```shell
+jm polyfill -o public/polyfill.js
+```
+
++ browserslist: 用于指定浏览器的最低兼容版本. 通过[`core-js-compat`](https://github.com/zloirock/core-js/tree/master/packages/core-js-compat)来计算可以兼容的特性
++ polyfill: 这是一个字符串数组，指定需要添加的polyfill. 默认会添加一下polyfills:
+  ```
+  'es.promise',
+  'es.array.from',
+  'es.array.of',
+  'es.array.fill',
+  'es.array.index-of',
+  'es.array.find-index',
+  'es.array.find',
+  'es.object.assign',
+  'es.object.keys',
+  'es.string.ends-with',
+  'es.string.starts-with',
+  'es.string.includes',
+  'es.symbol.iterator',
+  'es.symbol.species',
+  'es.map',
+  'es.set',
+  ```
+
+> 为了避免冲突，可以将`jm.useBuiltIns`设置为false
 
 ## 哪些东西不能被polyfill?
 
-polyfill底层都是使用core-js, core-js在[官方文档](https://github.com/zloirock/core-js#missing-polyfills)中已经罗列下面一些特性是无法被polyfill的:
+polyfill底层都是使用core-js, core-js在[官方文档](https://github.com/zloirock/core-js#missing-polyfills)中已经罗列下面一些特性是无法被polyfill的:
 - ES `JSON` is missing now only in IE7- and never will it be added to `core-js`, if you need it in these old browsers, many implementations are available.
 - ES `String#normalize` is not a very useful feature, but this polyfill will be very large. If you need it, you can use [unorm](https://github.com/walling/unorm/).
 - ES `Proxy` can't be polyfilled, but for Node.js / Chromium with additional flags you can try [harmony-reflect](https://github.com/tvcutsem/harmony-reflect) for adapt old style `Proxy` API to final ES2015 version.
@@ -50,12 +87,12 @@ jm-cli 默认将`@babel/preset-env`配置为[**useBuiltIns: 'usage'**](https://b
 
 ## mobx 回退
 
-mobx5 依赖于Proxy特性, 导致无法在低版本的浏览器中被使用, 如果你需要适配这些浏览器, 则需要将mobx降级到4.x:
+mobx5 依赖于Proxy特性, 导致无法在低版本的浏览器中被使用, 如果你需要适配这些浏览器, 则需要将mobx降级到4.x:
 
 ```shell
-# 安装最新版本4.x版本, mobx官方会同时维护5.*和4.*两个版本
+# 安装最新版本4.x版本, mobx官方会同时维护5.*和4.*两个版本
 yarn add mobx@4.*
 
-# 安装最新版本的mobx-react, 可以同时用于5.x和4.x的mobx版本
+# 安装最新版本的mobx-react, 可以同时用于5.x和4.x的mobx版本
 yarn add mobx-react
 ```

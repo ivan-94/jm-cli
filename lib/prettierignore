@@ -1,2 +1,5 @@
 *.md
 package.json
+dist/
+public/
+*.min.js

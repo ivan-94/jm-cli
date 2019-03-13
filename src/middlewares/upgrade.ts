@@ -11,7 +11,7 @@ import path from 'path'
 import Ora from 'ora'
 import { getYarnGlobalInstallPackages, getNpmGlobalInstallPackages, getUpgradableVersion } from '../services/upgrade'
 import paths from '../paths'
-import { shouldUseYarn } from '../utils'
+import { shouldUseYarn, IS_CI } from '../utils'
 
 const Daily = 24 * 3600 * 1000
 let spinner = new Ora()
@@ -91,6 +91,10 @@ async function checkLocalUpdate(useYarn: boolean, pkg: { name: string; version: 
 }
 
 export default async (argv: Arguments) => {
+  if (IS_CI) {
+    return
+  }
+
   const lastUpdatePath = path.join(paths.ownData, 'lastupdate')
   fs.ensureDirSync(paths.ownData)
 
@@ -112,7 +116,7 @@ export default async (argv: Arguments) => {
     if (globalModel) {
       checkGlobalUpdate(useYarn, pkg)
     } else {
-      checkLocalUpdate(useYarn, pkg)
+      await checkLocalUpdate(useYarn, pkg)
     }
   } finally {
     // save lastUpdate

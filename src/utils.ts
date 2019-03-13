@@ -9,6 +9,8 @@ import { execSync } from 'child_process'
 import path from 'path'
 import { OutputFileSystem } from 'webpack'
 
+export const IS_CI = process.env.CI === 'true'
+
 export function shouldUseYarn() {
   try {
     execSync('yarnpkg --version', { stdio: 'ignore' })

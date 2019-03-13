@@ -9,6 +9,7 @@ import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
 import { message, inspect, shouldUseYarn, logSymbols } from '../utils'
 import Ora from 'ora'
+import showInfo from '../services/info'
 import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
@@ -79,6 +80,7 @@ function build(argv: BuildOption) {
     config = smp.wrap(config)
   }
 
+  message.info(showInfo())
   const spinner = new Ora({ text: 'Creating an optimized production build...' }).start()
   const compiler = webpack(config as Configuration)
 

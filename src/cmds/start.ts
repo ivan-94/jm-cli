@@ -9,6 +9,7 @@ import chalk from 'chalk'
 import opener from 'opener'
 import { message, prepareUrls, inspect, clearConsole, choosePort } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
+import showInfo from '../services/info'
 import getOptions from '../options'
 import configure from '../config'
 import paths from '../paths'
@@ -146,6 +147,7 @@ export default async function(argv: StartOption) {
     }
 
     const urls = prepareUrls(protocol, host, port)
+    message.info(showInfo())
     message.info(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
     message.info(`Webpack output is served from ${chalk.cyan('/')}`)
     const contentBase = devServerConfig.contentBase

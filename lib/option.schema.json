@@ -63,6 +63,11 @@
       "description": "babel-env-preset useBuiltIns option",
       "enum": [false, "usage", "entry"],
       "default": "usage"
+    },
+    "alias": {
+      "description": "webpack module alias",
+      "type": "object",
+      "default": null
     }
   },
   "definitions": {

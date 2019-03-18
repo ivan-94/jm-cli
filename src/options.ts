@@ -23,6 +23,7 @@ export interface JMOptions {
   enableDuplicatePackageCheck: boolean
   enableCircularDependencyCheck: boolean
   useBuiltIns: 'entry' | 'usage'
+  alias?: { [key: string]: string }
   happypack: boolean
 }
 

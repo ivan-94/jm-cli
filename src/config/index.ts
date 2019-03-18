@@ -17,6 +17,7 @@ import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
 import WatchMissingNodeModulesPlugin from './plugins/WatchMissingNodeModulesPlugin'
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const WebpackModules = require('webpack-modules')
 const HappyPack = require('happypack')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
@@ -81,6 +82,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       modules: ['node_modules'],
       extensions: ['.tsx', '.ts', '.js', '.jsx'],
       alias: {
+        ...(argv.jmOptions.alias || {}),
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
         // 如 ~/components/Button
         '~': context,
@@ -199,6 +201,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ...(envConfig.optimization || {}),
     },
     plugins: [
+      new WebpackModules(),
       // typescript type checker
       new ForkTsCheckerWebpackPlugin({
         tsconfig: paths.appTsConfig,

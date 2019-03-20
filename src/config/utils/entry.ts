@@ -11,6 +11,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
  * scan entries in src
+ * @param context 页面搜索的路径上下文
+ * @param pageExt 页面的扩展名
+ * @param entry 显式指定的页面名称
+ * @param isProduction 是否是生产环境
  */
 export function getEntries(context: string, pageExt: string, entry?: string[], isProduction?: boolean) {
   const entries: { [name: string]: string[] } = {}

@@ -163,6 +163,10 @@ export function resolveModuleInCwd(name: string) {
   return require.resolve(name, { paths: [cwdNodeModules] })
 }
 
+export function requireInCwd(name: string) {
+  return require(resolveModuleInCwd(name))
+}
+
 /**
  * interpolate ${variable} in string
  */

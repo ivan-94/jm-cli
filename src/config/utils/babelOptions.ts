@@ -2,17 +2,24 @@
  * babel 配置选项
  */
 import { JMOptions } from '../type'
-import { isModuleExistsInCwd, resolveModuleInCwd } from '../../utils'
+import { isModuleExistsInCwd, resolveModuleInCwd, requireInCwd } from '../../utils'
 
 // see more options in https://babeljs.io/docs/en/options
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
 // babel 的Typescript插件仅仅是移除了Typescript的语法.
 // react-hot-loader 依赖babel插件
 // babel 有强大的生态
-export default (env: string, options: JMOptions) => {
+
+/**
+ * @param env 当前环境
+ * @param options 配置对象
+ * @param electronMain 是否是electron主线程
+ */
+export default (env: string, options: JMOptions, electronMain?: boolean) => {
   const isDevelopment = env === 'development'
   const isProduction = env === 'production'
   const importPlugin = options.importPlugin
+  const isElectron = options.electron
 
   return {
     babelrc: false,
@@ -28,9 +35,16 @@ export default (env: string, options: JMOptions) => {
           modules: false,
           // Exclude transforms that make all code slower
           exclude: ['transform-typeof-symbol'],
+          ...(isElectron
+            ? {
+                useBuiltIns: 'usage',
+                targets: { electron: requireInCwd('electron/package.json').version },
+                ignoreBrowserslistConfig: true,
+              }
+            : {}),
         },
       ],
-      [
+      !electronMain && [
         require.resolve('@babel/preset-react'),
         {
           development: !isProduction,
@@ -38,7 +52,7 @@ export default (env: string, options: JMOptions) => {
         },
       ],
       require.resolve('@babel/preset-typescript'),
-    ],
+    ].filter(Boolean),
     plugins: [
       [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
       [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
@@ -63,16 +77,20 @@ export default (env: string, options: JMOptions) => {
         },
       ],
       require.resolve('@babel/plugin-syntax-dynamic-import'),
-      isDevelopment && isModuleExistsInCwd('react-hot-loader') && resolveModuleInCwd('react-hot-loader/babel'),
-      isProduction && [
-        // Remove PropTypes from production build
-        require.resolve('babel-plugin-transform-react-remove-prop-types'),
-        {
-          removeImport: true,
-        },
-      ],
+      !electronMain &&
+        isDevelopment &&
+        isModuleExistsInCwd('react-hot-loader') &&
+        resolveModuleInCwd('react-hot-loader/babel'),
+      !electronMain &&
+        isProduction && [
+          // Remove PropTypes from production build
+          require.resolve('babel-plugin-transform-react-remove-prop-types'),
+          {
+            removeImport: true,
+          },
+        ],
       // support antd, antd-mobile
-      ...(importPlugin
+      ...(!electronMain && importPlugin
         ? (Array.isArray(importPlugin) ? importPlugin : [importPlugin]).map(i => [
             require.resolve('babel-plugin-import'),
             i,

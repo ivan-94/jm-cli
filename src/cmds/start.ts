@@ -1,17 +1,19 @@
 /**
  * Start development server
+ * TODO: electron依赖检查
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
-import { Configuration as WebpackConfiguration, Compiler } from 'webpack'
+import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
 import formatMessages from 'webpack-format-messages'
-import webpack = require('webpack')
+import ch from 'child_process'
 import chalk from 'chalk'
 import opener from 'opener'
-import { message, prepareUrls, inspect, clearConsole, choosePort } from '../utils'
+import { message, prepareUrls, inspect, clearConsole, choosePort, requireInCwd } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import showInfo from '../services/info'
 import getOptions from '../options'
 import configure from '../config'
+import electronMainConfigure from '../config/electron-main'
 import paths from '../paths'
 import { CommonOption } from './type'
 import Ora = require('ora')
@@ -70,10 +72,11 @@ function getDevServerConfig(
  * create webpack compiler and listen build events
  * @param config
  */
-function createCompiler(config: WebpackConfiguration): Compiler {
+function createCompiler(config: WebpackConfiguration, electronMainConfig?: WebpackConfiguration): Compiler {
   let compiler: Compiler
   try {
-    compiler = webpack(config)
+    // @ts-ignore
+    compiler = webpack(electronMainConfig ? [electronMainConfig, config] : config)
   } catch (err) {
     // config error
     message.error(chalk.red('Failed to compile.\n'))
@@ -110,16 +113,26 @@ function createCompiler(config: WebpackConfiguration): Compiler {
   return compiler!
 }
 
+function openByElectron() {
+  ch.spawn(requireInCwd('electron'), ['.'])
+}
+
 export default async function(argv: StartOption) {
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const jmOptions = getOptions(pkg, paths.ownLib)
+  const jmOptions = getOptions(pkg)
   if (jmOptions == null) {
     return
   }
 
+  const isEelectron = jmOptions.electron
+  if (isEelectron) {
+    message.info('Electron 模式')
+  }
+
+  const electronMainConfig = isEelectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined
   const config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
   const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw)
 
@@ -131,7 +144,7 @@ export default async function(argv: StartOption) {
   }
 
   const spinner = new Ora({ text: 'Starting the development server...\n' }).start()
-  const compiler = createCompiler(config)
+  const compiler = createCompiler(config, electronMainConfig)
   const devServer = new webpackDevServer(compiler, devServerConfig)
 
   const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
@@ -164,7 +177,12 @@ export default async function(argv: StartOption) {
       }
     }
 
-    opener(urls.localUrlForBrowser)
+    if (isEelectron) {
+      message.info(`Call ${chalk.cyan('`electron .`')} to setup development APP`)
+      openByElectron()
+    } else {
+      opener(urls.localUrlForBrowser)
+    }
   })
   ;['SIGINT', 'SIGTERM'].forEach(sig => {
     process.on(sig as NodeJS.Signals, () => {

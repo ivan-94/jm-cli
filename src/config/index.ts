@@ -31,6 +31,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const pageEntries = getEntries(context, pageExt, entry, isProduction)
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
+  const isElectron = argv.jmOptions.electron
 
   if (Object.keys(pageEntries).length === 0) {
     console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
@@ -61,12 +62,13 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   ]
 
   const webpackConfig: Configuration = {
-    name,
+    name: name || (isElectron ? 'renderer' : ''),
     bail: envConfig.bail,
     context,
     mode: $('development', 'production'),
     devtool: envConfig.devtool,
     entry: entries,
+    target: isElectron ? 'electron-renderer' : 'web',
     output: {
       filename: `static/js/${filePrefix}[name].js${$('', '?[chunkhash:8]')}`,
       chunkFilename: `static/js/${filePrefix}[name].js${$('', '?[chunkhash:8]')}`,
@@ -77,6 +79,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       devtoolModuleFilenameTemplate: isProduction
         ? info => path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
         : info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
+      libraryTarget: isElectron ? 'commonjs2' : undefined,
     },
     resolve: {
       modules: ['node_modules'],
@@ -86,6 +89,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
         // 如 ~/components/Button
         '~': context,
+        share: paths.appElectronShare,
       },
     },
     resolveLoader: {
@@ -100,7 +104,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             // typescript & js
             {
               test: /\.(ts|tsx|js|jsx)$/,
-              include: paths.appSrc,
+              include: paths.appPath,
+              exclude: /node_modules/,
               use: argv.jmOptions.happypack
                 ? { loader: require.resolve('happypack/loader'), options: { id: 'babel' } }
                 : babelLoders,
@@ -207,6 +212,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         tsconfig: paths.appTsConfig,
         tslint: getTslintConfig(paths.appTsLintConfig, enviroments.raw),
         watch: paths.appSrc,
+        reportFiles: [`**/*.{ts,tsx}`],
         // 配合webpack-dev-server使用
         async: false,
         silent: true,

@@ -7,8 +7,9 @@ import path from 'path'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import formatMessages from 'webpack-format-messages'
-import { message, inspect, shouldUseYarn, logSymbols } from '../utils'
 import Ora from 'ora'
+import { message, inspect, shouldUseYarn, logSymbols } from '../utils'
+import electronMainConfigure from '../config/electron-main'
 import showInfo from '../services/info'
 import paths from '../paths'
 import getOptions from '../options'
@@ -36,12 +37,17 @@ require('../env')
 
 function build(argv: BuildOption) {
   const environment = require('../env').default()
-  const jmOptions = getOptions(pkg, paths.ownLib)
+  const jmOptions = getOptions(pkg)
   if (jmOptions == null) {
     return
   }
 
+  const isElectron = jmOptions.electron
   let config: Configuration[] | Configuration
+
+  if (isElectron) {
+    message.info('Electron 模式')
+  }
 
   if (argv.group) {
     const group = argv.group
@@ -82,7 +88,12 @@ function build(argv: BuildOption) {
 
   message.info(showInfo())
   const spinner = new Ora({ text: 'Creating an optimized production build...' }).start()
-  const compiler = webpack(config as Configuration)
+  const electronMainConfig = isElectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined
+  const compiler = webpack((electronMainConfig
+    ? Array.isArray(config)
+      ? config.concat(electronMainConfig)
+      : [config, electronMainConfig]
+    : config) as Configuration)
 
   compiler.run((err, stats) => {
     if (err) {
@@ -109,7 +120,9 @@ function build(argv: BuildOption) {
     } else {
       spinner.stopAndPersist({ text: 'Compiled successfully.', symbol: logSymbols.success })
     }
-    console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
+    if (!isElectron) {
+      console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
+    }
     fs.writeFileSync(versionFile, pkg.version)
   })
 }

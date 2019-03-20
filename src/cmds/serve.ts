@@ -47,7 +47,7 @@ export default async (argv: ServeOption) => {
   const dist = checkDist()
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const jmOptions = getOptions(pkg, paths.ownLib)
+  const jmOptions = getOptions(pkg)
   if (jmOptions == null) {
     return
   }

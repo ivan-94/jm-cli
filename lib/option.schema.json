@@ -54,6 +54,11 @@
       "type": "boolean",
       "default": true
     },
+    "electron": {
+      "description": "enable electron mode",
+      "type": "boolean",
+      "default": false
+    },
     "happypack": {
       "description": "happy pack mode, default is true when cpus cores > 1",
       "type": "boolean",

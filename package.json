@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -120,7 +120,7 @@
     "ora": "^3.0.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-loader": "^3.0.0",
-    "postcss-preset-env": "^6.4.0",
+    "postcss-preset-env": "^6.6.0",
     "postcss-safe-parser": "^4.0.1",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",

@@ -209,4 +209,7 @@ export const message = {
   info: (text: string) => {
     console.log(logSymbols.info + ' ' + text)
   },
+  custom: (title: string, text: string, color: string = 'bgMagenta') => {
+    console.log(chalk.bgKeyword(color)(` ${title} `) + ' ' + text)
+  },
 }

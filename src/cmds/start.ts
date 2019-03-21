@@ -4,6 +4,7 @@
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
 import formatMessages from 'webpack-format-messages'
+import readline from 'readline'
 import ch from 'child_process'
 import chalk from 'chalk'
 import opener from 'opener'
@@ -21,6 +22,7 @@ import Ora = require('ora')
 export interface StartOption extends CommonOption {
   entry?: string[]
   autoReload?: boolean
+  electronInspect?: number
 }
 
 const mode = 'development'
@@ -126,19 +128,35 @@ function createCompiler(
   return [compiler!, startSpin]
 }
 
+function log(str: string, color: string, title: string) {
+  if (/[0-9A-z]+/.test(str)) {
+    message.custom(title, str, color)
+  }
+}
+
 /**
  * 打开electron 实例
- * TODO: 日志
  * @param prevProcess
  */
-function openByElectron(prevProcess?: ch.ChildProcess) {
+function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
   if (prevProcess) {
     try {
       prevProcess.kill()
     } catch {}
   }
 
-  return ch.spawn(requireInCwd('electron'), ['.'])
+  const p = ch.spawn(requireInCwd('electron'), [argv.electronInspect ? `--inspect=${argv.electronInspect}` : '', '.'])
+  const stdin = readline.createInterface({ input: p.stdout })
+  const stderr = readline.createInterface({ input: p.stderr })
+
+  stdin.on('line', data => {
+    log(data, 'cyan', 'Electron Log')
+  })
+  stderr.on('line', data => {
+    log(data, 'red', 'Electron Log')
+  })
+
+  return p
 }
 
 export default async function(argv: StartOption) {
@@ -205,11 +223,11 @@ export default async function(argv: StartOption) {
 
         if (electronOrBrowserProcess == null) {
           message.info('open Electron')
-          electronOrBrowserProcess = openByElectron()
+          electronOrBrowserProcess = openByElectron(argv)
         } else if (argv.autoReload && lastElectronMainBuildTime !== buildTime) {
           // electron 主进程更新时重启
           message.info('restart Electron')
-          electronOrBrowserProcess = openByElectron(electronOrBrowserProcess)
+          electronOrBrowserProcess = openByElectron(argv, electronOrBrowserProcess)
         }
 
         lastElectronMainBuildTime = buildTime

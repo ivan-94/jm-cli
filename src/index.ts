@@ -56,6 +56,11 @@ yargs
         alias: 'a',
         default: true,
       },
+      'electron-inspect': {
+        description: 'electron inspect option',
+        type: 'number',
+        default: 5858,
+      },
     },
     wrap(argv => {
       require('./cmds/start').default(argv as StartOption)

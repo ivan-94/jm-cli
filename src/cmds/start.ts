@@ -160,6 +160,15 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
 }
 
 export default async function(argv: StartOption) {
+  // port 选择
+  const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
+  const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
+  const host = '0.0.0.0'
+  const urls = prepareUrls(protocol, host, port)
+  process.env.PORT = port.toString()
+  process.env.ADDRESS = urls.lanUrlForConfig || 'localhost'
+  process.env.PROTOCOL = protocol
+
   // TODO: 检查是否是react项目
   // TODO: 依赖检查
   const environment = require('../env').default()
@@ -180,6 +189,8 @@ export default async function(argv: StartOption) {
   const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw)
 
   if (argv.inspect) {
+    // TODO: 优化展示，使用fx，交互式
+    inspect(jmOptions, 'CLI Options:')
     inspect(environment.raw, 'Environment:')
     inspect(devServerConfig, 'Development Server Config:')
     inspect(config, 'Webpack Configuration:')
@@ -187,10 +198,6 @@ export default async function(argv: StartOption) {
   }
 
   const spinner = new Ora({ text: 'Starting the development server...\n' }).start()
-  const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
-  const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
-  const host = '0.0.0.0'
-  const urls = prepareUrls(protocol, host, port)
   const contentBase = devServerConfig.contentBase
   const folders =
     typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
@@ -200,7 +207,11 @@ export default async function(argv: StartOption) {
 
   const [compiler, startCompileSpin] = createCompiler(config, electronMainConfig, stats => {
     message.info(showInfo())
-    message.info(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    message.info(
+      `Development server running at: \n    Lan: ${chalk.cyan(urls.lanUrlForTerminal!)}\n    Local: ${chalk.cyan(
+        urls.localUrlForTerminal,
+      )} `,
+    )
     message.info(`Webpack output is served from ${chalk.cyan('/')}`)
     if (folders) {
       message.info(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)

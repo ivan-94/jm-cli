@@ -5,6 +5,7 @@ import fs from 'fs-extra'
 import paths from './paths'
 import chalk from 'chalk'
 import dotenv from 'dotenv'
+import getOptions from './options'
 
 export interface WebpackEnviroment {
   raw: StringObject
@@ -50,12 +51,26 @@ const BUILIN_ENVS = [
   'UNSAFE_DISABLE_TSLINT',
   // development
   'PORT',
+  'HOST',
+  'ADDRESS',
   'HTTPS',
+  'PROTOCOL',
   'EVAL', // devtool eval
+  // other
+  'CI',
+  'ELECTRON',
 ]
 
+let env: WebpackEnviroment | undefined
+
 export default function getClientEnvironment(publicUrl?: string): WebpackEnviroment {
+  if (env) {
+    return env
+  }
+
   const pkg = require(paths.appPackageJson)
+  const options = getOptions(pkg)
+
   const raw = Object.keys(process.env)
     .filter(key => ENV_FILTER.test(key) || BUILIN_ENVS.indexOf(key) !== -1)
     .reduce<StringObject>(
@@ -68,6 +83,7 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         NAME: pkg.name,
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || './' : '/',
         PAGE_EXT: '.html',
+        ELECTRON: !options.electron ? 'true' : '',
         // NODE_ENV 可能会被篡改，所以固定住
         NODE_ENV,
       },
@@ -88,9 +104,9 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
       return prev
     }, {})
 
-  return {
+  return (env = {
     userDefine,
     raw,
     stringified,
-  }
+  })
 }

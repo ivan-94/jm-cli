@@ -1,6 +1,5 @@
 /**
  * Start development server
- * TODO: electron依赖检查
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
@@ -21,6 +20,7 @@ import Ora = require('ora')
 
 export interface StartOption extends CommonOption {
   entry?: string[]
+  autoReload?: boolean
 }
 
 const mode = 'development'
@@ -73,7 +73,11 @@ function getDevServerConfig(
  * create webpack compiler and listen build events
  * @param config
  */
-function createCompiler(config: WebpackConfiguration, electronMainConfig?: WebpackConfiguration): Compiler {
+function createCompiler(
+  config: WebpackConfiguration,
+  electronMainConfig?: WebpackConfiguration,
+  onCompileSuccess?: (stat: webpack.Stats) => void,
+): [Compiler, () => void] {
   let compiler: Compiler
   try {
     // @ts-ignore
@@ -85,12 +89,16 @@ function createCompiler(config: WebpackConfiguration, electronMainConfig?: Webpa
     console.log()
     process.exit(1)
   }
+
   let spinner = new Ora()
+  const startSpin = () => {
+    spinner.text = 'Compiling...'
+    spinner.start()
+  }
 
   compiler!.hooks.invalid.tap('invalid', () => {
     clearConsole()
-    spinner.text = 'Compiling...'
-    spinner.start()
+    startSpin()
   })
 
   compiler!.hooks.done.tap('done', stats => {
@@ -102,6 +110,10 @@ function createCompiler(config: WebpackConfiguration, electronMainConfig?: Webpa
       return
     }
 
+    if (onCompileSuccess) {
+      onCompileSuccess(stats)
+    }
+
     if (messages.warnings.length) {
       message.warn('Compiled with warnings.\n\n')
       messages.warnings.forEach(e => console.log(e))
@@ -111,11 +123,22 @@ function createCompiler(config: WebpackConfiguration, electronMainConfig?: Webpa
     message.success(chalk.green('Compiled successfully.'))
   })
 
-  return compiler!
+  return [compiler!, startSpin]
 }
 
-function openByElectron() {
-  ch.spawn(requireInCwd('electron'), ['.'])
+/**
+ * 打开electron 实例
+ * TODO: 日志
+ * @param prevProcess
+ */
+function openByElectron(prevProcess?: ch.ChildProcess) {
+  if (prevProcess) {
+    try {
+      prevProcess.kill()
+    } catch {}
+  }
+
+  return ch.spawn(requireInCwd('electron'), ['.'])
 }
 
 export default async function(argv: StartOption) {
@@ -146,12 +169,61 @@ export default async function(argv: StartOption) {
   }
 
   const spinner = new Ora({ text: 'Starting the development server...\n' }).start()
-  const compiler = createCompiler(config, electronMainConfig)
-  const devServer = new webpackDevServer(compiler, devServerConfig)
-
   const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
   const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
   const host = '0.0.0.0'
+  const urls = prepareUrls(protocol, host, port)
+  const contentBase = devServerConfig.contentBase
+  const folders =
+    typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
+  const proxyInfo = devServerConfig.proxy && proxyInfomation(devServerConfig.proxy as ProxyConfig)
+  let electronOrBrowserProcess: ch.ChildProcess | undefined
+  let lastElectronMainBuildTime: number | undefined
+
+  const [compiler, startCompileSpin] = createCompiler(config, electronMainConfig, stats => {
+    message.info(showInfo())
+    message.info(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
+    message.info(`Webpack output is served from ${chalk.cyan('/')}`)
+    if (folders) {
+      message.info(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)
+    }
+
+    if (proxyInfo) {
+      message.info(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
+    }
+
+    if (isEelectron) {
+      message.info(`Call ${chalk.cyan('`electron .`')} to setup development APP`)
+    }
+
+    try {
+      if (isEelectron) {
+        const compilerStat = ((stats as any) as { stats: webpack.Stats[] }).stats
+        // @ts-ignore
+        const mainStat = compilerStat.find(i => i.compilation.name === 'main')
+        const buildTime = (mainStat!.startTime as any) as number
+
+        if (electronOrBrowserProcess == null) {
+          message.info('open Electron')
+          electronOrBrowserProcess = openByElectron()
+        } else if (argv.autoReload && lastElectronMainBuildTime !== buildTime) {
+          // electron 主进程更新时重启
+          message.info('restart Electron')
+          electronOrBrowserProcess = openByElectron(electronOrBrowserProcess)
+        }
+
+        lastElectronMainBuildTime = buildTime
+      } else if (electronOrBrowserProcess == null) {
+        // 打开浏览器
+        // TODO: 确定打开的页面
+        electronOrBrowserProcess = opener(urls.localUrlForBrowser)
+      }
+    } catch (err) {
+      message.error(err)
+    }
+  })
+
+  const devServer = new webpackDevServer(compiler, devServerConfig)
 
   devServer.listen(port, host, err => {
     spinner.stop()
@@ -160,31 +232,9 @@ export default async function(argv: StartOption) {
       console.log(message)
       return
     }
-
-    const urls = prepareUrls(protocol, host, port)
-    message.info(showInfo())
-    message.info(`Development server running at ${chalk.cyan(urls.lanUrlForTerminal || urls.localUrlForTerminal)}`)
-    message.info(`Webpack output is served from ${chalk.cyan('/')}`)
-    const contentBase = devServerConfig.contentBase
-    const folders =
-      typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
-    if (folders) {
-      message.info(`Static resources not from webpack is served from ${chalk.cyan(folders)}`)
-    }
-
-    if (devServerConfig.proxy) {
-      const proxyInfo = proxyInfomation(devServerConfig.proxy as ProxyConfig)
-      if (proxyInfo) {
-        message.info(`Other HTTP requests will proxy to Proxy-Server base on:\n ${chalk.cyan(proxyInfo)}`)
-      }
-    }
-
-    if (isEelectron) {
-      message.info(`Call ${chalk.cyan('`electron .`')} to setup development APP`)
-      openByElectron()
-    } else {
-      opener(urls.localUrlForBrowser)
-    }
+    setTimeout(() => {
+      startCompileSpin()
+    }, 1000)
   })
   ;['SIGINT', 'SIGTERM'].forEach(sig => {
     process.on(sig as NodeJS.Signals, () => {

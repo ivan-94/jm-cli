@@ -50,6 +50,12 @@ yargs
         requiresArg: true,
         coerce: transformString2Array,
       },
+      'auto-reload': {
+        description: 'auto reload electron main process',
+        type: 'boolean',
+        alias: 'a',
+        default: true,
+      },
     },
     wrap(argv => {
       require('./cmds/start').default(argv as StartOption)

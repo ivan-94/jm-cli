@@ -11,6 +11,7 @@ import opener from 'opener'
 import { message, prepareUrls, inspect, clearConsole, choosePort, requireInCwd } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import showInfo from '../services/info'
+import checkElectron from '../services/checkElectron'
 import getOptions from '../options'
 import configure from '../config'
 import electronMainConfigure from '../config/electron-main'
@@ -130,6 +131,7 @@ export default async function(argv: StartOption) {
   const isEelectron = jmOptions.electron
   if (isEelectron) {
     message.info('Electron 模式')
+    checkElectron()
   }
 
   const electronMainConfig = isEelectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined

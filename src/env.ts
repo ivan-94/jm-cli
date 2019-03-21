@@ -2,6 +2,7 @@
  * 初始化环境变量
  */
 import fs from 'fs-extra'
+import path from 'path'
 import paths from './paths'
 import chalk from 'chalk'
 import dotenv from 'dotenv'
@@ -49,6 +50,7 @@ const BUILIN_ENVS = [
   'PUBLIC_URL',
   'PAGE_EXT',
   'UNSAFE_DISABLE_TSLINT',
+  'DIST',
   // development
   'PORT',
   'HOST',
@@ -84,6 +86,7 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || './' : '/',
         PAGE_EXT: '.html',
         ELECTRON: !options.electron ? 'true' : '',
+        DIST: path.basename(paths.appDist),
         // NODE_ENV 可能会被篡改，所以固定住
         NODE_ENV,
       },

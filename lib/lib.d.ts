@@ -7,6 +7,7 @@ declare namespace NodeJS {
     NODE_ENV: 'development' | 'production' | 'test'
     PUBLIC_URL: string
     VERSION: string
+    DIST: string
     ELECTRON?: string
     NAME: string
     PORT?: string

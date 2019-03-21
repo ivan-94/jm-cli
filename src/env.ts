@@ -10,7 +10,7 @@ import getOptions from './options'
 export interface WebpackEnviroment {
   raw: StringObject
   userDefine: StringObject
-  stringified: { [key: string]: object }
+  stringified: { [key: string]: string }
 }
 
 // 确保后续require paths, 可以读取到.env加载的环境变量
@@ -90,12 +90,10 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
     )
 
   // for DefinePlugin
-  const stringified = {
-    'process.env': Object.keys(raw).reduce<StringObject>((env, key) => {
-      env[key] = JSON.stringify(raw[key])
-      return env
-    }, {}),
-  }
+  const stringified = Object.keys(raw).reduce<StringObject>((env, key) => {
+    env[`process.env.${key}`] = JSON.stringify(raw[key])
+    return env
+  }, {})
 
   const userDefine = Object.keys(raw)
     .filter(key => ENV_FILTER.test(key))

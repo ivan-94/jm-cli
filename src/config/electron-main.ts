@@ -48,6 +48,7 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
       filename: 'main.js',
       libraryTarget: 'commonjs2',
     },
+    externals: [...Object.keys(pkg.dependencies || {})],
     resolve: {
       modules: ['node_modules'],
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -93,6 +94,7 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
       // FIXME: no workd
       new webpack.DefinePlugin(environments.stringified),
     ].filter(Boolean),
+    node: false,
   }
 
   return webpackConfig

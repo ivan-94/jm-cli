@@ -90,7 +90,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
         // 如 ~/components/Button
         '~': context,
-        share: paths.appElectronShare,
       },
     },
     resolveLoader: {
@@ -213,7 +212,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         tsconfig: paths.appTsConfig,
         tslint: getTslintConfig(paths.appTsLintConfig, enviroments.raw),
         watch: paths.appSrc,
-        reportFiles: [`**/*.{ts,tsx}`],
+        reportFiles: [`**/*.{ts,tsx}`, `!${path.basename(paths.appElectronMain)}/**/*`],
         // 配合webpack-dev-server使用
         async: false,
         silent: true,

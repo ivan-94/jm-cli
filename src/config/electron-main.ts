@@ -2,6 +2,7 @@
  * electron 主线程
  */
 import webpack, { Configuration } from 'webpack'
+import path from 'path'
 import { WebpackConfigurer } from './type'
 import getBabelOptions from './utils/babelOptions'
 import getTslintConfig from './utils/tslintConfig'
@@ -15,7 +16,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin')
 const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
   const isProduction = environments.raw.NODE_ENV === 'production'
   const $ = <D, P>(development: D, production: P) => (isProduction ? production : development)
-  const context = paths.appElectronMain
+  const context = paths.appSrc
   const shouldUseSourceMap = environments.raw.SOURCE_MAP !== 'false'
 
   const babelOptions = {
@@ -57,7 +58,6 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
         // 如 ~/components/Button
         '~': context,
-        share: paths.appElectronShare,
       },
     },
     resolveLoader: {
@@ -83,7 +83,7 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
         tsconfig: paths.appTsConfig,
         tslint: getTslintConfig(paths.appTsLintConfig, environments.raw),
         watch: paths.appElectronMain,
-        reportFiles: [`**/*.{ts,tsx}`],
+        reportFiles: [`${path.basename(paths.appElectronMain)}/**/*.{ts,tsx}`],
         // 配合webpack-dev-server使用
         async: false,
         silent: true,
@@ -91,7 +91,6 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
         checkSyntacticErrors: true,
         formatter: 'codeframe',
       }),
-      // FIXME: no workd
       new webpack.DefinePlugin(environments.stringified),
     ].filter(Boolean),
     node: false,

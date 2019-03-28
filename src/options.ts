@@ -26,6 +26,7 @@ export interface JMOptions {
   useBuiltIns: 'entry' | 'usage'
   alias?: { [key: string]: string }
   happypack: boolean
+  electronExternalsWhitelist?: string[]
 }
 
 const defaultOptions: JMOptions = {

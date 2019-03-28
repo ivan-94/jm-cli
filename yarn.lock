@@ -7595,6 +7595,11 @@ webpack-modules@^1.0.0:
   resolved "http://registry.npm.taobao.org/webpack-modules/download/webpack-modules-1.0.0.tgz#ef37bfbd770aed5c23684b5015ced93c2fd852e5"
   integrity sha1-7ze/vXcK7VwjaEtQFc7ZPC/YUuU=
 
+webpack-node-externals@^1.7.2:
+  version "1.7.2"
+  resolved "http://registry.npm.taobao.org/webpack-node-externals/download/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
+  integrity sha1-bh7nmsZ8BwQCunAO8DOpuNUqxOM=
+
 webpack-sources@^1.1.0, webpack-sources@^1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/webpack-sources/download/webpack-sources-1.3.0.tgz#2a28dcb9f1f45fe960d8f1493252b5ee6530fa85"

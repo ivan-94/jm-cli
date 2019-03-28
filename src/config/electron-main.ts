@@ -12,6 +12,7 @@ import terserPluginOptions from './utils/terserPluginOptions'
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
+const nodeExternals = require('webpack-node-externals')
 
 const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
   const isProduction = environments.raw.NODE_ENV === 'production'
@@ -49,7 +50,11 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
       filename: 'main.js',
       libraryTarget: 'commonjs2',
     },
-    externals: [...Object.keys(pkg.dependencies || {})],
+    externals: [
+      nodeExternals({
+        whitelist: argv.jmOptions.electronExternalsWhitelist,
+      }),
+    ],
     resolve: {
       modules: ['node_modules'],
       extensions: ['.ts', '.tsx', '.js', '.jsx'],

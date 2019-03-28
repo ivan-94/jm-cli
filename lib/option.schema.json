@@ -6,13 +6,11 @@
   "properties": {
     "proxy": {
       "description": "proxy server settings",
-      "anyOf": [
-        {
+      "anyOf": [{
           "type": "object",
           "patternProperties": {
             ".*": {
-              "anyOf": [
-                {
+              "anyOf": [{
                   "type": "string"
                 },
                 {
@@ -30,10 +28,17 @@
         }
       ]
     },
+    "electronExternalsWhitelist": {
+      "description": "webpack-node-externals whitelist for electron main build",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": null
+    },
     "importPlugin": {
       "description": "babel-import-plugin settings",
-      "anyOf": [
-        {
+      "anyOf": [{
           "type": "array",
           "items": {
             "$ref": "#/definitions/importPluginConfig"
@@ -95,14 +100,12 @@
       }
     },
     "proxyConfigWithContext": {
-      "allOf": [
-        {
+      "allOf": [{
           "type": "object",
           "required": ["context"],
           "properties": {
             "context": {
-              "anyOf": [
-                {
+              "anyOf": [{
                   "type": "string"
                 },
                 {

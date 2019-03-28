@@ -134,14 +134,19 @@ function log(str: string, color: string, title: string) {
   }
 }
 
+let restartingElectron = false
 /**
  * 打开electron 实例
  * @param prevProcess
  */
 function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
-  if (prevProcess) {
+  if (prevProcess && prevProcess.kill) {
     try {
-      prevProcess.kill()
+      restartingElectron = true
+      process.kill(prevProcess.pid)
+      setTimeout(() => {
+        restartingElectron = false
+      }, 5000)
     } catch {}
   }
 
@@ -154,6 +159,14 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
   })
   stderr.on('line', data => {
     log(data, 'red', 'Electron Log')
+  })
+
+  // electron 主进程退出
+  p.on('close', () => {
+    if (!restartingElectron) {
+      message.info('Electron 主进程退出, 停止运行')
+      process.exit()
+    }
   })
 
   return p

@@ -5,7 +5,9 @@
 {
   "defaultSeverity": "warning",
   "extends": ["tslint-react"],
-  "jsRules": {},
+  "jsRules": {
+    "no-empty": true
+  },
   "rules": {
     /*-----------------------
      *  Typescript 相关

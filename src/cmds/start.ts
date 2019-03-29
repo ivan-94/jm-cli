@@ -19,6 +19,7 @@ import electronMainConfigure from '../config/electron-main'
 import paths from '../paths'
 import { CommonOption } from './type'
 import Ora = require('ora')
+import generateDll from './dll/generateDll'
 
 export interface StartOption extends CommonOption {
   entry?: string[]
@@ -94,18 +95,22 @@ function createCompiler(
   }
 
   let spinner = new Ora()
+  let firstCompile = true
   const startSpin = () => {
     spinner.text = 'Compiling...'
     spinner.start()
   }
 
   compiler!.hooks.invalid.tap('invalid', () => {
-    clearConsole()
+    if (!firstCompile) {
+      clearConsole()
+    }
     startSpin()
   })
 
   compiler!.hooks.done.tap('done', stats => {
     spinner.stop()
+    firstCompile = false
     const messages = formatMessages(stats)
     if (messages.errors.length) {
       message.error('Failed to compile.\n\n')
@@ -194,8 +199,17 @@ export default async function(argv: StartOption) {
 
   const isEelectron = jmOptions.electron
   if (isEelectron) {
-    message.info('Electron 模式')
+    message.info(chalk.cyan('Electron') + ' Mode')
     checkElectron()
+  }
+
+  if (environment.raw.DISABLE_DLL !== 'true') {
+    message.info('Checking DLL...')
+    try {
+      await generateDll(environment, pkg, paths, { jmOptions })
+    } catch {
+      message.warn('Failed to compile DLL. skip')
+    }
   }
 
   const electronMainConfig = isEelectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined

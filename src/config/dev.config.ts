@@ -20,7 +20,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 
   const supportDll = isSupportDll()
   if (supportDll) {
-    message.info('DllReference 已开启')
+    message.info('DllReference Turned on')
   }
 
   return {

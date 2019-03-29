@@ -46,7 +46,7 @@ function build(argv: BuildOption) {
   let config: Configuration[] | Configuration
 
   if (isElectron) {
-    message.info('Electron 模式')
+    message.info(chalk.cyan('Electron') + ' Mode')
   }
 
   if (argv.group) {

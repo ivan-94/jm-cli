@@ -28,6 +28,7 @@ const paths = {
   appNodeModules: resolveInApp('node_modules'),
   appPackageJson: resolveInApp('package.json'),
   appHtml: resolveInApp('public/index.html'),
+  appCache: resolveInApp('.jm-cache'),
 
   // own
   ownPath: resolveOwn('.'),

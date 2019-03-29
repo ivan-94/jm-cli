@@ -28,6 +28,27 @@
         }
       ]
     },
+    "dll": {
+      "description": "webpack dll plugin config",
+      "type": "object",
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": null
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": null
+        }
+      },
+      "default": null
+    },
     "electronExternalsWhitelist": {
       "description": "webpack-node-externals whitelist for electron main build",
       "type": "array",

@@ -163,6 +163,17 @@ export function resolveModuleInCwd(name: string) {
   return require.resolve(name, { paths: [cwdNodeModules] })
 }
 
+export async function getModuleVersion(name: string) {
+  try {
+    const cwdNodeModules = path.join(process.cwd(), 'node_modules')
+    const modulePath = require.resolve(`${name}/package.json`, { paths: [cwdNodeModules] })
+    const json = await fs.readJSON(modulePath)
+    return json.version
+  } catch {
+    return null
+  }
+}
+
 export function requireInCwd(name: string) {
   return require(resolveModuleInCwd(name))
 }

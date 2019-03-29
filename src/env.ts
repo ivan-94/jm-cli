@@ -48,6 +48,7 @@ const BUILIN_ENVS = [
   'SOURCE_MAP',
   'NAME',
   'PUBLIC_URL',
+  'DISABLE_DLL',
   'UNSAFE_DISABLE_TSLINT',
   'DIST',
   // development

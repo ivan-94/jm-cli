@@ -27,6 +27,10 @@ export interface JMOptions {
   alias?: { [key: string]: string }
   happypack: boolean
   electronExternalsWhitelist?: string[]
+  dll?: {
+    include?: string[]
+    exclude?: string[]
+  }
 }
 
 const defaultOptions: JMOptions = {

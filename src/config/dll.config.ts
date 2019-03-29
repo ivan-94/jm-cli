@@ -38,6 +38,7 @@ const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
   }
 
   return {
+    context: paths.appSrc,
     mode: 'development',
     entry: generateEntry(),
     devtool: 'eval',
@@ -48,6 +49,7 @@ const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
     },
     plugins: [
       new webpack.DllPlugin({
+        context: paths.appSrc,
         name: '[name]',
         path: path.join(paths.appCache, '[name].json'),
       }),

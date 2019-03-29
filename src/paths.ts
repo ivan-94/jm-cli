@@ -29,6 +29,7 @@ const paths = {
   appPackageJson: resolveInApp('package.json'),
   appHtml: resolveInApp('public/index.html'),
   appCache: resolveInApp('.jm-cache'),
+  appDllHash: resolveInApp('.jm-cache/.dllhash'),
 
   // own
   ownPath: resolveOwn('.'),

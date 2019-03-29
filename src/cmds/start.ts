@@ -1,5 +1,6 @@
 /**
  * Start development server
+ * TODO: 自动更新dll
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
@@ -52,7 +53,7 @@ function getDevServerConfig(
     disableHostCheck: true,
     compress: true,
     clientLogLevel: 'none',
-    contentBase: [paths.appPublic, paths.appDist],
+    contentBase: [paths.appPublic, paths.appDist, paths.appCache],
     watchContentBase: true,
     hot: true,
     publicPath: webpackConfig.output!.publicPath,

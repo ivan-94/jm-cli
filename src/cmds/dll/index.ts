@@ -1,7 +1,6 @@
 import fs from 'fs-extra'
 import webpack from 'webpack'
 import formatMessages from 'webpack-format-messages'
-import path from 'path'
 import sortBy from 'lodash/sortBy'
 import hash from 'hash-sum'
 import paths from '../../paths'
@@ -9,6 +8,7 @@ import getOptions from '../../options'
 import configure from '../../config/dll.config'
 import { inspect, message, getModuleVersion } from '../../utils'
 import { CommonOption } from '../type'
+import chalk from 'chalk'
 
 export interface DllOption extends CommonOption {}
 
@@ -72,9 +72,8 @@ export default async (argv: DllOption) => {
 
   const config = configure(environment, pkg, paths, { jmOptions })
   const modules = (config.entry as { dll: string[] }).dll
-  const hashFile = path.join(paths.appCache, '.hash')
   const key = await generateHash(modules)
-  const shouldUpdate = await shouldUpdateDll(hashFile, key)
+  const shouldUpdate = await shouldUpdateDll(paths.appDllHash, key)
 
   if (!shouldUpdate) {
     message.info('Nothing Changed, exit')
@@ -112,6 +111,9 @@ export default async (argv: DllOption) => {
     }
 
     // 更新hash
-    fs.writeFileSync(hashFile, key)
+    fs.writeFileSync(paths.appDllHash, key)
+    message.success(
+      `已生成DLL, 调用 ${chalk.cyan('jm start')} 将自动加载DLL以加快编译, 可以使用${chalk.red('DISABLE_DLL')}禁用`,
+    )
   })
 }

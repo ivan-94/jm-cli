@@ -4,6 +4,7 @@
 import webpack, { Configuration } from 'webpack'
 import path from 'path'
 import { Extensions } from '../constants'
+import { message } from '../utils'
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
@@ -43,6 +44,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     ...(envConfig.entry as object),
     ...entries,
   }
+
+  message.info(`entries: ${Object.keys(entries).join(', ')}`)
 
   const babelOptions = {
     ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions),

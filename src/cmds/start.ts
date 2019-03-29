@@ -257,8 +257,9 @@ export default async function(argv: StartOption) {
         lastElectronMainBuildTime = buildTime
       } else if (electronOrBrowserProcess == null) {
         // 打开浏览器
-        // TODO: 确定打开的页面
-        electronOrBrowserProcess = opener(urls.localUrlForBrowser)
+        const entries = Object.keys(config.entry as { [key: string]: string })
+        const entry = entries.some(i => i === 'index') ? 'index' : entries[0]
+        electronOrBrowserProcess = opener(`${urls.localUrlForBrowser}/${entry}.html`)
       }
     } catch (err) {
       message.error(err)

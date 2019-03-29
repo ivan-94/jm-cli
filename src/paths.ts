@@ -27,6 +27,7 @@ const paths = {
   appTsLintConfig: resolveInApp('tslint.json'),
   appNodeModules: resolveInApp('node_modules'),
   appPackageJson: resolveInApp('package.json'),
+  appHtml: resolveInApp('public/index.html'),
 
   // own
   ownPath: resolveOwn('.'),
@@ -34,6 +35,7 @@ const paths = {
   ownData: resolveOwn('data'),
   ownNodeModules: resolveOwn('node_modules'),
   ownPackageJson: resolveOwn('package.json'),
+  ownHtml: resolveOwn('lib/index.html'),
 }
 
 export type WebpackPaths = typeof paths

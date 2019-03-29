@@ -58,7 +58,6 @@ JM_APP_ENV=${NODE_ENV}/api
 | PUBLIC_URL            | 🚫 / ✅ / ✅                            | 影响 webpack 的 public_path. 默认为`./`, 即相对路径. 如果需要在特殊环境部署, 可以设置该选项 |
 | SOURCE_MAP            | ✅ / ✅ / ✅                            | 是否生成 source_map, 默认为 true                                                            |
 | EVAL                  | ✅ / 🚫 / ✅                            | 是否使用 eval_source_map, 默认为 false, 如果需要在开发环境调试编译后的代码, 可以开启该选项  |
-| PAGE_EXT              | ✅ / ✅ / ✅                            | 模板文件扩展名, 默认为`.html`                                                               |
 | UNSAFE_DISABLE_TSLINT | ✅ / ✅ / ✅                            | 禁用 Tslint. 不推荐! 请遵循团队规范, 特殊情况下使用                                         |
 | PORT                  | ✅ / 🚫 / ✅                            | 设置默认端口号. 如果端口被占用, 会自动选取其他端口                                          |
 | HTTPS                 | ✅ / 🚫 / ✅                            | 是否开启 HTTPS. jm-cli 会自动生成自签名证书                                                 |

@@ -48,7 +48,6 @@ const BUILIN_ENVS = [
   'SOURCE_MAP',
   'NAME',
   'PUBLIC_URL',
-  'PAGE_EXT',
   'UNSAFE_DISABLE_TSLINT',
   'DIST',
   // development
@@ -84,7 +83,6 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         VERSION: pkg.version,
         NAME: pkg.name,
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || './' : '/',
-        PAGE_EXT: '.html',
         ELECTRON: !options.electron ? 'true' : '',
         DIST: path.basename(paths.appDist),
         // NODE_ENV 可能会被篡改，所以固定住

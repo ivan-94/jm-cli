@@ -37,6 +37,7 @@
 [ ] 生成器
 [ ] tab生成
 [ ] 支持js
+[ ] DLL支持, 提升开发环境编译速度, html-webpack-dll
 
 # 不紧急
 [*] 加载动画 ora.
@@ -65,12 +66,12 @@
 [ ] 不要写死host
 [] host check false
 [] 默认打开第一个entry
+[] webpack输出的共享文件名可能会很长
 
 # 待考虑
 [ ] react-error-overlap
 [ ] inline runtime
 [ ] Plug'n'Play support
-[ ] jm-deploy集成
 
 # Doc
 

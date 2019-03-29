@@ -3,14 +3,14 @@
  */
 import webpack, { Configuration } from 'webpack'
 import path from 'path'
-import chalk from 'chalk'
+import { Extensions } from '../constants'
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
 import getBabelOptions from './utils/babelOptions'
 import genCacheConfig from './utils/cacheOptions'
 import styleLoaders from './utils/styleLoaders'
-import { getEntries, genTemplatePlugin } from './utils/entry'
+import { getEntries } from './utils/entry'
 import getTslintConfig from './utils/tslintConfig'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
@@ -27,21 +27,21 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
   const context = paths.appSrc
-  const pageExt = ensurePageExt(enviroments.raw.PAGE_EXT || '.html')
-  const pageEntries = getEntries(context, pageExt, entry, isProduction)
+  const isElectron = argv.jmOptions.electron
+  let { entries, templatePlugins } = getEntries({
+    context,
+    entry,
+    isProduction,
+    electron: isElectron,
+    templateParameters: enviroments.raw,
+  })
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
-  const isElectron = argv.jmOptions.electron
 
-  if (Object.keys(pageEntries).length === 0) {
-    console.log(`Not pages(*${pageExt}) existed in ${chalk.blue(context)}`)
-    process.exit()
-  }
-
-  const entries = {
+  entries = {
     // inject entries
     ...(envConfig.entry as object),
-    ...pageEntries,
+    ...entries,
   }
 
   const babelOptions = {
@@ -84,7 +84,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     externals: isElectron ? [...Object.keys(pkg.dependencies || {})] : [],
     resolve: {
       modules: ['node_modules'],
-      extensions: ['.tsx', '.ts', '.js', '.jsx'],
+      extensions: Extensions,
       alias: {
         ...(argv.jmOptions.alias || {}),
         // 可以直接使用~访问相对于源代码目录的模块，优化查找效率
@@ -236,11 +236,12 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // 监听丢失的模块. 如果没有这个插件, 一旦没有找到对应的模块, 将需要重启webpack.
       // 在使用link 模块时比较有用
       new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-      ...genTemplatePlugin(context, pageEntries, isProduction, enviroments.raw, pageExt),
+      // html-webpack-plugin
+      ...templatePlugins,
       // 注入环境变量到 window.JM_ENV中
       new InjectEnvPlugin(enviroments.userDefine, 'JM_ENV'),
-      // 当pageExt为html时, 解析里面的${ENV}
-      ...(pageExt === '.html' ? [new HtmlInterpolatePlugin(enviroments.raw)] : []),
+      // 解析html里面的${ENV}
+      new HtmlInterpolatePlugin(enviroments.raw),
       ...(envConfig.plugins || []),
     ],
     node: isElectron
@@ -256,11 +257,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   return webpackConfig
-}
-
-function ensurePageExt(ext: string) {
-  ext = ext.trim()
-  return ext[0] === '.' ? ext : `.${ext}`
 }
 
 export default configure

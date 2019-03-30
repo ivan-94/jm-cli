@@ -35,6 +35,7 @@ export default (env: string, options: JMOptions, electronMain?: boolean) => {
           modules: false,
           // Exclude transforms that make all code slower
           exclude: ['transform-typeof-symbol'],
+          corejs: 3,
           ...(isElectron
             ? {
                 useBuiltIns: 'usage',

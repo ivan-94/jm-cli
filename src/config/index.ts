@@ -84,7 +84,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         : info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
       libraryTarget: isElectron ? 'commonjs2' : undefined,
     },
-    externals: isElectron ? [...Object.keys(pkg.dependencies || {})] : [],
     resolve: {
       modules: ['node_modules'],
       extensions: Extensions,

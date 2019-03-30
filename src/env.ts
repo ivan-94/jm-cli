@@ -2,14 +2,16 @@
  * 初始化环境变量
  */
 import fs from 'fs-extra'
+import path from 'path'
 import paths from './paths'
 import chalk from 'chalk'
 import dotenv from 'dotenv'
+import getOptions from './options'
 
 export interface WebpackEnviroment {
   raw: StringObject
   userDefine: StringObject
-  stringified: { [key: string]: object }
+  stringified: { [key: string]: string }
 }
 
 // 确保后续require paths, 可以读取到.env加载的环境变量
@@ -46,16 +48,31 @@ const BUILIN_ENVS = [
   'SOURCE_MAP',
   'NAME',
   'PUBLIC_URL',
-  'PAGE_EXT',
+  'DISABLE_DLL',
   'UNSAFE_DISABLE_TSLINT',
+  'DIST',
   // development
   'PORT',
+  'HOST',
+  'ADDRESS',
   'HTTPS',
+  'PROTOCOL',
   'EVAL', // devtool eval
+  // other
+  'CI',
+  'ELECTRON',
 ]
 
+let env: WebpackEnviroment | undefined
+
 export default function getClientEnvironment(publicUrl?: string): WebpackEnviroment {
+  if (env) {
+    return env
+  }
+
   const pkg = require(paths.appPackageJson)
+  const options = getOptions(pkg)
+
   const raw = Object.keys(process.env)
     .filter(key => ENV_FILTER.test(key) || BUILIN_ENVS.indexOf(key) !== -1)
     .reduce<StringObject>(
@@ -67,19 +84,18 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
         VERSION: pkg.version,
         NAME: pkg.name,
         PUBLIC_URL: NODE_ENV === 'production' ? publicUrl || process.env.PUBLIC_URL || './' : '/',
-        PAGE_EXT: '.html',
+        ELECTRON: !options.electron ? 'true' : '',
+        DIST: path.basename(paths.appDist),
         // NODE_ENV 可能会被篡改，所以固定住
         NODE_ENV,
       },
     )
 
   // for DefinePlugin
-  const stringified = {
-    'process.env': Object.keys(raw).reduce<StringObject>((env, key) => {
-      env[key] = JSON.stringify(raw[key])
-      return env
-    }, {}),
-  }
+  const stringified = Object.keys(raw).reduce<StringObject>((env, key) => {
+    env[`process.env.${key}`] = JSON.stringify(raw[key])
+    return env
+  }, {})
 
   const userDefine = Object.keys(raw)
     .filter(key => ENV_FILTER.test(key))
@@ -88,9 +104,9 @@ export default function getClientEnvironment(publicUrl?: string): WebpackEnvirom
       return prev
     }, {})
 
-  return {
+  return (env = {
     userDefine,
     raw,
     stringified,
-  }
+  })
 }

@@ -18,6 +18,7 @@ export interface ImportPluginConfig {
 }
 
 export interface JMOptions {
+  electron?: boolean
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
@@ -25,6 +26,11 @@ export interface JMOptions {
   useBuiltIns: 'entry' | 'usage'
   alias?: { [key: string]: string }
   happypack: boolean
+  electronExternalsWhitelist?: string[]
+  dll?: {
+    include?: string[]
+    exclude?: string[]
+  }
 }
 
 const defaultOptions: JMOptions = {
@@ -35,14 +41,19 @@ const defaultOptions: JMOptions = {
 }
 const key = 'jm'
 
-export default function getOptions(pkg: { [key: string]: any }, dir: string): JMOptions | undefined {
-  const schemaPath = path.join(dir, 'option.schema.json')
+let options: JMOptions | undefined
+export default function getOptions(pkg: { [key: string]: any }): JMOptions {
+  if (options) {
+    return options
+  }
+
+  const schemaPath = path.join(__dirname, '../lib/option.schema.json')
   const schema = fs.readJsonSync(schemaPath)
   if (key in pkg) {
     const ajv = new Ajv({ jsonPointers: true })
     const validate = ajv.compile(schema)
     if (validate(pkg[key])) {
-      return { ...defaultOptions, ...pkg[key] }
+      return (options = { ...defaultOptions, ...pkg[key] })
     }
     const errors = prepareErrors(validate.errors)
     const output = betterAjvErrors(schema, pkg[key], errors, { indent: 2 })
@@ -51,10 +62,9 @@ export default function getOptions(pkg: { [key: string]: any }, dir: string): JM
     )
     console.log(output)
     process.exit(1)
-    return
-  } else {
-    return defaultOptions
   }
+
+  return (options = defaultOptions)
 }
 
 function prepareErrors(errors: AjvError[]) {

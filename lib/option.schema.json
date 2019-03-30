@@ -6,13 +6,11 @@
   "properties": {
     "proxy": {
       "description": "proxy server settings",
-      "anyOf": [
-        {
+      "anyOf": [{
           "type": "object",
           "patternProperties": {
             ".*": {
-              "anyOf": [
-                {
+              "anyOf": [{
                   "type": "string"
                 },
                 {
@@ -30,10 +28,38 @@
         }
       ]
     },
+    "dll": {
+      "description": "webpack dll plugin config",
+      "type": "object",
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": null
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": null
+        }
+      },
+      "default": null
+    },
+    "electronExternalsWhitelist": {
+      "description": "webpack-node-externals whitelist for electron main build",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": null
+    },
     "importPlugin": {
       "description": "babel-import-plugin settings",
-      "anyOf": [
-        {
+      "anyOf": [{
           "type": "array",
           "items": {
             "$ref": "#/definitions/importPluginConfig"
@@ -53,6 +79,11 @@
       "description": "enable circular-dependency-plugin'",
       "type": "boolean",
       "default": true
+    },
+    "electron": {
+      "description": "enable electron mode",
+      "type": "boolean",
+      "default": false
     },
     "happypack": {
       "description": "happy pack mode, default is true when cpus cores > 1",
@@ -90,14 +121,12 @@
       }
     },
     "proxyConfigWithContext": {
-      "allOf": [
-        {
+      "allOf": [{
           "type": "object",
           "required": ["context"],
           "properties": {
             "context": {
-              "anyOf": [
-                {
+              "anyOf": [{
                   "type": "string"
                 },
                 {

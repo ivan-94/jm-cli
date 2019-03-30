@@ -8,6 +8,7 @@ import { AnalyzeOption } from './cmds/analyze'
 import { ServeOption } from './cmds/serve'
 import { UpgradeOption } from './cmds/upgrade'
 import { PolyfillOption } from './cmds/polyfill'
+import { DllOption } from './cmds/dll'
 import wrap from './middlewares'
 
 process.on('uncaughtException', err => {
@@ -49,6 +50,17 @@ yargs
         type: 'string',
         requiresArg: true,
         coerce: transformString2Array,
+      },
+      'auto-reload': {
+        description: 'auto reload electron main process',
+        type: 'boolean',
+        alias: 'a',
+        default: true,
+      },
+      'electron-inspect': {
+        description: 'electron inspect option',
+        type: 'number',
+        default: 5858,
       },
     },
     wrap(argv => {
@@ -120,6 +132,14 @@ yargs
     },
     wrap(argv => {
       require('./cmds/analyze').default(argv as AnalyzeOption)
+    }),
+  )
+  .command(
+    'dll',
+    'generate or update Webpack Dll files',
+    {},
+    wrap(argv => {
+      require('./cmds/dll').default(argv as DllOption)
     }),
   )
   .command(

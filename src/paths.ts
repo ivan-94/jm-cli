@@ -20,11 +20,16 @@ const paths = {
   appPath: resolveInApp('.'),
   appDist: resolveInApp('dist'),
   appPublic: resolveInApp('public'),
+  appElectronMain: resolveInApp('src/main'),
+  appElectronRenderer: resolveInApp('src'),
   appSrc: resolveInApp('src'),
   appTsConfig: resolveInApp('tsconfig.json'),
   appTsLintConfig: resolveInApp('tslint.json'),
   appNodeModules: resolveInApp('node_modules'),
   appPackageJson: resolveInApp('package.json'),
+  appHtml: resolveInApp('public/index.html'),
+  appCache: resolveInApp('.jm-cache'),
+  appDllHash: resolveInApp('.jm-cache/.dllhash'),
 
   // own
   ownPath: resolveOwn('.'),
@@ -32,6 +37,7 @@ const paths = {
   ownData: resolveOwn('data'),
   ownNodeModules: resolveOwn('node_modules'),
   ownPackageJson: resolveOwn('package.json'),
+  ownHtml: resolveOwn('lib/index.html'),
 }
 
 export type WebpackPaths = typeof paths

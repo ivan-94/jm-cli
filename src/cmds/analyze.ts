@@ -27,7 +27,7 @@ require('../env')
 async function analyze(argv: AnalyzeOption) {
   const environment = require('../env').default()
   const pkg = require(paths.appPackageJson)
-  const jmOptions = getOptions(pkg, paths.ownLib)
+  const jmOptions = getOptions(pkg)
   if (jmOptions == null) {
     return
   }

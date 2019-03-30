@@ -2,7 +2,7 @@ import { readJsonSync } from 'fs-extra'
 import { resolveModuleInCwd, isModuleExistsInCwd } from '../utils'
 
 export default function showInfo() {
-  const modules = ['typescript', 'react', 'react-dom']
+  const modules = ['typescript', 'react', 'react-dom', 'electron']
   return modules
     .filter(isModuleExistsInCwd)
     .map(name => {

@@ -163,6 +163,21 @@ export function resolveModuleInCwd(name: string) {
   return require.resolve(name, { paths: [cwdNodeModules] })
 }
 
+export async function getModuleVersion(name: string) {
+  try {
+    const cwdNodeModules = path.join(process.cwd(), 'node_modules')
+    const modulePath = require.resolve(`${name}/package.json`, { paths: [cwdNodeModules] })
+    const json = await fs.readJSON(modulePath)
+    return json.version
+  } catch {
+    return null
+  }
+}
+
+export function requireInCwd(name: string) {
+  return require(resolveModuleInCwd(name))
+}
+
 /**
  * interpolate ${variable} in string
  */
@@ -204,5 +219,8 @@ export const message = {
   },
   info: (text: string) => {
     console.log(logSymbols.info + ' ' + text)
+  },
+  custom: (title: string, text: string, color: string = 'bgMagenta') => {
+    console.log(chalk.bgKeyword(color)(` ${title} `) + ' ' + text)
   },
 }

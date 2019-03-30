@@ -37,10 +37,12 @@
 [ ] 生成器
 [ ] tab生成
 [ ] 支持js
+[ ] DLL支持, 提升开发环境编译速度, html-webpack-dll
 
 # 不紧急
 [*] 加载动画 ora.
 [*] 美化控制台输出
+[ ] 自定义node入口
 [ ] start 输出本地和远程地址
 [ ] debug(verbose)
 [ ] global 模式使用find-up 支持在项目的子目录运行
@@ -64,12 +66,12 @@
 [ ] 不要写死host
 [] host check false
 [] 默认打开第一个entry
+[] webpack输出的共享文件名可能会很长
 
 # 待考虑
 [ ] react-error-overlap
 [ ] inline runtime
 [ ] Plug'n'Play support
-[ ] jm-deploy集成
 
 # Doc
 

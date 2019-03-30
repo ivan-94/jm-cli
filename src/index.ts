@@ -58,9 +58,12 @@ yargs
         default: true,
       },
       'electron-inspect': {
-        description: 'electron inspect option',
-        type: 'number',
-        default: 5858,
+        description: 'activate inspector on host:port, default :5858',
+        type: 'string',
+      },
+      'electron-inspect-brk': {
+        description: 'activate inspector on host:port and break at start of user script, default :5858',
+        type: 'string',
       },
     },
     wrap(argv => {

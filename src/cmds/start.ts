@@ -24,7 +24,8 @@ import generateDll from './dll/generateDll'
 export interface StartOption extends CommonOption {
   entry?: string[]
   autoReload?: boolean
-  electronInspect?: number
+  electronInspect?: string
+  electronInspectBrk?: string
 }
 
 const mode = 'development'
@@ -156,7 +157,21 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
     } catch {}
   }
 
-  const p = ch.spawn(requireInCwd('electron'), [argv.electronInspect ? `--inspect=${argv.electronInspect}` : '', '.'])
+  const DefaultPort = 5858
+  const args = [
+    argv.electronInspectBrk != null
+      ? `--inspect-brk=${argv.electronInspectBrk || DefaultPort}`
+      : argv.electronInspect != null
+      ? `--inspect=${argv.electronInspect || DefaultPort}`
+      : '',
+    '.',
+  ].filter(Boolean)
+  const p = ch.spawn(requireInCwd('electron'), args)
+
+  if (prevProcess == null) {
+    message.info(`calling: 'electron ${args.join(' ')}'`)
+  }
+
   const stdin = readline.createInterface({ input: p.stdout })
   const stderr = readline.createInterface({ input: p.stderr })
 

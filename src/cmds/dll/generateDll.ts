@@ -59,7 +59,12 @@ export default async function generateDll(
     inspect?: boolean
   },
 ) {
+  const isElecton = argv.jmOptions.electron
   const config = configure(environment, pkg, paths, { jmOptions: argv.jmOptions })
+
+  if (isElecton) {
+    message.info('Electron mode will use `optionalDependencies` as DLL input')
+  }
 
   if (argv.inspect) {
     inspect(config, 'Webpack Configuration:')
@@ -67,6 +72,12 @@ export default async function generateDll(
   }
 
   const modules = (config.entry as { dll: string[] }).dll
+
+  if (modules.length === 0) {
+    message.info('No modules detected. skip')
+    return
+  }
+
   const key = await generateHash(modules)
   const shouldUpdate = await shouldUpdateDll(paths.appDllHash, key)
 

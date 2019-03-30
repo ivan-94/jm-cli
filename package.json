@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -8,23 +8,34 @@
     "cli",
     "typescript",
     "jm",
+    "mygzb",
+    "pug",
+    "preact",
+    "electron",
     "build"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/carney520/jm-cli.git"
+    "url": "git+https://github.com/GDJiaMi/jm-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/carney520/jm-cli/issues"
+    "url": "https://github.com/GDJiaMi/jm-cli/issues"
   },
-  "homepage": "https://github.com/carney520/jm-cli#readme",
-  "author": "ivan",
+  "homepage": "https://github.com/GDJiaMi/jm-cli#readme",
+  "author": {
+    "name": "ivan lee",
+    "email": "carney520@hotmail.com",
+    "url": "https://github.com/carney520"
+  },
   "license": "MIT",
   "main": "bin/index.js",
   "bin": {
     "jm": "bin/index.js"
   },
   "types": "./lib/lib.d.ts",
+  "engines": {
+    "node": ">=10.0"
+  },
   "files": [
     "bin",
     "dist",
@@ -142,7 +153,8 @@
     "webpack-modules": "^1.0.0",
     "webpack-node-externals": "^1.7.2",
     "write-file-webpack-plugin": "^4.5.0",
-    "yargs": "^12.0.2"
+    "yargs": "^12.0.2",
+    "fsevents": "1.2.4"
   },
   "optionalDependencies": {
     "fsevents": "1.2.4"

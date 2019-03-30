@@ -72,4 +72,5 @@ jm create [name] --template file:./my-tempale --force
 
 ## 示例模板
 
-- [jm-app-template](https://github.com/carney520/jm-app-template)
+- [jm-app-template](https://github.com/GDJiaMi/jm-app-template): React 应用模板
+- [jm-electron-template](https://github.com/GDJiaMi/jm-electron-template): React + Electron 应用模板

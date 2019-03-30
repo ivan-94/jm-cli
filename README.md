@@ -1,6 +1,6 @@
 # CLI
 
-**[Getting Started](https://carney520.github.io/jm-cli)**
+**[Getting Started](https://gdjiami.github.io/jm-cli)**
 
 CLI for build Typescript & React App
 jm-cli 是 mygzb 前端团队使用的项目运行和构建工具。提供了高性能, 强团队编码规范, 约定大于配置的构建环境. 可以让开发者更专注于业务的开发, 增强项目的可维护性.

@@ -20,8 +20,11 @@ function isJsonRegexp(str: string) {
 }
 
 const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
+  const { jmOptions } = argv
+
   function generateEntry() {
-    const names = Object.keys(pkg.dependencies || {})
+    // electron 模式使用 optionalDependencies
+    const names = Object.keys((jmOptions.electron ? pkg.optionalDependencies : pkg.dependencies) || {})
     const exclude = (argv.jmOptions.dll && argv.jmOptions.dll.exclude) || []
     const include = (argv.jmOptions.dll && argv.jmOptions.dll.include) || []
     const includeDependencies = uniq(names.concat(include))

@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Electron · JM-CLI</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;在&lt;code&gt;0.4&lt;/code&gt;版本之后支持&lt;a href=&quot;https://electronjs.org/docs&quot;&gt;&lt;code&gt;electron&lt;/code&gt;&lt;/a&gt;模式, 可以同时编译主进程(main)和渲染进程(renderer).&lt;/p&gt;
+"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Electron · JM-CLI"/><meta property="og:type" content="website"/><meta property="og:url" content="https://gdjiami.github.io/jm-cli/index.html"/><meta property="og:description" content="&lt;p&gt;&lt;code&gt;jm-cli&lt;/code&gt;在&lt;code&gt;0.4&lt;/code&gt;版本之后支持&lt;a href=&quot;https://electronjs.org/docs&quot;&gt;&lt;code&gt;electron&lt;/code&gt;&lt;/a&gt;模式, 可以同时编译主进程(main)和渲染进程(renderer).&lt;/p&gt;
+"/><meta property="og:image" content="https://gdjiami.github.io/jm-cli/img/docusaurus.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://gdjiami.github.io/jm-cli/img/docusaurus.png"/><link rel="shortcut icon" href="/jm-cli/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><link rel="stylesheet" href="/jm-cli/css/main.css"/></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/jm-cli/"><img class="logo" src="/jm-cli/img/docusaurus.svg" alt="JM-CLI"/><h2 class="headerTitleWithLogo">JM-CLI</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/jm-cli/docs/getting-started" target="_self">Doc</a></li><li class=""><a href="/jm-cli/help" target="_self">Help</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>Getting Started</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Getting Started</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/folder-structure">Folder Structure</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/features">Features</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/compatibility">Browser Compatibility</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/jm-cli/docs/electron">Electron</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Configurations</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/environments">Environments</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/configurations">Configurations</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/multi-entry">Multiple Entry</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/babel-macro">babel-plugin-macros</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/cli">CLI</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/template">Custom Template</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Standards</h3><ul><li class="navListItem"><a class="navItem" href="/jm-cli/docs/tslint">Tslint Rules</a></li><li class="navListItem"><a class="navItem" href="/jm-cli/docs/ecosystem">Ecosystem</a></li></ul></div></div></section></div><script>
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              const headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                  document.body.classList.remove('tocActive');
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Electron</h1></header><article><div><span><p><code>jm-cli</code>在<code>0.4</code>版本之后支持<a href="https://electronjs.org/docs"><code>electron</code></a>模式, 可以同时编译主进程(main)和渲染进程(renderer).</p>
+<h2><a class="anchor" aria-hidden="true" id="开启electron模式"></a><a href="#开启electron模式" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>开启electron模式</h2>
+<p>通过<code>electron</code>配置项打开:</p>
+<pre><code class="hljs css language-json">// package.json
+{
+  "jm": {
+    "electron": true
+  }
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="目录结构约定"></a><a href="#目录结构约定" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>目录结构约定</h2>
+<pre><code class="hljs css language-shell">.
+├── public              # 静态资源目录, 编译后会覆盖到dist目录
+├── src                 # 源代码目录.
+│   ├── main            # 🔴 主进程代码目录
+│   │  ├── index.ts      # 主进程入口
+│   │  └── utils
+│   │    └── index.ts
+│   ├── share                   # 🔴主进程和renderer进程之间的共享代码
+│   ├── components              # 🔴可复用组件目录
+│   ├── containers              # 🔴页面目录
+│   │   ├── Foo                 # Foo页面组件
+│   │   │   ├── components      # Foo页面的组件(可选)
+│   │   │   ├── model.ts        # Foo页面的外部状态模型(可选)
+│   │   │   └── index.tsx       # Foo页面组件入口
+│   │   └── Bar
+│   ├── utils           # 工具函数目录
+│   ├── services        # 服务目录
+│   ├── global.css      # 全局样式表
+│   ├── foo.tsx         # 🔴入口, 在page.json进行声明
+│   ├── bar.tsx
+│   └── page.json         # 🔴声明renderer入口和BrowserWindow配置
+├── dist                  # 编译输出目录
+│   ├── main.js           # 主进程入口. package.json 的main字段指向这个文件
+│   ├── foo.html          # renderer 入口, 即页面入口
+│   ├── bar.html          # renderer 入口, 支持多页面
+│   └── static
+├── resources             # electron-builder 构建需要用到的资源
+│   ├── icon.icns
+│   ├── icon.ico
+│   ├── icon.png
+│   └── icons
+├── output                # electron-builder 构建输出目录
+├── global.d.ts           # Typescript全局声明文件
+├── package.json
+├── tsconfig.json
+├── tslint.json
+├── README.md
+└── yarn.lock
+</code></pre>
+<p>和<a href="/jm-cli/docs/folder-structure"><code>Fold Structure</code></a>中约定的目录结构的区别在于:</p>
+<ul>
+<li>新增的<code>src/main</code>目录. 这个目录用于放置electron的主进程. electron进程和
+renderers是相互隔离的, 所有main目录下的代码应该尽量避免导入renderer的模块, 尽管
+可以编译通过.</li>
+<li>新增了<code>src/share</code>目录了. 上面提到main目录不应该引用renderer的模块, 所以这里约定
+了一个share目录, 用于放置主进程和renderer进程之间共享的模块. 例如一些类型协议, 数据模型对象,
+佛那个就方法.</li>
+<li>新增了<code>page.json</code>文件, 使用这个文件来声明<code>入口页面</code>以及对应的<code>BrowserWindow</code>配置</li>
+<li><code>dist/main.js</code> 主进程文件会编译输出到<code>dist/main.js</code>文件中, 主进程和renderer进程的文件
+是在两个webpack实例中单独编译的. 按照Electron的构建规范, <code>package.json</code>的main字段应该
+指向这个文件.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="页面配置"></a><a href="#页面配置" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>页面配置</h2>
+<p><code>v0.4</code>之后支持多种入口配置方式, 而<code>page.json</code>的配置方式是专为Electron设计的. 一个<code>page.json</code>
+文件可以包含以下内容:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"foo"</span>: {
+    <span class="hljs-attr">"width"</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">"height"</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">"minHeight"</span>: <span class="hljs-number">400</span>,
+    <span class="hljs-attr">"frame"</span>: <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">"alwaysOnTop"</span>: <span class="hljs-literal">true</span>
+  },
+  <span class="hljs-attr">"bar"</span>: {
+    <span class="hljs-attr">"width"</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">"height"</span>: <span class="hljs-number">500</span>,
+  }
+}
+</code></pre>
+<p><strong>foo</strong>和<strong>bar</strong>都是入口名称, 所以要求必须存在对应的入口文件, 例如<code>foo.tsx</code>.
+属性值没有约束, 比如上面的例子就是<code>BrowserWindow</code>的配置参数. 有了这些参数就可以用下面的方法
+来加载页面:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// src/main/utils/index.ts</span>
+<span class="hljs-keyword">import</span> { resolve } <span class="hljs-keyword">from</span> <span class="hljs-string">'app-root-path'</span>
+<span class="hljs-keyword">import</span> { BrowserWindowConstructorOptions, BrowserWindow } <span class="hljs-keyword">from</span> <span class="hljs-string">'electron'</span>
+<span class="hljs-keyword">import</span> pageConfig <span class="hljs-keyword">from</span> <span class="hljs-string">`~/page.json`</span>
+
+<span class="hljs-comment">/**
+ * 获取页面的根路径
+ * + 开发环境指向到开发服务器的
+ * + 生产环境使用file协议指向dist目录
+ */</span>
+<span class="hljs-keyword">const</span> WindowHost = process.env.NODE_ENV === <span class="hljs-string">'development'</span> 
+  ? <span class="hljs-string">`<span class="hljs-subst">${process.env.PROTOCOL}</span>://<span class="hljs-subst">${process.env.ADDRESS}</span>:<span class="hljs-subst">${process.env.PORT}</span>`</span>
+  : <span class="hljs-string">`file://<span class="hljs-subst">${resolve(process.env.DIST)}</span>`</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getPageUrl</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${WindowHost}</span>/<span class="hljs-subst">${name}</span>.html`</span>
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">openPage</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span>, config: BrowserWindowConstructorOptions = {}</span>) </span>{
+  <span class="hljs-comment">// 从page.json 中读取配置</span>
+  <span class="hljs-keyword">const</span> defaultConfig = pageConfigs[name] || {}
+  <span class="hljs-keyword">const</span> win = <span class="hljs-keyword">new</span> BrowserWindow({ ...defaultConfig, ...config })
+  win.loadURL(getPageUrl(name))
+
+  <span class="hljs-keyword">return</span> win
+}
+</code></pre>
+<p>加载页面:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// src/main/index.ts</span>
+<span class="hljs-keyword">import</span> { app, BrowserWindow } <span class="hljs-keyword">from</span> <span class="hljs-string">'electron'</span>
+<span class="hljs-keyword">import</span> { openPage } <span class="hljs-keyword">from</span> <span class="hljs-string">'~/main/utils'</span>
+
+app.on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// 加载foo页面</span>
+  openPage(<span class="hljs-string">'foo'</span>)
+})
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="依赖管理"></a><a href="#依赖管理" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>依赖管理</h2>
+<p>主进程和renderer进程使用了两种不同的策略进行编译:</p>
+<p><strong>主进程</strong>
+所有导入的node_modules模块都不会打包进<code>dist/main.js</code>中, 本地模块则会打包进来. 例如:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// src/main.ts</span>
+<span class="hljs-keyword">import</span> { app, BrowserWindow } <span class="hljs-keyword">from</span> <span class="hljs-string">'electron'</span>
+<span class="hljs-keyword">import</span> { getPageUrl } <span class="hljs-keyword">from</span> <span class="hljs-string">'~/main/utils'</span>
+
+app.on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  ...
+})
+</code></pre>
+<p><code>electron</code>是外部模块, 不会打包进最终文件, 而是在运行时进行<em>require</em>, 所以主进程代码中导入的
+node_modules模块在生产环境中也需要存在的. 打包工具需要将这些模块携带到程序包中.</p>
+<p><code>~/main/utils</code>是本地模块, 会编译合并到<code>dist/main.js</code>文件中</p>
+<p><strong>renderer进程</strong>
+和普通的Web应用一样, renderer进程的所有模块都由webpack进行编译和管理, 所有模块都会打包到输入
+目录, 生产环境不需要引用这些模块.</p>
+<p>所以我们这里约定, 在electron模式下, 划分三种依赖类型:</p>
+<ul>
+<li><code>dependencies</code> 生产依赖, 即主进程依赖的模块需要放置在这里.</li>
+<li><code>optionalDependencies</code> 可选依赖, 在electron模式下放置renderer进程的依赖. <code>jm-cli</code>在
+开发环境会将这部分的模块生成Dll文件, 来提升编译的速度</li>
+<li><code>devDependencies</code> 开发依赖, 主要是一些开发构建方面的依赖, 不会被代码引用.</li>
+</ul>
+<p>这里通过<code>yarn</code>来示范安装这三种依赖模块:</p>
+<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash"> 主进程依赖</span>
+yarn add electron-is @gdjiami/jsonrpc-electron
+<span class="hljs-meta">
+#</span><span class="bash"> renderer进程依赖, 即页面依赖</span>
+yarn add --optional react react-dom
+<span class="hljs-meta">
+#</span><span class="bash"> 开发依赖</span>
+yarn add --dev electron @gdjiami/cli
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="开发调试"></a><a href="#开发调试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>开发调试</h2>
+<h3><a class="anchor" aria-hidden="true" id="主进程调试"></a><a href="#主进程调试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>主进程调试</h3>
+<h4><a class="anchor" aria-hidden="true" id="日志输出"></a><a href="#日志输出" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>日志输出</h4>
+<p>主进程的console日志会输出到<code>jm-cli</code>的命令输出中:</p>
+<p><img src="/jm-cli/docs/assets/electron-log.png" alt="electron-log"></p>
+<h4><a class="anchor" aria-hidden="true" id="调试"></a><a href="#调试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>调试</h4>
+<p>可以使用下列命令开启调试模式:</p>
+<pre><code class="hljs css language-shell"><span class="hljs-meta">#</span><span class="bash"> 开启electron调试, 它将会监听 V8 引擎中有关 port 的调试器协议信息. 默认端口是5858, 主机是127.0.0.1</span>
+jm start --electron-inspect
+<span class="hljs-meta">#</span><span class="bash"> 可以指定自定义端口</span>
+jm start --electron-inspect=9222
+<span class="hljs-meta">#</span><span class="bash"> 可以指定自定义主机和端口, 主要用于远程调试</span>
+jm start --electron-inspect=127.0.0.1:9222
+<span class="hljs-meta">
+#</span><span class="bash"> 和上面一样, 但是会在JavaScript 脚本的第一行暂停运行</span>
+jm start --electron-inspect-brk
+</code></pre>
+<p>开启调试模式之后, 就可以使用<code>Chrome调试器</code>或<code>Vscode</code>进行调试:</p>
+<h5><a class="anchor" aria-hidden="true" id="vscode-推荐"></a><a href="#vscode-推荐" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>VsCode(💡推荐)</h5>
+<p><code>VsCode</code>支持Nodejs调试, 具体调试过程和Node程序没有区别:</p>
+<p><img src="/jm-cli/docs/assets/vscode-inspect.png" alt="Vscode inpect"></p>
+<p>选择<code>Add Configuration</code>添加调试配置, 采用<code>Attach to process</code>模式, 附加到electron主程序</p>
+<p><img src="/jm-cli/docs/assets/vscode-inspect-conf.png" alt="Vscode config"></p>
+<p>接着就可以在代码上设置断点:</p>
+<p><img src="/jm-cli/docs/assets/vscode-inspect-break.png" alt="Vscode break"></p>
+<p>接着可以开启调试, 选择需要调试的Electron程序:</p>
+<p><img src="/jm-cli/docs/assets/vscode-inspect-select.png" alt="Vscode debug start"></p>
+<hr>
+<h5><a class="anchor" aria-hidden="true" id="chrome55"></a><a href="#chrome55" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Chrome(55+)</h5>
+<p>Chrome提供了一个调试器用于调试兼容V8调试协议的程序, 所以支持Electron和Node程序.
+在Chrome中地址栏输入<code>chrome://inspect</code></p>
+<p><img src="/jm-cli/docs/assets/chrome-inspect.png" alt="chrome inspect"></p>
+<p>Chrome默认会监听<code>9222</code>和<code>9229</code>端口的网络调试器, 如果使用非标准端口和远程调试, 可以配置调试主机和端口:</p>
+<p><img src="/jm-cli/docs/assets/chrome-inspect-conf.png" alt="chrome inspect Configuration"></p>
+<p>当Chrome监听到调试进程时就会显示出来:</p>
+<p><img src="/jm-cli/docs/assets/chrome-inspect-start.png" alt="chrome inspect start"></p>
+<p>调试过程和普通页面基本一致, 使用<code>CtrlOrCommand+P</code>查找对应的调试文件:</p>
+<p><img src="/jm-cli/docs/assets/chrome-inspect-debug.png" alt="chrome inspect debug"></p>
+<p><strong>inspect-brk</strong></p>
+<p>inspect-brk主要用于同步调试electron主进程的启动过程, inspect-brk 模式会在第一行Javascript
+代码处断点, 需要注意的这个位置是Electron的内核代码, 而不是我们的main.js, 这时候我们自己的模块还没加载进来,
+所以如果在Chrome调试器中<code>CtrlOrCommand+P</code>是找不到用户的模块的. 需要Electron内核加载主程序后才能查找到:</p>
+<p><img src="/jm-cli/docs/assets/chrome-inspect-brk.png" alt="Vscode debug start"></p>
+<p>针对这种场景, 如果你想要在main.js的某一行进行断点, 可以使用<code>debugger</code>语句进行断点, 这同时适用于
+<code>inspect</code>和<code>inspect-brk</code>模式, 程序会在<code>debugger</code>语句位置暂停, 等待调试</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> { app, BrowserWindow } <span class="hljs-keyword">from</span> <span class="hljs-string">'electron'</span>
+<span class="hljs-keyword">import</span> { getPageUrl } <span class="hljs-keyword">from</span> <span class="hljs-string">'~/main/utils'</span>
+
+debugger  <span class="hljs-comment">// 在此处断点</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'hi'</span>)
+
+app.on(<span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> win = <span class="hljs-keyword">new</span> BrowserWindow({ width: <span class="hljs-number">500</span>, height: <span class="hljs-number">500</span> })
+  win.loadURL(getPageUrl(<span class="hljs-string">'index'</span>))
+})
+</code></pre>
+<hr>
+<h3><a class="anchor" aria-hidden="true" id="renderer页面调试"></a><a href="#renderer页面调试" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>renderer页面调试</h3>
+<p>renderer调试方法和Chrome页面调试方式一致, 在激活的页面可以通过下列快捷键打开控制台:</p>
+<ul>
+<li><code>Ctrl+alt+I</code> 打开开发者工具</li>
+<li><code>Ctrl+R</code> 刷新</li>
+<li><code>Shift+Ctrl+R</code> 强制刷新</li>
+</ul>
+<blockquote>
+<p>Mac下Ctrl替换成<code>Command</code></p>
+</blockquote>
+<p>也可以命令式打开控制台:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">const</span> win = <span class="hljs-keyword">new</span> BrowserWindow()
+win.webContents.openDevTools()
+</code></pre>
+<p><strong>开发者工具扩展</strong></p>
+<p>在前端页面开发时, 通常需要辅助扩展插件来提高开发和调试效率, 社区使用较为广泛的有:</p>
+<ul>
+<li><a href="https://github.com/MarshallOfSound/electron-devtools-installer">electron-devtools-installer</a> 支持自动安装流行的前端框架插件, 如React, Redux, Vue</li>
+<li><a href="https://github.com/electron/devtron">Devtron</a> 用于检查electron本身, 例如模块依赖图, 进程间通信查看, 事件检查, APP文件检查</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="扩展"></a><a href="#扩展" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>扩展</h2>
+<ul>
+<li><a href="https://github.com/GDJiaMi/jm-electron-template">jm-electron-template</a> electron 应用模板</li>
+<li><a href="https://github.com/sindresorhus/awesome-electron">awesome-electron</a></li>
+<li><a href="https://electronjs.org/docs">Electron官方文档</a></li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/jm-cli/docs/compatibility"><span class="arrow-prev">← </span><span>Browser Compatibility</span></a><a class="docs-next button" href="/jm-cli/docs/environments"><span>Environments</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#开启electron模式">开启electron模式</a></li><li><a href="#目录结构约定">目录结构约定</a></li><li><a href="#页面配置">页面配置</a></li><li><a href="#依赖管理">依赖管理</a></li><li><a href="#开发调试">开发调试</a><ul class="toc-headings"><li><a href="#主进程调试">主进程调试</a></li><li><a href="#renderer页面调试">renderer页面调试</a></li></ul></li><li><a href="#扩展">扩展</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/jm-cli/" class="nav-home"><img src="/jm-cli/img/docusaurus.svg" alt="JM-CLI" width="66" height="58"/></a><div><h5>Docs</h5><a href="/jm-cli/docs/en/getting-started.html">Getting Started</a><a href="/jm-cli/docs/en/environments.html">Configurations</a><a href="/jm-cli/docs/en/cli.html">CLI Reference</a></div><div><h5>More</h5><a href="https://github.com/GDJiaMi/jm-cli">GitHub</a><a class="github-button" href="https://github.com/GDJiaMi/jm-cli" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2019 mygzb.com</section></footer></div></body></html>

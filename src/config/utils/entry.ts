@@ -80,23 +80,31 @@ export function getEntries(option: PageOption) {
     )
   })
 
-  // 添加开发环境依赖
-  if (!option.isProduction) {
-    for (const entry in entries) {
-      entries[entry].unshift(require.resolve('webpack/hot/dev-server'))
-      entries[entry].unshift(require.resolve('webpack-dev-server/client') + '?/')
-    }
-  }
-
   // 警告并使用默认入口
   if (Object.keys(entries).length === 0) {
     const defaultIndex = path.join(context, 'index')
     const ext = findJsFiles(defaultIndex, false)
     if (ext) {
-      message.info(`Use 'index.${ext}' as default entry`)
+      message.warn(`Use 'index${ext}' as default entry`)
+      const page = 'index'
+      entries[page] = [`./${page}`]
+      templatePlugins.push(
+        new HtmlWebpackPlugin({
+          ...getCommonTemplatePluginOptions(page, option),
+          template: defaultHtmlTempalte,
+        }),
+      )
     } else {
       message.error(`Not entries found in ${context}.`)
       process.exit(1)
+    }
+  }
+
+  // 添加开发环境依赖
+  if (!option.isProduction) {
+    for (const entry in entries) {
+      entries[entry].unshift(require.resolve('webpack/hot/dev-server'))
+      entries[entry].unshift(require.resolve('webpack-dev-server/client') + '?/')
     }
   }
 

@@ -46,9 +46,10 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
     context,
     output: {
       path: paths.appDist,
-      pathinfo: !isProduction,
+      pathinfo: true,
       filename: 'main.js',
       libraryTarget: 'commonjs2',
+      devtoolModuleFilenameTemplate: '[absolute-resource-path]',
     },
     externals: [
       nodeExternals({

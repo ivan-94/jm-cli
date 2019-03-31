@@ -10,13 +10,18 @@ import chalk from 'chalk'
 import { WebpackEnviroment } from 'src/env'
 import { JMOptions } from 'src/config/type'
 
-async function generateHash(modules: string[]) {
+interface Pkg {
+  name: string
+  version: string
+}
+
+async function getPkgs(modules: string[]): Promise<Pkg[]> {
   try {
     const pkgs = await Promise.all(
       modules.map(m =>
         getModuleVersion(m).then(version => {
           if (version == null) {
-            throw new Error(`Module ${m} not found`)
+            throw new Error(`[DLL] Module ${m} not found`)
           }
           return {
             name: m,
@@ -26,18 +31,19 @@ async function generateHash(modules: string[]) {
       ),
     )
 
-    message.info('List of modules will be compiled: ')
-    pkgs.forEach(i => console.log(`    ${i.name}: ${i.version}`))
-
-    const key = sortBy(pkgs, ['name'])
-      .map(m => `${m.name}:${m.version}`)
-      .join('/')
-    return hash(key)
+    return pkgs
   } catch (err) {
     message.error(err.message)
     process.exit(1)
-    return ''
+    return []
   }
+}
+
+function generateHash(pkgs: Pkg[], salt: string) {
+  const key = sortBy(pkgs, ['name'])
+    .map(m => `${m.name}:${m.version}`)
+    .join('/')
+  return hash(key + salt)
 }
 
 async function shouldUpdateDll(hashFile: string, key: string) {
@@ -63,7 +69,7 @@ export default async function generateDll(
   const config = configure(environment, pkg, paths, { jmOptions: argv.jmOptions })
 
   if (isElecton) {
-    message.info('Electron mode will use `optionalDependencies` as DLL input')
+    message.info('[DLL] Electron mode will use `optionalDependencies` as DLL input')
   }
 
   if (argv.inspect) {
@@ -74,23 +80,29 @@ export default async function generateDll(
   const modules = (config.entry as { dll: string[] }).dll
 
   if (modules.length === 0) {
-    message.info('No modules detected. skip')
+    message.info('[DLL] No modules detected. skip')
     return
   }
 
-  const key = await generateHash(modules)
+  const pkgs = await getPkgs(modules)
+  const now = new Date()
+  const salt = `${pkg.version}/${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`
+  const key = generateHash(pkgs, salt)
   const shouldUpdate = await shouldUpdateDll(paths.appDllHash, key)
 
   if (!shouldUpdate) {
-    message.info('Nothing Changed. skip')
+    message.info('[DLL] Nothing Changed. skip')
     return
   }
+
+  message.info('[DLL] List of modules will be compiled: ')
+  pkgs.forEach(i => console.log(`    ${i.name}: ${i.version}`))
 
   const compiler = webpack(config)
   return new Promise((res, rej) => {
     compiler.run((err, stats) => {
       if (err) {
-        message.error('Failed to compile:')
+        message.error('[DLL] Failed to compile:')
         console.error(err.stack || err)
         // @ts-ignore
         if (err.details) {
@@ -102,23 +114,23 @@ export default async function generateDll(
       }
       const messages = formatMessages(stats)
       if (messages.errors.length) {
-        message.error('Failed to compile.\n\n')
+        message.error('[DLL] Failed to compile.\n\n')
         messages.errors.forEach(e => console.log(e))
-        rej(new Error('Failed to compile'))
+        rej(new Error('[DLL] Failed to compile'))
         return
       }
 
       if (messages.warnings.length) {
-        message.warn('Compiled with warnings.\n\n')
+        message.warn('[DLL] Compiled with warnings.\n\n')
         messages.warnings.forEach(e => console.log(e))
       } else {
-        message.success('Compiled successfully.')
+        message.success('[DLL] Compiled successfully.')
       }
 
       // 更新hash
       fs.writeFileSync(paths.appDllHash, key)
       message.success(
-        `DLL compiled successfully, call ${chalk.cyan(
+        `[DLL] DLL compiled successfully, call ${chalk.cyan(
           'jm start',
         )} Will automatically load dll to improve compilation speed, you can set ${chalk.red(
           'DISABLE_DLL',

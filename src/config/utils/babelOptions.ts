@@ -58,7 +58,26 @@ export default (env: string, options: JMOptions, electronMain?: boolean) => {
       [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
       [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
       require.resolve('babel-plugin-macros'),
-      require.resolve('@babel/plugin-transform-destructuring'),
+      [
+        require.resolve('@babel/plugin-transform-destructuring'),
+        {
+          // Use loose mode for performance:
+          // https://github.com/facebook/create-react-app/issues/5602
+          loose: false,
+          selectiveLoose: [
+            'useState',
+            'useEffect',
+            'useContext',
+            'useReducer',
+            'useCallback',
+            'useMemo',
+            'useRef',
+            'useImperativeHandle',
+            'useLayoutEffect',
+            'useDebugValue',
+          ],
+        },
+      ],
       [require.resolve('@babel/plugin-proposal-object-rest-spread'), { useBuiltIns: true }],
       [
         // babel会注入一些帮助方法, 如_extends, generator等. 默认情况下, 这些helper都很小, 会在每个使用
@@ -74,7 +93,7 @@ export default (env: string, options: JMOptions, electronMain?: boolean) => {
           // https://babeljs.io/docs/en/babel-plugin-transform-runtime#useesmodules
           // We should turn this on once the lowest version of Node LTS
           // supports ES Modules.
-          useESModules: true,
+          useESModules: !electronMain,
         },
       ],
       require.resolve('@babel/plugin-syntax-dynamic-import'),

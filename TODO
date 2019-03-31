@@ -36,8 +36,9 @@
 [ ] build支持 --stat 选项
 [ ] 生成器
 [ ] tab生成
-[ ] 支持js
-[ ] DLL支持, 提升开发环境编译速度, html-webpack-dll
+[*] 支持js
+[*] DLL支持, 提升开发环境编译速度, html-webpack-dll
+[ ] jm start支持透传electron选项
 
 # 不紧急
 [*] 加载动画 ora.

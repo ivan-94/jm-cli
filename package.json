@@ -97,7 +97,7 @@
     "ajv": "^6.5.5",
     "babel-loader": "^8.0.5",
     "babel-plugin-import": "^1.11.0",
-    "babel-plugin-macros": "^2.5.0",
+    "babel-plugin-macros": "^2.5.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "better-ajv-errors": "^0.6.1",
     "boxen": "^2.0.0",
@@ -118,6 +118,7 @@
     "file-loader": "^1.1.11",
     "fork-ts-checker-webpack-plugin": "^1.0.0",
     "fs-extra": "^7.0.0",
+    "fsevents": "1.2.4",
     "glob": "^7.1.3",
     "happypack": "^5.0.0",
     "hash-sum": "^1.0.2",
@@ -153,8 +154,7 @@
     "webpack-modules": "^1.0.0",
     "webpack-node-externals": "^1.7.2",
     "write-file-webpack-plugin": "^4.5.0",
-    "yargs": "^12.0.2",
-    "fsevents": "1.2.4"
+    "yargs": "^12.0.2"
   },
   "optionalDependencies": {
     "fsevents": "1.2.4"

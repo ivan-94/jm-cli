@@ -3,6 +3,8 @@
  */
 import { JMOptions } from '../type'
 import { isModuleExistsInCwd, resolveModuleInCwd, requireInCwd } from '../../utils'
+import getCacheOptions from './cacheOptions'
+import { WebpackPaths } from '../../paths'
 
 // see more options in https://babeljs.io/docs/en/options
 // Typescript + babel: see more in https://iamturns.com/typescript-babel/ q
@@ -15,14 +17,17 @@ import { isModuleExistsInCwd, resolveModuleInCwd, requireInCwd } from '../../uti
  * @param options 配置对象
  * @param electronMain 是否是electron主线程
  */
-export default (env: string, options: JMOptions, electronMain?: boolean) => {
+export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, electronMain?: boolean) => {
+  const env = envs.NODE_ENV
   const isDevelopment = env === 'development'
   const isProduction = env === 'production'
   const importPlugin = options.importPlugin
   const isElectron = options.electron
+  const cacheOptions = getCacheOptions(electronMain ? 'babel-loader-main' : 'babel-loader-renderer', envs, paths)
 
   return {
     babelrc: false,
+    envName: env,
     configFile: false,
     presets: [
       [
@@ -119,7 +124,8 @@ export default (env: string, options: JMOptions, electronMain?: boolean) => {
         : []),
     ].filter(Boolean),
     compact: isProduction,
-    cacheDirectory: true,
+    cacheDirectory: cacheOptions.cacheDirectory,
+    cacheIdentifier: cacheOptions.cacheIdentifier,
     cacheCompression: isProduction,
   }
 }

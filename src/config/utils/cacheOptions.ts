@@ -11,7 +11,7 @@ export default function genCacheConfig(
   paths: WebpackPaths,
   partialIdentifier?: any,
 ) {
-  const cacheDirectory = path.join(paths.appCache, `.cache-loader/${id}`)
+  const cacheDirectory = path.join(paths.appCache, `.cache/${id}`)
   const ownPkg = require(paths.ownPackageJson)
 
   // 这些变量将影响缓存id

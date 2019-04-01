@@ -47,17 +47,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
 
   message.info(`entries: ${Object.keys(entries).join(', ')}`)
 
-  const babelOptions = {
-    ...getBabelOptions(enviroments.raw.NODE_ENV, argv.jmOptions),
-    envName: enviroments.raw.NODE_ENV,
-  }
+  const babelOptions = getBabelOptions(enviroments.raw, argv.jmOptions, paths)
 
   const babelLoders = [
     // should I use cache-loader here? see more in https://github.com/webpack-contrib/cache-loader/issues/1#issuecomment-297994952
-    {
-      loader: require.resolve('cache-loader'),
-      options: genCacheConfig('babel', enviroments.raw, paths),
-    },
     {
       loader: require.resolve('babel-loader'),
       options: babelOptions,

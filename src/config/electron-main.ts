@@ -6,7 +6,6 @@ import path from 'path'
 import { WebpackConfigurer } from './type'
 import getBabelOptions from './utils/babelOptions'
 import getTslintConfig from './utils/tslintConfig'
-import genCacheConfig from './utils/cacheOptions'
 import terserPluginOptions from './utils/terserPluginOptions'
 
 const TerserPlugin = require('terser-webpack-plugin')
@@ -20,17 +19,10 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
   const context = paths.appSrc
   const shouldUseSourceMap = environments.raw.SOURCE_MAP !== 'false'
 
-  const babelOptions = {
-    ...getBabelOptions(environments.raw.NODE_ENV, argv.jmOptions, true),
-    envName: environments.raw.NODE_ENV,
-  }
+  const babelOptions = getBabelOptions(environments.raw, argv.jmOptions, paths, true)
 
   const babelLoders = [
     // should I use cache-loader here? see more in https://github.com/webpack-contrib/cache-loader/issues/1#issuecomment-297994952
-    {
-      loader: require.resolve('cache-loader'),
-      options: genCacheConfig('babel-electron-main', environments.raw, paths),
-    },
     {
       loader: require.resolve('babel-loader'),
       options: babelOptions,

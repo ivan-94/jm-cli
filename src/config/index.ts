@@ -146,10 +146,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               test: /\.svg$/,
               exclude: /fonts?/,
               use: [
-                {
-                  loader: require.resolve('cache-loader'),
-                  options: genCacheConfig('svg', enviroments.raw, paths),
-                },
                 { loader: require.resolve('babel-loader'), options: babelOptions },
                 {
                   loader: require.resolve('@svgr/webpack'),

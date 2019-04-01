@@ -23,6 +23,7 @@ const defaultFeatures = [
   'es.array.index-of',
   'es.array.find-index',
   'es.array.find',
+  'es.array.includes',
   'es.object.assign',
   'es.object.keys',
   'es.string.ends-with',
@@ -41,7 +42,7 @@ export default async (argv: PolyfillOption) => {
 
   fs.mkdirpSync(path.dirname(fullPath))
 
-  const customFeature = pkg.polyfills || []
+  const customFeature = (pkg.polyfills || []).concat(pkg.polyfill)
   const targets = pkg.browserslist || []
 
   const allFeatures = uniq(defaultFeatures.concat(customFeature))

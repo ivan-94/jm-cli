@@ -46,14 +46,14 @@ jm-cli 默认将`@babel/preset-env`配置为[**useBuiltIns: 'usage'**](https://b
 ## 使用`jm polyfill`命令生成polyfill文件
 
 Polyfill.io是一个第三方服务，而且位于国外，这可能会对我们的应用造成一些影响。在`v0.2`后，新增了一个`polyfill`
-命令，根据`package.json`指定的`browserslist`和`polyfill`来生成polyfill文件.
+命令，根据`package.json`指定的`browserslist`和`polyfills`字段来生成polyfill文件.
 
 ```shell
 jm polyfill -o public/polyfill.js
 ```
 
 + browserslist: 用于指定浏览器的最低兼容版本. 通过[`core-js-compat`](https://github.com/zloirock/core-js/tree/master/packages/core-js-compat)来计算可以兼容的特性
-+ polyfill: 这是一个字符串数组，指定需要添加的polyfill. 默认会添加一下polyfills:
++ polyfills: 这是一个字符串数组，指定需要添加的polyfill. 默认会添加一下polyfills:
   ```
   'es.promise',
   'es.array.from',
@@ -75,6 +75,20 @@ jm polyfill -o public/polyfill.js
 
 > 为了避免冲突，可以将`jm.useBuiltIns`设置为false
 
+例如：
+
+```json
+{
+  "browserslist": ["Firefox >= 37", "chrome > 28"],
+  "polyfills": [
+    "es.array.includes"
+  ],
+  "jm": {
+    "useBuiltIns": "usage"
+  }
+}
+```
+
 ## 哪些东西不能被polyfill?
 
 polyfill底层都是使用core-js, core-js在[官方文档](https://github.com/zloirock/core-js#missing-polyfills)中已经罗列下面一些特性是无法被polyfill的:
@@ -87,7 +101,7 @@ polyfill底层都是使用core-js, core-js在[官方文档](https://github.com/z
 
 ## mobx 回退
 
-mobx5 依赖于Proxy特性, 导致无法在低版本的浏览器中被使用, 如果你需要适配这些浏览器, 则需要将mobx降级到4.x:
+mobx5 依赖于Proxy特性, 导致无法在低版本的浏览器(Chrome49以下)中被使用, 如果你需要适配这些浏览器, 则需要将mobx降级到4.x:
 
 ```shell
 # 安装最新版本4.x版本, mobx官方会同时维护5.*和4.*两个版本
@@ -96,3 +110,5 @@ yarn add mobx@4.*
 # 安装最新版本的mobx-react, 可以同时用于5.x和4.x的mobx版本
 yarn add mobx-react
 ```
+
+> 注意： 回退到mobx4依然可以会出现兼容性问题, 例如Observable Array无法被识别为Array类型，需要进行充分测试

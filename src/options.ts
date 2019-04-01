@@ -34,8 +34,8 @@ export interface JMOptions {
 }
 
 const defaultOptions: JMOptions = {
-  enableDuplicatePackageCheck: true,
-  enableCircularDependencyCheck: true,
+  enableDuplicatePackageCheck: false,
+  enableCircularDependencyCheck: false,
   useBuiltIns: 'usage',
   happypack: os.cpus().length > 1,
 }

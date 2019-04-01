@@ -73,12 +73,12 @@
     "enableDuplicatePackageCheck": {
       "description": "enable duplicate-package-checker-webpack-plugin",
       "type": "boolean",
-      "default": true
+      "default": false
     },
     "enableCircularDependencyCheck": {
       "description": "enable circular-dependency-plugin'",
       "type": "boolean",
-      "default": true
+      "default": false
     },
     "electron": {
       "description": "enable electron mode",

@@ -5,8 +5,8 @@ import webpack, { Configuration } from 'webpack'
 import path from 'path'
 import { WebpackConfigurer } from './type'
 import getBabelOptions from './utils/babelOptions'
-import getTslintConfig from './utils/tslintConfig'
 import terserPluginOptions from './utils/terserPluginOptions'
+import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
 
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
@@ -77,18 +77,16 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
     },
     plugins: [
       !isProduction && new WriteFilePlugin(),
-      new ForkTsCheckerWebpackPlugin({
-        tsconfig: paths.appTsConfig,
-        tslint: getTslintConfig(paths.appTsLintConfig, environments.raw),
-        watch: paths.appElectronMain,
-        reportFiles: [`${path.basename(paths.appElectronMain)}/**/*.{ts,tsx}`],
-        // 配合webpack-dev-server使用
-        async: false,
-        silent: true,
-        // 配合ts-loader的happyPackMode使用, 即由当前组件全权处理Typescript文件的检查(语法和语义(默认))
-        checkSyntacticErrors: true,
-        formatter: 'codeframe',
-      }),
+      new ForkTsCheckerWebpackPlugin(
+        getForkTsCheckerOptions(paths, environments.raw, {
+          watch: paths.appElectronMain,
+          reportFiles: [
+            `${path.basename(paths.appElectronMain)}/**/*.@(ts|tsx)`,
+            '!**/__tests__/**',
+            '!**/?(*.)(spec|test).*',
+          ],
+        }),
+      ),
       new webpack.DefinePlugin(environments.stringified),
     ].filter(Boolean),
     node: false,

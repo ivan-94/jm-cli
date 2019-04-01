@@ -12,7 +12,7 @@ import getBabelOptions from './utils/babelOptions'
 import genCacheConfig from './utils/cacheOptions'
 import styleLoaders from './utils/styleLoaders'
 import { getEntries } from './utils/entry'
-import getTslintConfig from './utils/tslintConfig'
+import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
 import WatchMissingNodeModulesPlugin from './plugins/WatchMissingNodeModulesPlugin'
@@ -199,18 +199,17 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     plugins: [
       new WebpackModules(),
       // typescript type checker
-      new ForkTsCheckerWebpackPlugin({
-        tsconfig: paths.appTsConfig,
-        tslint: getTslintConfig(paths.appTsLintConfig, enviroments.raw),
-        watch: paths.appSrc,
-        reportFiles: [`**/*.{ts,tsx}`, `!${path.basename(paths.appElectronMain)}/**/*`],
-        // 配合webpack-dev-server使用
-        async: false,
-        silent: true,
-        // 配合ts-loader的happyPackMode使用, 即由当前组件全权处理Typescript文件的检查(语法和语义(默认))
-        checkSyntacticErrors: true,
-        formatter: 'codeframe',
-      }),
+      new ForkTsCheckerWebpackPlugin(
+        getForkTsCheckerOptions(paths, enviroments.raw, {
+          watch: paths.appSrc,
+          reportFiles: [
+            `**/*.@(ts|tsx)`,
+            `!${path.basename(paths.appElectronMain)}/**/*`, // 忽略electron main
+            '!**/__tests__/**',
+            '!**/?(*.)(spec|test).*',
+          ],
+        }),
+      ),
       // happypack
       ...(argv.jmOptions.happypack
         ? [

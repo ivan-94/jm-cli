@@ -204,10 +204,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           watch: paths.appSrc,
           reportFiles: [
             `**/*.@(ts|tsx)`,
-            `!${path.basename(paths.appElectronMain)}/**/*`, // 忽略electron main
+            !isProduction && `!${path.basename(paths.appElectronMain)}/**/*`, // 忽略electron main
             '!**/__tests__/**',
             '!**/?(*.)(spec|test).*',
-          ],
+          ].filter(Boolean),
         }),
       ),
       // happypack

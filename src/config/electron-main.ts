@@ -77,16 +77,17 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
     },
     plugins: [
       !isProduction && new WriteFilePlugin(),
-      new ForkTsCheckerWebpackPlugin(
-        getForkTsCheckerOptions(paths, environments.raw, {
-          watch: paths.appElectronMain,
-          reportFiles: [
-            `${path.basename(paths.appElectronMain)}/**/*.@(ts|tsx)`,
-            '!**/__tests__/**',
-            '!**/?(*.)(spec|test).*',
-          ],
-        }),
-      ),
+      !isProduction &&
+        new ForkTsCheckerWebpackPlugin(
+          getForkTsCheckerOptions(paths, environments.raw, {
+            watch: paths.appElectronMain,
+            reportFiles: [
+              `${path.basename(paths.appElectronMain)}/**/*.@(ts|tsx)`,
+              '!**/__tests__/**',
+              '!**/?(*.)(spec|test).*',
+            ],
+          }),
+        ),
       new webpack.DefinePlugin(environments.stringified),
     ].filter(Boolean),
     node: false,

@@ -1,6 +1,5 @@
 /**
  * Start development server
- * TODO: 自动更新dll
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
@@ -154,7 +153,9 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
       setTimeout(() => {
         restartingElectron = false
       }, 5000)
-    } catch {}
+    } catch (err) {
+      message.error(`failed to kill electron process: ${err.message}`)
+    }
   }
 
   const DefaultPort = 5858
@@ -311,6 +312,10 @@ export default async function(argv: StartOption) {
   })
   ;['SIGINT', 'SIGTERM'].forEach(sig => {
     process.on(sig as NodeJS.Signals, () => {
+      if (electronOrBrowserProcess) {
+        process.kill(electronOrBrowserProcess.pid)
+      }
+
       devServer.close()
       process.exit()
     })

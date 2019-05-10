@@ -86,7 +86,7 @@ export default async function generateDll(
 
   const pkgs = await getPkgs(modules)
   const now = new Date()
-  const salt = `${pkg.version}/${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`
+  const salt = `${pkg.version}/${now.getFullYear()}-${now.getMonth()}`
   const key = generateHash(pkgs, salt)
   const shouldUpdate = await shouldUpdateDll(paths.appDllHash, key)
 

@@ -1287,9 +1287,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/fs-extra@^5.0.4":
-  version "5.0.4"
-  resolved "http://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
+"@types/fs-extra@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-7.0.0.tgz#9c4ad9e1339e7448a76698829def1f159c1b636c"
+  integrity sha1-nErZ4TOedEinZpiCne8fFZwbY2w=
   dependencies:
     "@types/node" "*"
 
@@ -3685,9 +3686,10 @@ from2@^2.1.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
 
-fs-extra@^7.0.0:
-  version "7.0.0"
-  resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-7.0.0.tgz#8cc3f47ce07ef7b3593a11b9fb245f7e34c041d6"
+fs-extra@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.npm.taobao.org/fs-extra/download/fs-extra-8.0.1.tgz#90294081f978b1f182f347a440a209154344285b"
+  integrity sha1-kClAgfl4sfGC80ekQKIJFUNEKFs=
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^4.0.0"

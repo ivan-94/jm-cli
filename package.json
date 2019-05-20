@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -141,6 +141,7 @@
     "style-loader": "^0.23.1",
     "tar": "^4.4.8",
     "terser-webpack-plugin": "^1.1.0",
+    "tree-kill": "^1.2.1",
     "tslib": "^1.9.3",
     "tslint": "^5.15.0",
     "tslint-react": "^4.0.0",

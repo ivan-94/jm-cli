@@ -8,6 +8,7 @@ import readline from 'readline'
 import ch from 'child_process'
 import chalk from 'chalk'
 import opener from 'opener'
+import kill from 'tree-kill'
 import { message, prepareUrls, inspect, clearConsole, choosePort, requireInCwd } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import showInfo from '../services/info'
@@ -149,7 +150,7 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
   if (prevProcess && prevProcess.kill) {
     try {
       restartingElectron = true
-      process.kill(prevProcess.pid)
+      kill(prevProcess.pid, 'SIGKILL')
       setTimeout(() => {
         restartingElectron = false
       }, 5000)

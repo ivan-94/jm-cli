@@ -64,9 +64,8 @@
 [ ] 处理link module not found
 [*] polyfill
 [ ] cache 添加browserslist为key
+[ ] 缓存不要放到node_modules中
 [ ] 不要写死host
-[] host check false
-[] 默认打开第一个entry
 [] webpack输出的共享文件名可能会很长
 
 # 待考虑

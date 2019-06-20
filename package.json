@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "0.4.12",
+  "version": "0.4.16",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -145,7 +145,7 @@
     "tslib": "^1.9.3",
     "tslint": "^5.15.0",
     "tslint-react": "^4.0.0",
-    "typescript": "3.3",
+    "typescript": "^3.5.2",
     "url-loader": "^1.0.1",
     "validate-npm-package-name": "^3.0.0",
     "webpack": "^4.29.6",

@@ -56,6 +56,7 @@
 [ ] PWA
 
 # BUG
+[ ] browserslist 检验
 [*] 页面无法重新刷新
 [*] 无法识别react-hot-reload
 [ ] 修复windows更新错误

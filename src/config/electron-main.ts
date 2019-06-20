@@ -7,6 +7,7 @@ import { WebpackConfigurer } from './type'
 import getBabelOptions from './utils/babelOptions'
 import terserPluginOptions from './utils/terserPluginOptions'
 import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
+import { ExternalWhiteList } from './constants'
 
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
@@ -45,7 +46,7 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
     },
     externals: [
       nodeExternals({
-        whitelist: argv.jmOptions.electronExternalsWhitelist,
+        whitelist: [...(argv.jmOptions.electronExternalsWhitelist || []), ...ExternalWhiteList],
       }),
     ],
     resolve: {

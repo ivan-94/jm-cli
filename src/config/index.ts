@@ -3,6 +3,7 @@
  */
 import webpack, { Configuration } from 'webpack'
 import path from 'path'
+const nodeExternals = require('webpack-node-externals')
 import { Extensions } from '../constants'
 import { message } from '../utils'
 import { WebpackConfigurer } from './type'
@@ -16,6 +17,7 @@ import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
 import WatchMissingNodeModulesPlugin from './plugins/WatchMissingNodeModulesPlugin'
+import { ExternalWhiteList } from './constants'
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackModules = require('webpack-modules')
@@ -77,6 +79,16 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
         : info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
       libraryTarget: isElectron ? 'commonjs2' : undefined,
     },
+    externals: isElectron
+      ? [
+          nodeExternals({
+            whitelist: ExternalWhiteList,
+            modulesFromFile: {
+              include: ['dependencies'],
+            },
+          }),
+        ]
+      : undefined,
     resolve: {
       modules: ['node_modules'],
       extensions: Extensions,

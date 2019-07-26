@@ -9,6 +9,7 @@ import ch from 'child_process'
 import chalk from 'chalk'
 import opener from 'opener'
 import kill from 'tree-kill'
+import inquirer from 'inquirer'
 import { message, prepareUrls, inspect, clearConsole, choosePort, requireInCwd } from '../utils'
 import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
 import showInfo from '../services/info'
@@ -146,7 +147,7 @@ let restartingElectron = false
  * 打开electron 实例
  * @param prevProcess
  */
-function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
+function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess, onRestart?: () => void) {
   if (prevProcess && prevProcess.kill) {
     try {
       restartingElectron = true
@@ -185,10 +186,25 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess) {
   })
 
   // electron 主进程退出
-  p.on('close', () => {
+  p.on('close', async () => {
     if (!restartingElectron) {
-      message.info('Electron 主进程退出, 停止运行')
-      process.exit()
+      // 可能是意外退出, 考虑重启electron进程
+      message.info('检测到Electron 主进程退出')
+      const res = await inquirer.prompt<{ restart: boolean }>([
+        {
+          type: 'confirm',
+          name: 'restart',
+          message: '是否重启Electron进程?',
+          default: true,
+        },
+      ])
+      if (res.restart) {
+        if (onRestart) {
+          onRestart()
+        }
+      } else {
+        process.exit()
+      }
     }
   })
 
@@ -277,13 +293,19 @@ export default async function(argv: StartOption) {
         const mainStat = compilerStat.find(i => i.compilation.name === 'main')
         const buildTime = (mainStat!.startTime as any) as number
 
+        // 失败重启
+        const restart = () => {
+          message.info('restarting Electron')
+          electronOrBrowserProcess = openByElectron(argv, undefined, restart)
+        }
+
         if (electronOrBrowserProcess == null) {
           message.info('open Electron')
-          electronOrBrowserProcess = openByElectron(argv)
+          electronOrBrowserProcess = openByElectron(argv, undefined, restart)
         } else if (argv.autoReload && lastElectronMainBuildTime !== buildTime) {
           // electron 主进程更新时重启
           message.info('restart Electron')
-          electronOrBrowserProcess = openByElectron(argv, electronOrBrowserProcess)
+          electronOrBrowserProcess = openByElectron(argv, electronOrBrowserProcess, restart)
         }
 
         lastElectronMainBuildTime = buildTime
@@ -311,9 +333,12 @@ export default async function(argv: StartOption) {
       startCompileSpin()
     }, 1000)
   })
+
+  // 主动退出
   ;['SIGINT', 'SIGTERM'].forEach(sig => {
     process.on(sig as NodeJS.Signals, () => {
       if (electronOrBrowserProcess) {
+        restartingElectron = true
         process.kill(electronOrBrowserProcess.pid)
       }
 

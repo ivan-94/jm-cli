@@ -7,6 +7,7 @@ import { WebpackConfigurer } from './type'
 import getBabelOptions from './utils/babelOptions'
 import terserPluginOptions from './utils/terserPluginOptions'
 import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
+import genCacheConfig from './utils/cacheOptions'
 import { ExternalWhiteList } from './constants'
 
 const TerserPlugin = require('terser-webpack-plugin')
@@ -68,7 +69,13 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
           test: /\.(ts|tsx|js|jsx)$/,
           include: paths.appPath,
           exclude: /node_modules/,
-          use: babelLoders,
+          use: [
+            {
+              loader: require.resolve('cache-loader'),
+              options: genCacheConfig('babel-loader-main', environments.raw, paths),
+            },
+            ...babelLoders,
+          ],
         },
       ],
     },

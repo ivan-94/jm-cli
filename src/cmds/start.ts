@@ -186,10 +186,10 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess, onRest
   })
 
   // electron 主进程退出
-  p.on('close', async () => {
+  p.on('close', async evt => {
     if (!restartingElectron) {
       // 可能是意外退出, 考虑重启electron进程
-      message.info('检测到Electron 主进程退出')
+      message.info(`检测到Electron 主进程退出, 退出码为: ${evt}`)
       const res = await inquirer.prompt<{ restart: boolean }>([
         {
           type: 'confirm',

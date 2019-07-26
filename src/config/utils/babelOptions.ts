@@ -3,7 +3,6 @@
  */
 import { JMOptions } from '../type'
 import { isModuleExistsInCwd, resolveModuleInCwd, requireInCwd } from '../../utils'
-import getCacheOptions from './cacheOptions'
 import { WebpackPaths } from '../../paths'
 
 // see more options in https://babeljs.io/docs/en/options
@@ -23,7 +22,6 @@ export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, ele
   const isProduction = env === 'production'
   const importPlugin = options.importPlugin
   const isElectron = options.electron
-  const cacheOptions = getCacheOptions(electronMain ? 'babel-loader-main' : 'babel-loader-renderer', envs, paths)
 
   return {
     babelrc: false,
@@ -124,8 +122,5 @@ export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, ele
         : []),
     ].filter(Boolean),
     compact: isProduction,
-    cacheDirectory: cacheOptions.cacheDirectory,
-    cacheIdentifier: cacheOptions.cacheIdentifier,
-    cacheCompression: isProduction,
   }
 }

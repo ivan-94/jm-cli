@@ -86,7 +86,7 @@
       "default": false
     },
     "happypack": {
-      "description": "happy pack mode, default is true when cpus cores > 1",
+      "description": "(deprecated) happy pack mode, default is true when cpus cores > 1",
       "type": "boolean",
       "default": true
     },

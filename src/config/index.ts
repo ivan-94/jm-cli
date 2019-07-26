@@ -21,7 +21,6 @@ import { ExternalWhiteList } from './constants'
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackModules = require('webpack-modules')
-const HappyPack = require('happypack')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
@@ -113,9 +112,19 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               test: /\.(ts|tsx|js|jsx)$/,
               include: paths.appPath,
               exclude: /node_modules/,
-              use: argv.jmOptions.happypack
-                ? { loader: require.resolve('happypack/loader'), options: { id: 'babel' } }
-                : babelLoders,
+              use: [
+                {
+                  loader: require.resolve('cache-loader'),
+                  options: genCacheConfig('babel-loader-render', enviroments.raw, paths),
+                },
+                {
+                  loader: require.resolve('thread-loader'),
+                  options: {
+                    poolTimeout: Infinity,
+                  },
+                },
+                ...babelLoders,
+              ],
             },
             {
               test: /\.css$/,
@@ -222,16 +231,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           ].filter(Boolean),
         }),
       ),
-      // happypack
-      ...(argv.jmOptions.happypack
-        ? [
-            new HappyPack({
-              id: 'babel',
-              loaders: babelLoders,
-              verbose: false,
-            }),
-          ]
-        : []),
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),

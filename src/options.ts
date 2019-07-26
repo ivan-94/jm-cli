@@ -4,7 +4,6 @@
 import Ajv, { AjvError } from 'ajv'
 import betterAjvErrors from 'better-ajv-errors'
 import fs from 'fs-extra'
-import os from 'os'
 import path from 'path'
 import groupBy from 'lodash/groupBy'
 import { ProxyConfig } from './proxy'
@@ -25,7 +24,6 @@ export interface JMOptions {
   enableCircularDependencyCheck: boolean
   useBuiltIns: 'entry' | 'usage'
   alias?: { [key: string]: string }
-  happypack: boolean
   electronExternalsWhitelist?: string[]
   dll?: {
     include?: string[]
@@ -37,7 +35,6 @@ const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: false,
   enableCircularDependencyCheck: false,
   useBuiltIns: 'usage',
-  happypack: os.cpus().length > 1,
 }
 const key = 'jm'
 

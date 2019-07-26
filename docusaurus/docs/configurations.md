@@ -117,8 +117,3 @@ sidebar_label: Configurations
 ### enableCircularDependencyCheck
 
 是否开启对循环依赖的检测. 默认开启, 在`build`命令执行时进行检查.
-
-### happypack
-
-是否开启`happypack`模式. 在多核环境默认开启. happypack 使用多进程的方式来编译一些比较耗时的内容, 这是个试验特性. 具体使用效果
-需要在实际应用中反馈

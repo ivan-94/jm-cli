@@ -119,9 +119,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 },
                 {
                   loader: require.resolve('thread-loader'),
-                  options: {
-                    poolTimeout: Infinity,
-                  },
+                  options: {},
                 },
                 ...babelLoders,
               ],

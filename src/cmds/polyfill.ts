@@ -57,8 +57,14 @@ export default async (argv: PolyfillOption) => {
       targets,
       modules: finalFeatures,
     })
-    fs.writeFileSync(fullPath, terser.minify(code, {}).code, 'utf8')
-    message.success('构建成功')
+    fs.writeFile(fullPath, terser.minify(code, {}).code, 'utf8', err => {
+      if (err == null) {
+        message.success('构建成功')
+      } else {
+        console.error(err)
+        process.exit(1)
+      }
+    })
   } catch (err) {
     message.error('构建失败')
     console.error(err)

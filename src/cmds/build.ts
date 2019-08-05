@@ -123,7 +123,7 @@ function build(argv: BuildOption) {
     if (!isElectron) {
       console.log(`\n✨ Call ${chalk.cyan(useYarn ? 'yarn serve' : 'npm run serve')} to test your bundles.`)
     }
-    fs.writeFileSync(versionFile, pkg.version)
+    fs.writeFile(versionFile, pkg.version)
   })
 }
 

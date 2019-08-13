@@ -3,6 +3,8 @@
  */
 import webpack, { Configuration } from 'webpack'
 import chalk from 'chalk'
+import fs from 'fs-extra'
+import path from 'path'
 import Table from 'cli-table2'
 import formatMessages from 'webpack-format-messages'
 import analyzer from 'webpack-bundle-analyzer'
@@ -95,7 +97,10 @@ async function analyze(argv: AnalyzeOption) {
 
     const port = await choosePort(8888)
 
-    analyzer.start(stats.toJson(), { port })
+    const json = stats.toJson()
+    analyzer.start(json, { port })
+
+    await fs.writeFile(path.join(paths.appDist, 'stat.json'), json)
 
     spinner.stopAndPersist({ text: 'Extract successfully.', symbol: logSymbols.success })
   })

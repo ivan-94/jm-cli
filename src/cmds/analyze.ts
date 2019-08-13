@@ -100,7 +100,7 @@ async function analyze(argv: AnalyzeOption) {
     const json = stats.toJson()
     analyzer.start(json, { port })
 
-    await fs.writeFile(path.join(paths.appDist, 'stat.json'), json)
+    await fs.writeJSON(path.join(paths.appDist, 'stat.json'), json)
 
     spinner.stopAndPersist({ text: 'Extract successfully.', symbol: logSymbols.success })
   })

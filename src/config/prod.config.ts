@@ -15,6 +15,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name } = argv
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
+  const isElectron = argv.jmOptions.electron
 
   return {
     devtool: shouldUseSourceMap && 'source-map',
@@ -51,6 +52,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // * 初始模块并行请求的最大次数 <= 5(maxInitialRequests)
       // 详见 https://webpack.docschina.org/plugins/split-chunks-plugin/
       splitChunks: {
+        name: !isElectron,
         // cacheGroups用于扩展或覆盖splitChunks.*. 即扩展默认规则
         // 由于支持多页应用, 所以我们会对初始chunk进行命名, 以便可以在html-webpack-plugin中对这些chunk进行注入
         cacheGroups: {
@@ -63,20 +65,26 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             // 一个可拆分的chunk可能属于多个分组, 这个用于设置优先级
             priority: -10,
           },
-          // 应用内共有包
-          commons: {
-            test: /src/,
-            chunks: 'initial',
-            reuseExistingChunk: true,
-            minChunks: 2,
-            priority: -20,
-          },
+          ...(isElectron
+            ? {}
+            : {
+                // 应用内共有包
+                commons: {
+                  test: /src/,
+                  chunks: 'initial',
+                  reuseExistingChunk: true,
+                  minChunks: 2,
+                  priority: -20,
+                },
+              }),
         },
       },
       // Keep the runtime chunk seperated to enable long term caching
-      runtimeChunk: {
-        name: 'runtime',
-      },
+      runtimeChunk: isElectron
+        ? undefined
+        : {
+            name: 'runtime',
+          },
       // 让webpack检查和删除已经在所有父模块存在的模块
       removeAvailableModules: true,
       // 删除空模块

@@ -217,18 +217,19 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     plugins: [
       new WebpackModules(),
-      // typescript type checker
-      new ForkTsCheckerWebpackPlugin(
-        getForkTsCheckerOptions(paths, enviroments.raw, {
-          watch: paths.appSrc,
-          reportFiles: [
-            `**/*.@(ts|tsx)`,
-            !isProduction && `!${path.basename(paths.appElectronMain)}/**/*`, // 忽略electron main
-            '!**/__tests__/**',
-            '!**/?(*.)(spec|test).*',
-          ].filter(Boolean),
-        }),
-      ),
+      !(isElectron && isProduction) &&
+        // typescript type checker
+        new ForkTsCheckerWebpackPlugin(
+          getForkTsCheckerOptions(paths, enviroments.raw, {
+            watch: paths.appSrc,
+            reportFiles: [
+              `**/*.@(ts|tsx)`,
+              !isProduction && `!${path.basename(paths.appElectronMain)}/**/*`, // 忽略electron main
+              '!**/__tests__/**',
+              '!**/?(*.)(spec|test).*',
+            ].filter(Boolean),
+          }),
+        ),
       // 移除moment语言包
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin(enviroments.stringified),
@@ -242,7 +243,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // 解析html里面的${ENV}
       new HtmlInterpolatePlugin(enviroments.raw),
       ...(envConfig.plugins || []),
-    ],
+    ].filter(Boolean),
     node: isElectron
       ? false
       : {

@@ -84,7 +84,10 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
       minimizer: [new TerserPlugin(terserPluginOptions(shouldUseSourceMap))],
     },
     plugins: [
-      !isProduction && new WriteFilePlugin(),
+      !isProduction &&
+        new WriteFilePlugin({
+          test: /main\.js$/,
+        }),
       !isProduction &&
         new ForkTsCheckerWebpackPlugin(
           getForkTsCheckerOptions(paths, environments.raw, {

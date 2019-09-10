@@ -80,6 +80,11 @@
       "type": "boolean",
       "default": false
     },
+    "enableDllInProduction": {
+      "description": "enable DllPlugin in production mode",
+      "type": "boolean",
+      "default": false 
+    },
     "electron": {
       "description": "enable electron mode",
       "type": "boolean",

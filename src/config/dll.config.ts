@@ -14,6 +14,12 @@ import { WebpackConfigurer } from './type'
 import uniq from 'lodash/uniq'
 import pullAllWith from 'lodash/pullAllWith'
 
+import terserPluginOptions from './utils/terserPluginOptions'
+import optimizeCSSAssetsPlugin from './utils/optimizeCSSAssetsPlugin'
+
+const TerserPlugin = require('terser-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+
 const JSONREGXP = /^\/(.*)\/$/
 function isJsonRegexp(str: string) {
   return str.match(JSONREGXP)
@@ -21,6 +27,8 @@ function isJsonRegexp(str: string) {
 
 const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
   const { jmOptions } = argv
+  const isProduction = env.raw.NODE_ENV === 'production'
+  const shouldUseSourceMap = env.raw.SOURCE_MAP !== 'false'
 
   function generateEntry() {
     // electron 模式使用 optionalDependencies
@@ -42,9 +50,9 @@ const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
 
   return {
     context: paths.appSrc,
-    mode: 'development',
+    mode: env.raw.NODE_ENV as any,
     entry: generateEntry(),
-    devtool: 'eval',
+    devtool: isProduction ? (shouldUseSourceMap ? 'cheap-source-map' : undefined) : 'cheap-module-source-map',
     output: {
       filename: '[name].js',
       path: paths.appCache,
@@ -58,6 +66,15 @@ const configure: WebpackConfigurer = (env, pkg, paths, argv) => {
       }),
       new webpack.DefinePlugin(env.stringified),
     ],
+    optimization: isProduction
+      ? {
+          minimize: true,
+          minimizer: [
+            new TerserPlugin(terserPluginOptions(shouldUseSourceMap)),
+            new OptimizeCSSAssetsPlugin(optimizeCSSAssetsPlugin(shouldUseSourceMap)),
+          ],
+        }
+      : undefined,
     performance: {
       hints: false,
     },

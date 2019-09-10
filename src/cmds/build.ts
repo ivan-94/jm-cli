@@ -15,6 +15,7 @@ import paths from '../paths'
 import getOptions from '../options'
 import configure from '../config'
 import { CommonOption } from './type'
+import generateDll from './dll/generateDll'
 
 export interface BuildOption extends CommonOption {
   entry?: string[]
@@ -35,7 +36,7 @@ const pkg = require(paths.appPackageJson)
 // initial env
 require('../env')
 
-function build(argv: BuildOption) {
+async function build(argv: BuildOption) {
   const environment = require('../env').default()
   const jmOptions = getOptions(pkg)
   if (jmOptions == null) {
@@ -87,6 +88,18 @@ function build(argv: BuildOption) {
   }
 
   message.info(showInfo())
+
+  const supportDll = environment.raw.DISABLE_DLL !== 'true' && jmOptions.enableDllInProduction
+
+  if (supportDll) {
+    message.info('Checking DLL...')
+    try {
+      await generateDll(environment, pkg, paths, { jmOptions })
+    } catch {
+      message.warn('Failed to compile DLL. skip')
+    }
+  }
+
   const spinner = new Ora({ text: 'Creating an optimized production build...' }).start()
   const electronMainConfig = isElectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined
   const compiler = webpack((electronMainConfig
@@ -112,6 +125,12 @@ function build(argv: BuildOption) {
       spinner.stopAndPersist({ text: 'Failed to compile.\n\n', symbol: logSymbols.error })
       messages.errors.forEach(e => console.log(e))
       return
+    }
+
+    // copy dll
+    if (supportDll) {
+      const dllName = path.basename(paths.appDllFile)
+      fs.copyFileSync(paths.appDllFile, path.join(paths.appDist, dllName))
     }
 
     if (messages.warnings.length) {

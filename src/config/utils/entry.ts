@@ -138,16 +138,13 @@ function getTraditionalEntries({ context, entry }: PageOption) {
 /**
  * 从page.json 中获取入口文件信息
  */
-function getElectronEntries({ electron, context, entry }: PageOption): string[] {
-  if (!electron) {
-    return []
-  }
-
+function getElectronEntries({ context, entry }: PageOption): string[] {
   const configPath = path.join(context, 'page.json')
   if (!fs.existsSync(configPath)) {
     return []
   }
 
+  // TODO: 支持json5
   const config = fs.readJsonSync(configPath) as { [page: string]: any }
   return Object.keys(config).filter(p => (entry ? entry.indexOf(p) !== -1 : true))
 }

@@ -22,7 +22,7 @@ export default class HtmlInjectedDllReferences {
             // inject enviroments
             data.headTags.push({
               tagName: 'script',
-              attributes: { 'data-dll': true, src: `/${this.name}.js` },
+              attributes: { 'data-dll': true, src: `./${this.name}.js` },
             })
             cb(null, data)
           },

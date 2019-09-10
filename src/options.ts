@@ -22,6 +22,7 @@ export interface JMOptions {
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
   enableCircularDependencyCheck: boolean
+  enableDllInProduction?: boolean
   useBuiltIns: 'entry' | 'usage' | false
   alias?: { [key: string]: string }
   electronExternalsWhitelist?: string[]

@@ -1,17 +1,38 @@
 /**
  * 生产环境配置
  */
+import fs from 'fs'
+import webpack from 'webpack'
+import path from 'path'
+import HtmlInjectedDllReferences from './plugins/HtmlInjectedDllReferences'
+
+import { message } from '../utils'
+
 import { WebpackConfigurer } from './type'
 import terserPluginOptions from './utils/terserPluginOptions'
+import optimizeCSSAssetsPlugin from './utils/optimizeCSSAssetsPlugin'
+
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
-
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const safePostCssParser = require('postcss-safe-parser')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
+  function isSupportDll() {
+    if (enviroments.raw.DISABLE_DLL === 'true' || !argv.jmOptions.enableDllInProduction) {
+      return false
+    }
+
+    return fs.existsSync(paths.appDllHash)
+  }
+
+  const supportDll = isSupportDll()
+
+  if (supportDll) {
+    message.info('DllReference Turned on in production')
+  }
+
   const { name } = argv
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
@@ -42,6 +63,13 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
           exclude: /a\.js|node_modules/, // exclude node_modules
           failOnError: false, // show a warning when there is a circular dependency
         }),
+      supportDll &&
+        new webpack.DllReferencePlugin({
+          context: paths.appSrc,
+          manifest: path.join(paths.appCache, 'dll.json'),
+          name: 'dll',
+        }),
+      supportDll && new HtmlInjectedDllReferences('dll'),
     ].filter(Boolean),
     optimization: {
       // 定义拆包规则
@@ -94,21 +122,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       minimize: true,
       minimizer: [
         new TerserPlugin(terserPluginOptions(shouldUseSourceMap)),
-        new OptimizeCSSAssetsPlugin({
-          cssProcessorOptions: {
-            parser: safePostCssParser,
-            map: shouldUseSourceMap
-              ? {
-                  // `inline: false` forces the sourcemap to be output into a
-                  // separate file
-                  inline: false,
-                  // `annotation: true` appends the sourceMappingURL to the end of
-                  // the css file, helping the browser find the sourcemap
-                  annotation: true,
-                }
-              : false,
-          },
-        }),
+        new OptimizeCSSAssetsPlugin(optimizeCSSAssetsPlugin(shouldUseSourceMap)),
       ],
     },
     performance: {

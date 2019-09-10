@@ -3,6 +3,7 @@
  */
 import glob from 'glob'
 import path from 'path'
+import json5 from 'json5'
 import fs from 'fs-extra'
 import chalk from 'chalk'
 import uniq from 'lodash/uniq'
@@ -144,8 +145,8 @@ function getElectronEntries({ context, entry }: PageOption): string[] {
     return []
   }
 
-  // TODO: 支持json5
-  const config = fs.readJsonSync(configPath) as { [page: string]: any }
+  const json = fs.readFileSync(configPath)
+  const config = json5.parse(json.toString()) as { [page: string]: any }
   return Object.keys(config).filter(p => (entry ? entry.indexOf(p) !== -1 : true))
 }
 

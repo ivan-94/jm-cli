@@ -85,6 +85,11 @@
       "type": "boolean",
       "default": false 
     },
+    "enableTypescriptCheck": {
+      "description": "enable Typescript check",
+      "type": "boolean",
+      "default": true 
+    },
     "electron": {
       "description": "enable electron mode",
       "type": "boolean",

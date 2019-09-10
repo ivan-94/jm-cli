@@ -21,6 +21,7 @@ export interface JMOptions {
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
+  enableTypescriptCheck: boolean
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
   useBuiltIns: 'entry' | 'usage' | false
@@ -34,6 +35,7 @@ export interface JMOptions {
 
 const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: false,
+  enableTypescriptCheck: true,
   enableCircularDependencyCheck: false,
   useBuiltIns: 'usage',
 }

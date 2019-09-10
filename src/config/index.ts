@@ -5,7 +5,7 @@ import webpack, { Configuration } from 'webpack'
 import path from 'path'
 const nodeExternals = require('webpack-node-externals')
 import { Extensions } from '../constants'
-import { message } from '../utils'
+import { message, IS_CI } from '../utils'
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
@@ -217,7 +217,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     plugins: [
       new WebpackModules(),
-      !(isElectron && isProduction) &&
+      (argv.jmOptions.enableTypescriptCheck || IS_CI) &&
         // typescript type checker
         new ForkTsCheckerWebpackPlugin(
           getForkTsCheckerOptions(paths, enviroments.raw, {

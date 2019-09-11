@@ -90,6 +90,11 @@
       "type": "boolean",
       "default": true 
     },
+    "enableESlintInProduction": {
+      "description": "enable eslint in production, development mode is force enabled",
+      "type": "boolean",
+      "default": false
+    },
     "electron": {
       "description": "enable electron mode",
       "type": "boolean",

@@ -20,6 +20,7 @@
     "strictPropertyInitialization": false,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
     "skipLibCheck": true,
     // 将~/*  映射到的 src/*

@@ -14,7 +14,7 @@ import ensureTemplatePath from './getTemplate'
 import genGitIgnore from './genGitignore'
 import genGlobalDeclaration from './genGlobalDeclaration'
 import genVscodeSettings from './genVscodeSettings'
-import genTsLintConfig from './genTsLintConfig'
+import genESLintConfig from './genESlintConfig'
 import genTsConfig from './genTsConfig'
 import genPrettier from './genPrettier'
 
@@ -298,7 +298,7 @@ export default async (cwd: string, originalDirname: string, argv: CreateOption) 
     binName: Object.keys(ownPackageJson.bin as object)[0],
   })
 
-  const generators = [genTsConfig, genTsLintConfig, genVscodeSettings, genGlobalDeclaration, genGitIgnore, genPrettier]
+  const generators = [genTsConfig, genESLintConfig, genVscodeSettings, genGlobalDeclaration, genGitIgnore, genPrettier]
   generators.forEach(g => g(appPath, originalDirname, ownPackageJson))
 
   if (gitInitialed) {

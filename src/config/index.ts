@@ -1,11 +1,12 @@
 /**
  * 基础配置
  */
-import webpack, { Configuration } from 'webpack'
+import webpack, { Configuration, RuleSetRule } from 'webpack'
 import path from 'path'
-const nodeExternals = require('webpack-node-externals')
+
 import { Extensions } from '../constants'
 import { message, IS_CI } from '../utils'
+
 import { WebpackConfigurer } from './type'
 import devConfig from './dev.config'
 import prodConfig from './prod.config'
@@ -14,11 +15,13 @@ import genCacheConfig from './utils/cacheOptions'
 import styleLoaders from './utils/styleLoaders'
 import { getEntries } from './utils/entry'
 import getForkTsCheckerOptions from './utils/forkTsCheckerOption'
+import eslintConfig from './utils/eslintConfig'
 import InjectEnvPlugin from './plugins/HtmlInjectedEnvironments'
 import HtmlInterpolatePlugin from './plugins/HtmlInterpolate'
 import WatchMissingNodeModulesPlugin from './plugins/WatchMissingNodeModulesPlugin'
 import { ExternalWhiteList } from './constants'
 
+const nodeExternals = require('webpack-node-externals')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackModules = require('webpack-modules')
 
@@ -47,6 +50,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   message.info(`entries: ${Object.keys(entries).join(', ')}`)
+  if (!argv.jmOptions.enableTypescriptCheck) {
+    message.info(`Typescript check was disabled`)
+  }
 
   const babelOptions = getBabelOptions(enviroments.raw, argv.jmOptions, paths)
 
@@ -105,6 +111,18 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       strictExportPresence: true,
       rules: [
         { parser: { requireEnsure: false } },
+        // eslint
+        (!isProduction || !!argv.jmOptions.enableDllInProduction) && {
+          test: /\.(js|jsx|ts|tsx)$/,
+          enforce: 'pre',
+          use: [
+            {
+              options: eslintConfig(paths),
+              loader: require.resolve('eslint-loader'),
+            },
+          ],
+          include: paths.appSrc,
+        },
         {
           oneOf: [
             // typescript & js
@@ -210,7 +228,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             },
           ],
         },
-      ],
+      ].filter(Boolean) as RuleSetRule[],
     },
     optimization: {
       ...(envConfig.optimization || {}),

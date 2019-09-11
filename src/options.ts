@@ -24,6 +24,7 @@ export interface JMOptions {
   enableTypescriptCheck: boolean
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
+  enableESlintInProduction?: boolean
   useBuiltIns: 'entry' | 'usage' | false
   alias?: { [key: string]: string }
   electronExternalsWhitelist?: string[]
@@ -36,6 +37,7 @@ export interface JMOptions {
 const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: false,
   enableTypescriptCheck: true,
+  enableESlintInProduction: false,
   enableCircularDependencyCheck: false,
   useBuiltIns: 'usage',
 }

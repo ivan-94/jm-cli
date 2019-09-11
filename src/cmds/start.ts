@@ -85,6 +85,7 @@ function createCompiler(
   onCompileSuccess?: (stat: webpack.Stats) => void,
 ): [Compiler, () => void] {
   let compiler: Compiler
+  let started: boolean = false
   try {
     // @ts-ignore
     compiler = webpack(electronMainConfig ? [electronMainConfig, config] : config)
@@ -111,6 +112,7 @@ function createCompiler(
   })
 
   compiler!.hooks.done.tap('done', stats => {
+    started = true
     spinner.stop()
     firstCompile = false
     const messages = formatMessages(stats)
@@ -133,7 +135,15 @@ function createCompiler(
     message.success(chalk.green('Compiled successfully.'))
   })
 
-  return [compiler!, startSpin]
+  return [
+    compiler!,
+    () => {
+      if (started) {
+        return
+      }
+      startSpin()
+    },
+  ]
 }
 
 function log(str: string, color: string, title: string) {

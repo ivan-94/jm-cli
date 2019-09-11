@@ -18,6 +18,10 @@ const genVscodeSettings: Generator = (appPath: string, ownPath: string, ownPkg: 
         url: `./node_modules/${ownPkg.name}/lib/package.option.schema.json`,
       },
     ],
+    // 开启Typescript验证
+    'eslint.validate': ['javascript', 'javascriptreact', 'typescript', 'typescriptreact'],
+    // 使用本地项目Typescript版本
+    'typescript.tsdk': 'node_modules\\typescript\\lib',
   }
 
   fs.ensureDirSync(vscodeSettingsDir)

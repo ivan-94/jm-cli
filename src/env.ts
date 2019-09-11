@@ -49,7 +49,6 @@ const BUILIN_ENVS = [
   'NAME',
   'PUBLIC_URL',
   'DISABLE_DLL',
-  'UNSAFE_DISABLE_TSLINT',
   'DIST',
   // development
   'PORT',

@@ -24,7 +24,6 @@ const paths = {
   appElectronRenderer: resolveInApp('src'),
   appSrc: resolveInApp('src'),
   appTsConfig: resolveInApp('tsconfig.json'),
-  appTsLintConfig: resolveInApp('tslint.json'),
   appNodeModules: resolveInApp('node_modules'),
   appPackageJson: resolveInApp('package.json'),
   appHtml: resolveInApp('public/index.html'),

@@ -1,8 +1,6 @@
 import { WebpackPaths } from '../../paths'
 import { resolveModuleInCwd } from '../../utils'
 
-import getTslintConfig from './tslintConfig'
-
 /**
  * 生成ForkTsCheckerWebpackPlugin参数
  */
@@ -12,7 +10,8 @@ export default (paths: WebpackPaths, env: StringObject, override: object) => {
     typescript: resolveModuleInCwd('typescript'),
     tsconfig: paths.appTsConfig,
     useTypescriptIncrementalApi: true,
-    tslint: getTslintConfig(paths.appTsLintConfig, env),
+    // 废弃了tslint
+    tslint: undefined,
     // 配合webpack-dev-server使用
     async: isProduction,
     silent: true,

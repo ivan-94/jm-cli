@@ -19,7 +19,7 @@ export default (paths: WebpackPaths, env: StringObject, options: JMOptions, over
     tslint: undefined,
     // 配合webpack-dev-server使用
     async,
-    silent: true,
+    silent: !async,
     // 配合ts-loader的happyPackMode使用, 即由当前组件全权处理Typescript文件的检查(语法和语义(默认))
     checkSyntacticErrors: true,
     formatter: 'codeframe',

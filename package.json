@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.3",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -127,7 +127,7 @@
     "fsevents": "1.2.4",
     "glob": "7.1.6",
     "hash-sum": "1.0.2",
-    "html-webpack-plugin": "4.0.0-beta.11",
+    "html-webpack-plugin": "4.0.0-beta.5",
     "ignore": "5.1.4",
     "inquirer": "6.5.2",
     "json5": "^2.1.0",

@@ -71,7 +71,7 @@ export default async (argv: ServeOption) => {
     return
   }
 
-  const spinner = new Ora({ text: `Starting server...` }).start()
+  const spinner = Ora({ text: `Starting server...` }).start()
   const app = express()
 
   if (argv.gzip) {

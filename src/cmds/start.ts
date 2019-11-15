@@ -97,7 +97,7 @@ function createCompiler(
     process.exit(1)
   }
 
-  let spinner = new Ora()
+  let spinner = Ora()
   let firstCompile = true
   const startSpin = () => {
     spinner.text = 'Compiling...'
@@ -268,7 +268,7 @@ export default async function(argv: StartOption) {
     return
   }
 
-  const spinner = new Ora({ text: 'Starting the development server...\n' }).start()
+  const spinner = Ora({ text: 'Starting the development server...\n' }).start()
   const contentBase = devServerConfig.contentBase
   const folders =
     typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''

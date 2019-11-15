@@ -100,13 +100,15 @@ async function build(argv: BuildOption) {
     }
   }
 
-  const spinner = new Ora({ text: 'Creating an optimized production build...' }).start()
+  const spinner = Ora({ text: 'Creating an optimized production build...' }).start()
   const electronMainConfig = isElectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined
-  const compiler = webpack((electronMainConfig
-    ? Array.isArray(config)
-      ? config.concat(electronMainConfig)
-      : [config, electronMainConfig]
-    : config) as Configuration)
+  const compiler = webpack(
+    (electronMainConfig
+      ? Array.isArray(config)
+        ? config.concat(electronMainConfig)
+        : [config, electronMainConfig]
+      : config) as Configuration,
+  )
 
   compiler.run((err, stats) => {
     if (err) {

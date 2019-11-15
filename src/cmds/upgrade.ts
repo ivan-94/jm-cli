@@ -43,7 +43,7 @@ export function globalUpgrade(
     if (dryRun) {
       return
     }
-    const spinner = new Ora({ text: 'Upgrading...' }).start()
+    const spinner = Ora({ text: 'Upgrading...' }).start()
     execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
     spinner.stopAndPersist({ text: '✨ Upgrade Success!' })
   } else {
@@ -67,7 +67,7 @@ export function localUpgrade(
       return
     }
     const cmd = useYarn ? `yarn add "${name}@${newRange}" -D` : `npm install "${name}@${newRange}" --save-dev`
-    const spinner = new Ora({ text: 'Upgrading...' }).start()
+    const spinner = Ora({ text: 'Upgrading...' }).start()
     execSync(cmd, { stdio: ['ignore', 'ignore', 'inherit'] })
     spinner.stopAndPersist({ text: '✨ Upgrade Success!' })
   } else {

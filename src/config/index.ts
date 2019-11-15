@@ -135,10 +135,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                   loader: require.resolve('cache-loader'),
                   options: genCacheConfig('babel-loader-render', enviroments.raw, paths),
                 },
-                {
-                  loader: require.resolve('thread-loader'),
-                  options: {},
-                },
                 ...babelLoders,
               ],
             },
@@ -238,7 +234,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       (argv.jmOptions.enableTypescriptCheck || IS_CI) &&
         // typescript type checker
         new ForkTsCheckerWebpackPlugin(
-          getForkTsCheckerOptions(paths, enviroments.raw, {
+          getForkTsCheckerOptions(paths, enviroments.raw, argv.jmOptions, {
             watch: paths.appSrc,
             reportFiles: [
               `**/*.@(ts|tsx)`,

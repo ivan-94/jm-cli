@@ -70,7 +70,7 @@ async function analyze(argv: AnalyzeOption) {
     return
   }
 
-  const spinner = new Ora({ text: 'Extracting webpack stats...' }).start()
+  const spinner = Ora({ text: 'Extracting webpack stats...' }).start()
   const compiler = webpack(config as Configuration)
   compiler.outputFileSystem = noopFileSystem
 

@@ -90,7 +90,7 @@ const configure: WebpackConfigurer = (environments, pkg, paths, argv) => {
         }),
       !isProduction &&
         new ForkTsCheckerWebpackPlugin(
-          getForkTsCheckerOptions(paths, environments.raw, {
+          getForkTsCheckerOptions(paths, environments.raw, argv.jmOptions, {
             watch: paths.appElectronMain,
             reportFiles: [
               `${path.basename(paths.appElectronMain)}/**/*.@(ts|tsx)`,

@@ -90,6 +90,11 @@
       "type": "boolean",
       "default": true 
     },
+    "enableTypescriptAsyncCheck": {
+      "description": "enable Typescript async check",
+      "type": "boolean",
+      "default": false 
+    },
     "enableESlintInProduction": {
       "description": "enable eslint in production, development mode is force enabled",
       "type": "boolean",

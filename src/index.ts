@@ -106,7 +106,7 @@ yargs
       },
     },
     wrap(argv => {
-      let { entry, group, ...other } = argv
+      let { entry, group, ...other } = argv as any
       if (group && group.default) {
         entry = [...(entry || []), ...group.default]
         group = undefined

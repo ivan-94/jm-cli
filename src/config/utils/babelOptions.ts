@@ -55,12 +55,20 @@ export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, ele
           useBuiltIns: true,
         },
       ],
-      require.resolve('@babel/preset-typescript'),
+      [
+        require.resolve('@babel/preset-typescript'),
+        {
+          allowDeclareFields: true,
+        },
+      ],
     ].filter(Boolean),
     plugins: [
       [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
       [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
       require.resolve('babel-plugin-macros'),
+      // typescript 3.7 optional chaining support
+      require.resolve('@babel/plugin-proposal-optional-chaining'),
+      require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
       [
         require.resolve('@babel/plugin-transform-destructuring'),
         {

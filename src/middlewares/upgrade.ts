@@ -12,7 +12,7 @@ import paths from '../paths'
 import { shouldUseYarn, IS_CI } from '../utils'
 
 const Weekly = 7 * 24 * 3600 * 1000
-let spinner = new Ora()
+let spinner = Ora()
 
 /**
  * 判断是否是全局模式调用命令

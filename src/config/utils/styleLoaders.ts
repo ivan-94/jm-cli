@@ -11,7 +11,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
  */
 export default (
   environment: StringObject,
-  cssOption: object,
+  options: {
+    cssOption: object
+    ie8?: boolean
+  },
   preProcessor?: string,
   afterLoaders?: RuleSetLoader[],
 ) => {
@@ -19,10 +22,13 @@ export default (
   const isProduction = NODE_ENV === 'production'
   const shouldUseRelativeAssetPaths = PUBLIC_URL === './' || PUBLIC_URL === '.'
   const shouldUseSourceMap = SOURCE_MAP !== 'false'
+  const { cssOption, ie8 } = options
+
+  const extract = isProduction || ie8
 
   const loaders = [
-    !isProduction && require.resolve('style-loader'),
-    isProduction && {
+    !extract && require.resolve('style-loader'),
+    extract && {
       loader: MiniCssExtractPlugin.loader,
       options: {
         publicPath: shouldUseRelativeAssetPaths ? '../../' : undefined,

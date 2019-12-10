@@ -34,13 +34,14 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const envConfig = $(devConfig, prodConfig)(enviroments, pkg, paths, argv)
   const context = paths.appSrc
   const isElectron = argv.jmOptions.electron
+  const isIE8 = argv.jmOptions.ie8
   let { entries, templatePlugins } = getEntries({
     context,
     entry,
     isProduction,
     electron: isElectron,
     templateParameters: enviroments.raw,
-    hotreload: !argv.jmOptions.ie8,
+    hotreload: !isIE8,
     inject: argv.jmOptions.inject!,
   })
   const filePrefix = name ? `${name}_` : ''
@@ -147,8 +148,11 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 ...styleLoaders(
                   enviroments.raw,
                   {
-                    importLoaders: 1,
-                    sourceMap: isProduction && shouldUseSourceMap,
+                    cssOption: {
+                      importLoaders: 1,
+                      sourceMap: isProduction && shouldUseSourceMap,
+                    },
+                    ie8: isIE8,
                   },
                   undefined,
                   [
@@ -208,7 +212,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: require.resolve('url-loader'),
               options: {
-                limit: 10000,
+                limit: isIE8 ? false : 10000,
                 name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
               },
             },
@@ -234,7 +238,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     plugins: [
       new WebpackModules(),
-      argv.jmOptions.ie8 && new Es3ifyPlugin(),
+      isIE8 && new Es3ifyPlugin(),
       (argv.jmOptions.enableTypescriptCheck || IS_CI) &&
         // typescript type checker
         new ForkTsCheckerWebpackPlugin(

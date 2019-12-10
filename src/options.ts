@@ -28,7 +28,7 @@ export interface JMOptions {
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
   enableESlintInProduction?: boolean
-  inject?: string[]
+  inject?: { [key: string]: string }
   useBuiltIns: 'entry' | 'usage' | false
   alias?: { [key: string]: string }
   electronExternalsWhitelist?: string[]
@@ -44,7 +44,7 @@ const defaultOptions: JMOptions = {
   enableTypescriptCheck: true,
   enableESlintInProduction: false,
   enableCircularDependencyCheck: false,
-  inject: [],
+  inject: {},
   useBuiltIns: 'usage',
 }
 const key = 'jm'

@@ -112,10 +112,7 @@
     },
     "inject": {
       "description": "inject entry module",
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "type": "object"
     },
     "happypack": {
       "description": "(deprecated) happy pack mode, default is true when cpus cores > 1",

@@ -21,7 +21,7 @@ export interface PageOption {
   entry?: string[]
   isProduction?: boolean
   electron?: boolean
-  inject: string[]
+  inject: { [key: string]: string }
   templateParameters: { [key: string]: string }
   hotreload: boolean
 }
@@ -111,11 +111,9 @@ export function getEntries(option: PageOption) {
     }
   }
 
-  option.inject.forEach(i => {
-    for (const entry in entries) {
-      entries[entry].unshift(i)
-    }
-  })
+  for (const externalEntry in option.inject) {
+    entries[externalEntry] = [option.inject[externalEntry]]
+  }
 
   return {
     entries,
@@ -223,11 +221,13 @@ function getDefaultTemplate() {
  * @param page 入口名称
  * @param param0
  */
-function getCommonTemplatePluginOptions(page: string, { isProduction, templateParameters }: PageOption) {
+function getCommonTemplatePluginOptions(page: string, { isProduction, templateParameters, inject }: PageOption) {
+  const preinjected = Object.keys(inject)
   return {
     title: page,
     filename: `${page}.html`,
-    chunks: [page],
+    chunks: [...preinjected, page],
+    chunksSortMode: preinjected && preinjected.length ? 'manual' : undefined,
     templateParameters,
     inject: true,
     minify: isProduction

@@ -3,19 +3,24 @@
  */
 import webpackDevServer, { Configuration } from 'webpack-dev-server'
 import webpack, { Configuration as WebpackConfiguration, Compiler } from 'webpack'
+import express from 'express'
+import webpackDevMiddleware from 'webpack-dev-middleware'
 import formatMessages from 'webpack-format-messages'
 import readline from 'readline'
 import ch from 'child_process'
 import chalk from 'chalk'
+import https from 'https'
+import http from 'http'
 import opener from 'opener'
 import kill from 'tree-kill'
 import inquirer from 'inquirer'
 import { message, prepareUrls, inspect, clearConsole, choosePort, requireInCwd } from '../utils'
-import { interpolateProxy, proxyInfomation, ProxyConfig } from '../proxy'
+import { interpolateProxy, proxyInfomation, ProxyConfig, applyProxyToExpress } from '../proxy'
 import showInfo from '../services/info'
 import checkElectron from '../services/checkElectron'
 import getOptions from '../options'
 import configure from '../config'
+import { getCerts } from '../cert'
 import electronMainConfigure from '../config/electron-main'
 import { JMOptions } from '../config/type'
 import paths from '../paths'
@@ -35,6 +40,9 @@ process.env.NODE_ENV = mode
 
 // initial enviroments variables
 require('../env')
+
+let electronOrBrowserProcess: ch.ChildProcess | undefined
+let lastElectronMainBuildTime: number | undefined
 
 /**
  * get webpack-dev-server options
@@ -223,6 +231,91 @@ function openByElectron(argv: StartOption, prevProcess?: ch.ChildProcess, onRest
   return p
 }
 
+function startWebpackDevServer(
+  port: number,
+  host: string,
+  compiler: webpack.Compiler,
+  devServerConfig: webpackDevServer.Configuration,
+  done: (err?: Error) => void,
+) {
+  const devServer = new webpackDevServer(compiler, devServerConfig)
+
+  devServer.listen(port, host, err => {
+    done(err)
+  })
+
+  // 主动退出
+  ;['SIGINT', 'SIGTERM'].forEach(sig => {
+    process.on(sig as NodeJS.Signals, () => {
+      if (electronOrBrowserProcess) {
+        restartingElectron = true
+        process.kill(electronOrBrowserProcess.pid)
+      }
+
+      devServer.close()
+      process.exit()
+    })
+  })
+}
+
+function startIE8DevServer(
+  port: number,
+  host: string,
+  compiler: webpack.Compiler,
+  devServerConfig: webpackDevServer.Configuration,
+  done: (err?: Error) => void,
+) {
+  const app = express()
+  let listeningServer: https.Server | http.Server
+
+  if (devServerConfig.compress) {
+    app.use(require('compression')())
+  }
+
+  app.use(require('cors')())
+
+  const instance = webpackDevMiddleware(compiler, { logLevel: 'silent', publicPath: devServerConfig.publicPath || '/' })
+
+  app.use(instance)
+
+  const contentBase = (devServerConfig.contentBase &&
+    (Array.isArray(devServerConfig.contentBase)
+      ? devServerConfig.contentBase
+      : typeof devServerConfig.contentBase === 'string'
+      ? [devServerConfig.contentBase]
+      : null)) || [paths.appDist, paths.appPublic]
+
+  contentBase.forEach(p => {
+    app.use(express.static(p))
+  })
+
+  if (devServerConfig.proxy) {
+    applyProxyToExpress(devServerConfig.proxy as any, app)
+  }
+
+  if (devServerConfig.https) {
+    const { key, cert } = getCerts()
+    listeningServer = https
+      .createServer(
+        {
+          key,
+          cert,
+        },
+        app,
+      )
+      .listen(port, host, done)
+  } else {
+    listeningServer = app.listen(port, host, done)
+  }
+
+  ;['SIGINT', 'SIGTERM'].forEach(sig => {
+    process.on(sig as NodeJS.Signals, () => {
+      listeningServer.close()
+      process.exit()
+    })
+  })
+}
+
 export default async function(argv: StartOption) {
   // port 选择
   const port = await choosePort(parseInt(process.env.PORT as string, 10) || 8080)
@@ -242,13 +335,14 @@ export default async function(argv: StartOption) {
     return
   }
 
+  const isIE8Mode = jmOptions.ie8
   const isEelectron = jmOptions.electron
   if (isEelectron) {
     message.info(chalk.cyan('Electron') + ' Mode')
     checkElectron()
   }
 
-  if (environment.raw.DISABLE_DLL !== 'true' && !jmOptions.ie8) {
+  if (environment.raw.DISABLE_DLL !== 'true' && !isIE8Mode) {
     message.info('Checking DLL...')
     try {
       await generateDll(environment, pkg, paths, { jmOptions })
@@ -275,8 +369,6 @@ export default async function(argv: StartOption) {
   const folders =
     typeof contentBase === 'string' ? contentBase : Array.isArray(contentBase) ? contentBase.join(', ') : ''
   const proxyInfo = devServerConfig.proxy && proxyInfomation(devServerConfig.proxy as ProxyConfig)
-  let electronOrBrowserProcess: ch.ChildProcess | undefined
-  let lastElectronMainBuildTime: number | undefined
 
   const [compiler, startCompileSpin] = createCompiler(config, electronMainConfig, stats => {
     message.info(showInfo())
@@ -335,30 +427,20 @@ export default async function(argv: StartOption) {
     }
   })
 
-  const devServer = new webpackDevServer(compiler, devServerConfig)
-
-  devServer.listen(port, host, err => {
+  const serverSetuped = (err?: Error) => {
     spinner.stop()
     if (err) {
       message.error('Fail to setup development server:')
-      console.log(message)
       return
     }
     setTimeout(() => {
       startCompileSpin()
     }, 1000)
-  })
+  }
 
-  // 主动退出
-  ;['SIGINT', 'SIGTERM'].forEach(sig => {
-    process.on(sig as NodeJS.Signals, () => {
-      if (electronOrBrowserProcess) {
-        restartingElectron = true
-        process.kill(electronOrBrowserProcess.pid)
-      }
-
-      devServer.close()
-      process.exit()
-    })
-  })
+  if (isIE8Mode) {
+    startIE8DevServer(port, host, compiler, devServerConfig, serverSetuped)
+  } else {
+    startWebpackDevServer(port, host, compiler, devServerConfig, serverSetuped)
+  }
 }

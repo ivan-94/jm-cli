@@ -105,6 +105,18 @@
       "type": "boolean",
       "default": false
     },
+    "ie8": {
+      "description": "enable IE8 mode",
+      "type": "boolean",
+      "default": false
+    },
+    "inject": {
+      "description": "inject entry module",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "happypack": {
       "description": "(deprecated) happy pack mode, default is true when cpus cores > 1",
       "type": "boolean",

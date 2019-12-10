@@ -16,11 +16,12 @@ const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   function isSupportDll() {
-    if (enviroments.raw.DISABLE_DLL === 'true' || !argv.jmOptions.enableDllInProduction) {
+    if (enviroments.raw.DISABLE_DLL === 'true' || !argv.jmOptions.enableDllInProduction || argv.jmOptions.ie8) {
       return false
     }
 
@@ -37,6 +38,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
   const isElectron = argv.jmOptions.electron
+  const isIE8 = argv.jmOptions.ie8
 
   return {
     devtool: shouldUseSourceMap && 'source-map',
@@ -46,6 +48,13 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       rules: [],
     },
     plugins: [
+      isIE8 &&
+        new UglifyJSPlugin({
+          uglifyOptions: {
+            ie8: true,
+            warnings: false,
+          },
+        }),
       // 抽取CSS文件
       new MiniCssExtractPlugin({
         filename: `static/css/${filePrefix}[name].css?[contenthash:8]`,
@@ -79,40 +88,43 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // * 按需模块并行请求(即import数)的最大次数 <= 5(maxAsyncRequests)
       // * 初始模块并行请求的最大次数 <= 5(maxInitialRequests)
       // 详见 https://webpack.docschina.org/plugins/split-chunks-plugin/
-      splitChunks: {
-        name: !isElectron,
-        // cacheGroups用于扩展或覆盖splitChunks.*. 即扩展默认规则
-        // 由于支持多页应用, 所以我们会对初始chunk进行命名, 以便可以在html-webpack-plugin中对这些chunk进行注入
-        cacheGroups: {
-          // 第三方共有包
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            reuseExistingChunk: false,
-            chunks: 'initial',
-            minChunks: 2,
-            // 一个可拆分的chunk可能属于多个分组, 这个用于设置优先级
-            priority: -10,
-          },
-          ...(isElectron
-            ? {}
-            : {
-                // 应用内共有包
-                commons: {
-                  test: /src/,
-                  chunks: 'initial',
-                  reuseExistingChunk: true,
-                  minChunks: 2,
-                  priority: -20,
-                },
-              }),
-        },
-      },
-      // Keep the runtime chunk seperated to enable long term caching
-      runtimeChunk: isElectron
+      splitChunks: isIE8
         ? undefined
         : {
-            name: 'runtime',
+            name: !isElectron,
+            // cacheGroups用于扩展或覆盖splitChunks.*. 即扩展默认规则
+            // 由于支持多页应用, 所以我们会对初始chunk进行命名, 以便可以在html-webpack-plugin中对这些chunk进行注入
+            cacheGroups: {
+              // 第三方共有包
+              vendor: {
+                test: /[\\/]node_modules[\\/]/,
+                reuseExistingChunk: false,
+                chunks: 'initial',
+                minChunks: 2,
+                // 一个可拆分的chunk可能属于多个分组, 这个用于设置优先级
+                priority: -10,
+              },
+              ...(isElectron
+                ? {}
+                : {
+                    // 应用内共有包
+                    commons: {
+                      test: /src/,
+                      chunks: 'initial',
+                      reuseExistingChunk: true,
+                      minChunks: 2,
+                      priority: -20,
+                    },
+                  }),
+            },
           },
+      // Keep the runtime chunk seperated to enable long term caching
+      runtimeChunk:
+        isElectron || isIE8
+          ? undefined
+          : {
+              name: 'runtime',
+            },
       // 让webpack检查和删除已经在所有父模块存在的模块
       removeAvailableModules: true,
       // 删除空模块
@@ -121,9 +133,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       mergeDuplicateChunks: true,
       minimize: true,
       minimizer: [
-        new TerserPlugin(terserPluginOptions(shouldUseSourceMap)),
+        !isIE8 && new TerserPlugin(terserPluginOptions(shouldUseSourceMap)),
         new OptimizeCSSAssetsPlugin(optimizeCSSAssetsPlugin(shouldUseSourceMap)),
-      ],
+      ].filter(Boolean),
     },
     performance: {
       hints: 'warning',

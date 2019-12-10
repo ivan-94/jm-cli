@@ -38,6 +38,7 @@ export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, ele
           modules: false,
           // Exclude transforms that make all code slower
           exclude: ['transform-typeof-symbol'],
+          loose: options.ie8,
           corejs: options.useBuiltIns && 3,
           ...(isElectron
             ? {

@@ -11,8 +11,9 @@ import { WebpackConfigurer } from './type'
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
+  const isIE8 = argv.jmOptions.ie8
   function isSupportDll() {
-    if (enviroments.raw.DISABLE_DLL === 'true') {
+    if (enviroments.raw.DISABLE_DLL === 'true' || isIE8) {
       return false
     }
     return fs.existsSync(paths.appDllHash)
@@ -21,6 +22,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const supportDll = isSupportDll()
   if (supportDll) {
     message.info('DllReference Turned on')
+  }
+
+  if (isIE8) {
+    message.info('HotReload Disabled')
   }
 
   return {
@@ -35,7 +40,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       rules: [],
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
+      !isIE8 && new webpack.HotModuleReplacementPlugin(),
       // 在windows下大小写是不敏感的，这在其他端会导致问题
       new CaseSensitivePathsPlugin(),
       supportDll &&

@@ -24,6 +24,7 @@ import { ExternalWhiteList } from './constants'
 const nodeExternals = require('webpack-node-externals')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackModules = require('webpack-modules')
+const Es3ifyPlugin = require('es3ify-webpack-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
@@ -39,6 +40,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     isProduction,
     electron: isElectron,
     templateParameters: enviroments.raw,
+    hotreload: !argv.jmOptions.ie8,
+    inject: argv.jmOptions.inject!,
   })
   const filePrefix = name ? `${name}_` : ''
   const shouldUseSourceMap = enviroments.raw.SOURCE_MAP !== 'false'
@@ -231,6 +234,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     },
     plugins: [
       new WebpackModules(),
+      argv.jmOptions.ie8 && new Es3ifyPlugin(),
       (argv.jmOptions.enableTypescriptCheck || IS_CI) &&
         // typescript type checker
         new ForkTsCheckerWebpackPlugin(

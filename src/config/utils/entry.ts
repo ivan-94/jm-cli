@@ -21,7 +21,9 @@ export interface PageOption {
   entry?: string[]
   isProduction?: boolean
   electron?: boolean
+  inject: string[]
   templateParameters: { [key: string]: string }
+  hotreload: boolean
 }
 
 /**
@@ -102,12 +104,18 @@ export function getEntries(option: PageOption) {
   }
 
   // 添加开发环境依赖
-  if (!option.isProduction) {
+  if (!option.isProduction && option.hotreload) {
     for (const entry in entries) {
       entries[entry].unshift(require.resolve('webpack/hot/dev-server'))
       entries[entry].unshift(require.resolve('webpack-dev-server/client') + '?/')
     }
   }
+
+  option.inject.forEach(i => {
+    for (const entry in entries) {
+      entries[entry].unshift(i)
+    }
+  })
 
   return {
     entries,

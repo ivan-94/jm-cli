@@ -18,6 +18,8 @@ export interface ImportPluginConfig {
 
 export interface JMOptions {
   electron?: boolean
+  // IE 8 模式
+  ie8?: boolean
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
@@ -26,6 +28,7 @@ export interface JMOptions {
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
   enableESlintInProduction?: boolean
+  inject?: string[]
   useBuiltIns: 'entry' | 'usage' | false
   alias?: { [key: string]: string }
   electronExternalsWhitelist?: string[]
@@ -41,6 +44,7 @@ const defaultOptions: JMOptions = {
   enableTypescriptCheck: true,
   enableESlintInProduction: false,
   enableCircularDependencyCheck: false,
+  inject: [],
   useBuiltIns: 'usage',
 }
 const key = 'jm'

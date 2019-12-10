@@ -17,6 +17,7 @@ import checkElectron from '../services/checkElectron'
 import getOptions from '../options'
 import configure from '../config'
 import electronMainConfigure from '../config/electron-main'
+import { JMOptions } from '../config/type'
 import paths from '../paths'
 import { CommonOption } from './type'
 import Ora = require('ora')
@@ -43,6 +44,7 @@ function getDevServerConfig(
   proxy: Configuration['proxy'],
   webpackConfig: WebpackConfiguration,
   enviroments: { [key: string]: string },
+  options: JMOptions,
 ): Configuration {
   // https://github.com/chimurai/http-proxy-middleware
   // https://webpack.docschina.org/configuration/dev-server/#devserver-proxy
@@ -58,7 +60,7 @@ function getDevServerConfig(
     clientLogLevel: 'none',
     contentBase: [paths.appPublic, paths.appDist, paths.appCache],
     watchContentBase: true,
-    hot: true,
+    hot: !options.ie8,
     publicPath: webpackConfig.output!.publicPath,
     quiet: true,
     watchOptions: {
@@ -246,7 +248,7 @@ export default async function(argv: StartOption) {
     checkElectron()
   }
 
-  if (environment.raw.DISABLE_DLL !== 'true') {
+  if (environment.raw.DISABLE_DLL !== 'true' && !jmOptions.ie8) {
     message.info('Checking DLL...')
     try {
       await generateDll(environment, pkg, paths, { jmOptions })
@@ -257,7 +259,7 @@ export default async function(argv: StartOption) {
 
   const electronMainConfig = isEelectron ? electronMainConfigure(environment, pkg, paths, { jmOptions }) : undefined
   const config = configure(environment, pkg, paths, { entry: argv.entry, jmOptions })
-  const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw)
+  const devServerConfig = getDevServerConfig(jmOptions.proxy || {}, config, environment.raw, jmOptions)
 
   if (argv.inspect) {
     // TODO: 优化展示，使用fx，交互式
@@ -278,6 +280,9 @@ export default async function(argv: StartOption) {
 
   const [compiler, startCompileSpin] = createCompiler(config, electronMainConfig, stats => {
     message.info(showInfo())
+    if (jmOptions.ie8) {
+      message.info('IE8 Mode')
+    }
     message.info(
       `Development server running at: \n    Lan: ${chalk.cyan(urls.lanUrlForTerminal!)}\n    Local: ${chalk.cyan(
         urls.localUrlForTerminal,

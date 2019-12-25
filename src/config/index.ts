@@ -185,6 +185,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             {
               test: /\.svg$/,
               exclude: /fonts?/,
+              issuer: {
+                test: /\.(tsx|jsx)$/,
+              },
               use: [
                 { loader: require.resolve('babel-loader'), options: babelOptions },
                 {
@@ -201,7 +204,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                 {
                   loader: require.resolve('url-loader'),
                   options: {
-                    limit: 10000,
+                    limit: isIE8 ? false : 10000,
                     name: `static/media/${filePrefix}[name].[ext]${$('', '?[hash:8]')}`,
                   },
                 },
@@ -209,7 +212,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             },
             // images
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
               loader: require.resolve('url-loader'),
               options: {
                 limit: isIE8 ? false : 10000,
@@ -234,6 +237,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       ].filter(Boolean) as RuleSetRule[],
     },
     optimization: {
+      concatenateModules: isIE8 ? true : undefined,
       ...(envConfig.optimization || {}),
     },
     plugins: [

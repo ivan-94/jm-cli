@@ -227,7 +227,7 @@ function getCommonTemplatePluginOptions(page: string, { isProduction, templatePa
     title: page,
     filename: `${page}.html`,
     chunks: [...preinjected, page],
-    chunksSortMode: preinjected && preinjected.length ? 'manual' : undefined,
+    chunksSortMode: preinjected && preinjected.length ? 'manual' : 'auto',
     templateParameters,
     inject: true,
     minify: isProduction

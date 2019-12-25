@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.9",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -97,7 +97,7 @@
     "@babel/preset-typescript": "7.7.2",
     "@babel/runtime": "^7.7.2",
     "@gdjiami/eslint-config": "^0.2.0",
-    "@svgr/webpack": "4.3.3",
+    "@svgr/webpack": "^5.0.0",
     "address": "1.1.2",
     "ajv": "^6.5.5",
     "babel-loader": "8.0.6",

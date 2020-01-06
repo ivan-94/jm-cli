@@ -243,7 +243,9 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
     plugins: [
       new WebpackModules(),
       isIE8 && new Es3ifyPlugin(),
-      (argv.jmOptions.enableTypescriptCheck || IS_CI) &&
+      (isProduction
+        ? argv.jmOptions.enableTypescriptCheckInProduction
+        : argv.jmOptions.enableTypescriptCheck || IS_CI) &&
         // typescript type checker
         new ForkTsCheckerWebpackPlugin(
           getForkTsCheckerOptions(paths, enviroments.raw, argv.jmOptions, {

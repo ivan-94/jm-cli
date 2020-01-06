@@ -24,6 +24,7 @@ export interface JMOptions {
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
   enableTypescriptCheck: boolean
+  enableTypescriptCheckInProduction: boolean
   enableTypescriptAsyncCheck: boolean
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
@@ -42,6 +43,7 @@ const defaultOptions: JMOptions = {
   enableDuplicatePackageCheck: false,
   enableTypescriptAsyncCheck: false,
   enableTypescriptCheck: true,
+  enableTypescriptCheckInProduction: true,
   enableESlintInProduction: false,
   enableCircularDependencyCheck: false,
   inject: {},

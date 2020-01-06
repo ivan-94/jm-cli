@@ -90,6 +90,11 @@
       "type": "boolean",
       "default": true 
     },
+    "enableTypescriptCheckInProduction": {
+      "description": "enable Typescript check in production",
+      "type": "boolean",
+      "default": true 
+    },
     "enableTypescriptAsyncCheck": {
       "description": "enable Typescript async check",
       "type": "boolean",

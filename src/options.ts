@@ -20,6 +20,10 @@ export interface JMOptions {
   electron?: boolean
   // IE 8 模式
   ie8?: boolean
+  // 是否支持离线
+  offline: boolean
+  // offline-plugin options: https://github.com/NekR/offline-plugin/blob/master/docs/options.md
+  offlineOptions?: any
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
@@ -41,6 +45,7 @@ export interface JMOptions {
 }
 
 const defaultOptions: JMOptions = {
+  offline: false,
   enableESlint: true,
   enableDuplicatePackageCheck: false,
   enableTypescriptAsyncCheck: false,

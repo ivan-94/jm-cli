@@ -120,6 +120,15 @@
       "type": "boolean",
       "default": false
     },
+    "offline": {
+      "description": "enable offline mode",
+      "type": "boolean",
+      "default": false
+    },
+    "offlineOptions": {
+      "description": "offline-plugin options. see: https://github.com/NekR/offline-plugin/blob/master/docs/options.md",
+      "type": "object"
+    },
     "inject": {
       "description": "inject entry module",
       "type": "object"

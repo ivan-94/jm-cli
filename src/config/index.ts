@@ -25,6 +25,7 @@ const nodeExternals = require('webpack-node-externals')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackModules = require('webpack-modules')
 const Es3ifyPlugin = require('es3ify-webpack-plugin')
+const OfflinePlugin = require('offline-plugin')
 
 const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   const { name, entry } = argv
@@ -54,6 +55,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
   }
 
   message.info(`entries: ${Object.keys(entries).join(', ')}`)
+
   if (!argv.jmOptions.enableTypescriptCheck) {
     message.info(`Typescript check was disabled`)
   }
@@ -271,6 +273,8 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       // 解析html里面的${ENV}
       new HtmlInterpolatePlugin(enviroments.raw),
       ...(envConfig.plugins || []),
+      // 离线模式
+      !isIE8 && !isElectron && argv.jmOptions.offline && new OfflinePlugin(argv.jmOptions.offlineOptions),
     ].filter(Boolean),
     node: isElectron
       ? false

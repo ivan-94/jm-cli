@@ -116,7 +116,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       rules: [
         { parser: { requireEnsure: false } },
         // eslint
-        (!isProduction || !!argv.jmOptions.enableDllInProduction) && {
+        (!isProduction ? !!argv.jmOptions.enableESlint : !!argv.jmOptions.enableESlintInProduction) && {
           test: /\.(js|jsx|ts|tsx)$/,
           enforce: 'pre',
           use: [

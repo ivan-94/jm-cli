@@ -85,6 +85,11 @@
       "type": "boolean",
       "default": false 
     },
+    "enableESlint": {
+      "description": "enable ESlint check",
+      "type": "boolean",
+      "default": true 
+    },
     "enableTypescriptCheck": {
       "description": "enable Typescript check",
       "type": "boolean",

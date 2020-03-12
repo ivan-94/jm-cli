@@ -28,6 +28,7 @@ export interface JMOptions {
   enableTypescriptAsyncCheck: boolean
   enableCircularDependencyCheck: boolean
   enableDllInProduction?: boolean
+  enableESlint?: boolean
   enableESlintInProduction?: boolean
   inject?: { [key: string]: string }
   useBuiltIns: 'entry' | 'usage' | false
@@ -40,6 +41,7 @@ export interface JMOptions {
 }
 
 const defaultOptions: JMOptions = {
+  enableESlint: true,
   enableDuplicatePackageCheck: false,
   enableTypescriptAsyncCheck: false,
   enableTypescriptCheck: true,

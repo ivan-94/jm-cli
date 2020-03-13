@@ -125,6 +125,11 @@
       "type": "boolean",
       "default": false
     },
+    "enableOfflineInDev": {
+      "description": "enable offline mode in development",
+      "type": "boolean",
+      "default": false
+    },
     "offlineOptions": {
       "description": "offline-plugin options. see: https://github.com/NekR/offline-plugin/blob/master/docs/options.md",
       "type": "object"

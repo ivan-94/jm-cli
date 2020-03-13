@@ -274,7 +274,11 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
       new HtmlInterpolatePlugin(enviroments.raw),
       ...(envConfig.plugins || []),
       // 离线模式
-      !isIE8 && !isElectron && argv.jmOptions.offline && new OfflinePlugin(argv.jmOptions.offlineOptions),
+      !isIE8 &&
+        !isElectron &&
+        argv.jmOptions.offline &&
+        (!isProduction ? argv.jmOptions.enableOfflineInDev : true) &&
+        new OfflinePlugin(argv.jmOptions.offlineOptions),
     ].filter(Boolean),
     node: isElectron
       ? false

@@ -24,6 +24,7 @@ export interface JMOptions {
   offline: boolean
   // offline-plugin options: https://github.com/NekR/offline-plugin/blob/master/docs/options.md
   offlineOptions?: any
+  enableOfflineInDev?: boolean
   proxy?: ProxyConfig
   importPlugin?: ImportPluginConfig | ImportPluginConfig[]
   enableDuplicatePackageCheck: boolean
@@ -47,6 +48,7 @@ export interface JMOptions {
 const defaultOptions: JMOptions = {
   offline: false,
   enableESlint: true,
+  enableOfflineInDev: false,
   enableDuplicatePackageCheck: false,
   enableTypescriptAsyncCheck: false,
   enableTypescriptCheck: true,

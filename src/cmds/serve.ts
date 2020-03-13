@@ -78,6 +78,11 @@ export default async (argv: ServeOption) => {
     app.use(require('compression')())
   }
 
+  app.use((req, res, next) => {
+    next()
+    message.info(`[${req.method}] ${req.url}: ${res.statusCode}`)
+  })
+
   if (argv.cors) {
     app.use(require('cors')())
   }

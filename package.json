@@ -1,6 +1,6 @@
 {
   "name": "@gdjiami/cli",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "CLI for build front end project.",
   "keywords": [
     "webpack",
@@ -134,7 +134,7 @@
     "inquirer": "6.5.2",
     "json5": "^2.1.0",
     "mini-css-extract-plugin": "^0.9.0",
-    "offline-plugin": "^5.0.7",
+    "offline-plugin": "https://github.com/GDJiaMi/offline-plugin.git",
     "opener": "^1.5.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "ora": "3.4.0",

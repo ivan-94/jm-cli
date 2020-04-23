@@ -188,7 +188,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
               test: /\.svg$/,
               exclude: /fonts?/,
               issuer: {
-                test: /\.(tsx|jsx)$/,
+                test: /\.(tsx|jsx|js|ts)$/,
               },
               use: [
                 { loader: require.resolve('babel-loader'), options: babelOptions },

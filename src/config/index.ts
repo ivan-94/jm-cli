@@ -134,8 +134,10 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             // typescript & js
             {
               test: /\.(ts|tsx|js|jsx)$/,
-              include: paths.appPath,
-              exclude: /node_modules/,
+              exclude: {
+                test: /node_modules/,
+                exclude: /@gzbapp/,
+              },
               use: [
                 {
                   loader: require.resolve('cache-loader'),

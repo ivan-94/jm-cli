@@ -46,6 +46,11 @@ export default (envs: StringObject, options: JMOptions, paths: WebpackPaths, ele
                 targets: { electron: requireInCwd('electron/package.json').version },
                 ignoreBrowserslistConfig: true,
               }
+            : options.ignoreBrowserlistInDevelopment && isDevelopment
+            ? {
+                ignoreBrowserslistConfig: true,
+                targets: 'last 1 Chrome versions',
+              }
             : {}),
         },
       ],

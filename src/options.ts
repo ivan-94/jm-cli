@@ -39,6 +39,7 @@ export interface JMOptions {
   useBuiltIns: 'entry' | 'usage' | false
   alias?: { [key: string]: string }
   electronExternalsWhitelist?: string[]
+  ignoreBrowserlistInDevelopment: boolean
   dll?: {
     include?: string[]
     exclude?: string[]
@@ -55,6 +56,7 @@ const defaultOptions: JMOptions = {
   enableTypescriptCheckInProduction: true,
   enableESlintInProduction: false,
   enableCircularDependencyCheck: false,
+  ignoreBrowserlistInDevelopment: true,
   inject: {},
   useBuiltIns: 'usage',
 }

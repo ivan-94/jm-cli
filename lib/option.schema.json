@@ -148,6 +148,11 @@
       "enum": [false, "usage", "entry"],
       "default": "usage"
     },
+    "ignoreBrowserlistInDevelopment": {
+      "description": "ignore development in development",
+      "type": "boolean",
+      "default": true 
+    },
     "alias": {
       "description": "webpack module alias",
       "type": "object",

@@ -159,12 +159,7 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
                     ie8: isIE8,
                   },
                   undefined,
-                  [
-                    {
-                      loader: require.resolve('cache-loader'),
-                      options: genCacheConfig('css', enviroments.raw, paths),
-                    },
-                  ],
+                  undefined,
                 ),
               ],
               sideEffects: true,
@@ -173,10 +168,6 @@ const configure: WebpackConfigurer = (enviroments, pkg, paths, argv) => {
             {
               test: /\.pug$/,
               use: [
-                {
-                  loader: require.resolve('cache-loader'),
-                  options: genCacheConfig('pug', enviroments.raw, paths),
-                },
                 {
                   loader: require.resolve('pug-loader'),
                   options: {
